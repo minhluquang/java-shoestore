@@ -1,6 +1,7 @@
-package GUI;
 
+package GUI;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -17,259 +18,220 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class homeUI extends JFrame {
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private int x = 210; // chieu rong
-	private int y = 733; // chieu cao
-	private JPanel mainMenu;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private int x = 210; // chiều rộng
+    private int y = 733; // chiều cao
+    private JPanel mainMenu;
+    private JPanel cards;
+    private CardLayout cardLayout;
 
-	public homeUI() {
-		setTitle("Danh sách sản phẩm");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1280, 800);
-		setLocationRelativeTo(null);
-		// Tạo menu bar
-		// Tạo JPanel chứa menu bar
+    public homeUI() {
+        setTitle("Danh sách sản phẩm");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1280, 800);
+        setLocationRelativeTo(null);
 
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 149, 751);
-		menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
+        // Tạo menu bar
+        JMenuBar menuBar = createMenuBar();
 
-		// Tạo các menu
-		JMenu homeMenu = new JMenu("Trang chủ");
-		homeMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu productMenu = new JMenu("Sản phẩm");
-		productMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu invoiceMenu = new JMenu("Bảo hành");
-		invoiceMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu statisticsMenu = new JMenu("Thống kê");
-		statisticsMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu troGiupMenuItem = new JMenu("Trợ giúp");
-		troGiupMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu loginMenuItem = new JMenu("Đăng nhập");
-		loginMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		// JMenu logOutMenuItem = new JMenu("Đăng xuất");
-		// logOutMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        // Tạo JPanel chứa danh sách sản phẩm
+        JPanel productPanel = createProductPanel(new String[]{"Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6"});
 
-		// Thêm các menu vào menu bar
-		menuBar.add(homeMenu);
-		menuBar.add(productMenu);
-		menuBar.add(invoiceMenu);
-		menuBar.add(statisticsMenu);
-		menuBar.add(troGiupMenuItem);
-		menuBar.add(loginMenuItem);
-		// menuBar.add(logOutMenuItem);
+        // Tạo JPanel chứa danh sách sản phẩm 2
+        JPanel productPanel2 = createProductPanel(new String[]{"Sản phẩm 7", "Sản phẩm 8", "Sản phẩm 9", "Sản phẩm 10", "Sản phẩm 11", "Sản phẩm 12"});
+        
+        
+        JPanel baoHanhPanel = BaoHanhGUI.baoHanhGUI();
+        JPanel loginPanel = DangNhapGUI.dangNhapGUI();
+        
+        // Tạo JPanel chứa các panel với CardLayout
+        cardLayout = new CardLayout();
+        cards = new JPanel(cardLayout);
+        cards.add(productPanel, "PRODUCT_PANEL");
+        cards.add(productPanel2, "PRODUCT_PANEL_2");
+        cards.add(loginPanel, "LOGIN_PANEL");
+        cards.add(baoHanhPanel,"BAOHANH_PANEL");
+        // Thêm menu bar và panel chứa cards vào content pane
+        getContentPane().add(menuBar, BorderLayout.WEST);
+        getContentPane().add(cards, BorderLayout.CENTER);
+        // Hiển thị JFrame
+        setVisible(true);
+    }
 
-		JPanel menuPanel = new JPanel();
-		menuPanel.setLayout(null);
-		menuPanel.add(menuBar);
+    private JMenuBar createMenuBar() {
+        // Tạo menu bar
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBounds(0, 0, 149, 751);
+        menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
 
-		// Danh sách sản phẩm
-		String[] products = { "Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6" };
+        // Tạo các menu
+        JMenu homeMenu = new JMenu("Trang chủ");
+        homeMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        JMenu productMenu = new JMenu("Sản phẩm");
+        productMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        JMenu invoiceMenu = new JMenu("Bảo hành");
+        invoiceMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        JMenu statisticsMenu = new JMenu("Thống kê");
+        statisticsMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        JMenu troGiupMenuItem = new JMenu("Trợ giúp");
+        troGiupMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        JMenu loginMenuItem = new JMenu("Đăng nhập");
+        loginMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 
-		// Tạo JPanel chứa danh sách sản phẩm
-		JPanel productPanel = new JPanel(new GridLayout(0, 3, 10, 10));
-		productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Thêm các menu vào menu bar
+        menuBar.add(homeMenu);
+        menuBar.add(productMenu);
+        menuBar.add(invoiceMenu);
+        menuBar.add(statisticsMenu);
+        menuBar.add(troGiupMenuItem);
+        menuBar.add(loginMenuItem);
 
-		// Thêm từng sản phẩm vào JPanel
-		for (String product : products) {
-			JPanel itemPanel = createProductPanel(product);
-			productPanel.add(itemPanel);
-		}
+        // Thêm sự kiện cho menu
+        homeMenu.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(cards, "PRODUCT_PANEL");
+            }
 
-		// Tạo JSplitPane chứa menu bên trái và danh sách sản phẩm bên phải
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuPanel, productPanel);
-		splitPane.setDividerLocation(150); // Thiết lập vị trí chia phần tử
-		splitPane.setResizeWeight(0.0); // Không cho phép thay đổi kích thước menu khi thay đổi cửa sổ
-		// Thêm JSplitPane vào content pane
-		setContentPane(splitPane);
-		String[] products2 = { "Sản phẩm 7", "Sản phẩm 7", "Sản phẩm 7", "Sản phẩm 7", "Sản phẩm 7", "Sản phẩm 7" };
+            @Override
+            public void mouseEntered(MouseEvent e) {}
 
-		// Tạo JPanel chứa danh sách sản phẩm
-		JPanel productPanel2 = new JPanel(new GridLayout(0, 3, 10, 10));
-		productPanel2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            @Override
+            public void mouseExited(MouseEvent e) {}
 
-		// Thêm từng sản phẩm vào JPanel
-		for (String product : products2) {
-			JPanel itemPanel = createProductPanel(product);
-			productPanel2.add(itemPanel);
-		}
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-		homeMenu.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				splitPane.setRightComponent(productPanel);
-				splitPane.setLeftComponent(menuBar);
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			}
+        productMenu.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(cards, "PRODUCT_PANEL_2");
+            }
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
+            @Override
+            public void mouseEntered(MouseEvent e) {}
 
-			}
+            @Override
+            public void mouseExited(MouseEvent e) {}
 
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-			}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+        invoiceMenu.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	cardLayout.show(cards, "BAOHANH_PANEL");
+            }
 
-			}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
+            @Override
+            public void mouseExited(MouseEvent e) {}
 
-			}
-		});
-		// Hiển thị JFrame
-		invoiceMenu.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-				// TODO Auto-generated method stub
-				splitPane.setRightComponent(BaoHanhGUI.baoHanhGUI());
-				splitPane.setLeftComponent(menuBar);
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			}
+        statisticsMenu.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Handle statistics menu click
+            }
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
+            @Override
+            public void mouseEntered(MouseEvent e) {}
 
-			}
+            @Override
+            public void mouseExited(MouseEvent e) {}
 
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-			}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+        troGiupMenuItem.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Handle help menu click
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-			}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
+        loginMenuItem.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	 cardLayout.show(cards, "LOGIN_PANEL");
+            }
 
-			}
-		});
-		productMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(homeUI.this, "Danh sách sản phẩm");
-				splitPane.setRightComponent(productPanel2);
+            @Override
+            public void mouseEntered(MouseEvent e) {}
 
-			}
-		});
-		statisticsMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(homeUI.this, "Thống kê");
-			}
-		});
+            @Override
+            public void mouseExited(MouseEvent e) {}
 
-		troGiupMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(homeUI.this, "Trợ giúp");
-			}
-		});
+            @Override
+            public void mousePressed(MouseEvent e) {}
 
-		loginMenuItem.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				splitPane.setRightComponent(DangNhapGUI.dangNhapGUI());
-				splitPane.setLeftComponent(menuBar);
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
 
-			}
+        return menuBar;
+    }
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
+    private JPanel createProductPanel(String[] products) {
+        JPanel productPanel = new JPanel(new GridLayout(0, 3, 10, 10));
+        productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-			}
+        for (String product : products) {
+            JPanel itemPanel = createProductItemPanel(product);
+            productPanel.add(itemPanel);
+        }
 
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+        return productPanel;
+    }
 
-			}
+    private JPanel createProductItemPanel(String productName) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+        JLabel nameLabel = new JLabel(productName);
+        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(nameLabel, BorderLayout.CENTER);
 
-			}
+        return panel;
+    }
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		setVisible(true);
-	}
-
-	private JMenuBar createMenuBar() {
-		// Tạo menu bar
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 149, 751);
-		menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
-
-		// Tạo các menu
-		JMenu homeMenu = new JMenu("Trang chủ");
-		homeMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu productMenu = new JMenu("Sản phẩm");
-		productMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu invoiceMenu = new JMenu("Bảo hành");
-		invoiceMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu statisticsMenu = new JMenu("Thống kê");
-		statisticsMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu troGiupMenuItem = new JMenu("Trợ giúp");
-		troGiupMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		JMenu loginMenuItem = new JMenu("Đăng nhập");
-		loginMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		// JMenu logOutMenuItem = new JMenu("Đăng xuất");
-		// logOutMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-
-		// Thêm các menu vào menu bar
-		menuBar.add(homeMenu);
-		menuBar.add(productMenu);
-		menuBar.add(invoiceMenu);
-		menuBar.add(statisticsMenu);
-		menuBar.add(troGiupMenuItem);
-		menuBar.add(loginMenuItem);
-		// menuBar.add(logOutMenuItem);
-
-		return menuBar;
-	}
-
-	private JPanel createProductPanel(String productName) {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBackground(Color.WHITE);
-		panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-		JLabel nameLabel = new JLabel(productName);
-		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(nameLabel, BorderLayout.CENTER);
-
-		return panel;
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(homeUI::new);
-	}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(homeUI::new);
+    }
 }
+
