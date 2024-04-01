@@ -19,13 +19,13 @@ import javax.swing.*;
  *
  * @author MSI
  */
-public class SanPham extends javax.swing.JPanel {
+public class SanPhamGUI extends javax.swing.JPanel {
 
     /**
      * Creates new form SanPham
      */
     
-    public SanPham() {
+    public SanPhamGUI() {
         String[] products = { "Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6" };
 
             // Tạo JPanel chứa danh sách sản phẩm

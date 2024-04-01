@@ -35,7 +35,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.SpringLayout;
 
-public class QuanLyNhanVienGUI extends JPanel {
+public class NhanVienGUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField txtMaNhanVien;
@@ -49,7 +49,7 @@ public class QuanLyNhanVienGUI extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public QuanLyNhanVienGUI() {
+	public NhanVienGUI() {
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
