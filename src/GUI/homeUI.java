@@ -52,8 +52,8 @@ public class homeUI extends JFrame {
         // Tạo JPanel chứa các panel với CardLayout
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
-        cards.add(productPanel, "PRODUCT_PANEL");
-        cards.add(new SanPham(), "PRODUCT_PANEL_2");
+        cards.add(new SanPham(), "PRODUCT_PANEL");
+        cards.add(new QuanLySanPham(), "PRODUCT_PANEL_2");
         cards.add(loginPanel, "LOGIN_PANEL");
         cards.add(baoHanhPanel,"BAOHANH_PANEL");
         // Thêm menu bar và panel chứa cards vào content pane

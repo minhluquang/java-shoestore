@@ -26,7 +26,7 @@ public class SanPham extends javax.swing.JPanel {
      */
     
     public SanPham() {
-        String[] products = { "Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6" };
+        String[] products = { "Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6","Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6","Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6" };
 
             // Tạo JPanel chứa danh sách sản phẩm
             JPanel productPanel = new JPanel(new GridLayout(0, 3, 10, 10));
