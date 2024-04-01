@@ -18,11 +18,6 @@ public class DangNhapGUI {
 	static JTextField email;
 	static JTextField password;
 
-	/**
-	 * 
-	 * /**
-	 * Create the frame.
-	 */
 	public static JPanel dangNhapGUI() {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 255, 255));

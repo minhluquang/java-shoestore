@@ -20,7 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
+import javax.swing.*;
+import java.awt.*;
 public class homeUI extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -31,11 +32,11 @@ public class homeUI extends JFrame {
     private CardLayout cardLayout;
 
     public homeUI() {
+    	getContentPane().setBackground(Color.BLACK);
         setTitle("Danh sách sản phẩm");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 800);
         setLocationRelativeTo(null);
-
         // Tạo menu bar
         JMenuBar menuBar = createMenuBar();
         
@@ -48,7 +49,8 @@ public class homeUI extends JFrame {
         
         JPanel baoHanhPanel = BaoHanhGUI.baoHanhGUI();
         JPanel loginPanel = DangNhapGUI.dangNhapGUI();
-        
+        QuanLyNhanVienGUI quanLyNhanVienPanel = new QuanLyNhanVienGUI();
+        NhapHang nhapHangPanel = new NhapHang();
         // Tạo JPanel chứa các panel với CardLayout
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
@@ -56,6 +58,8 @@ public class homeUI extends JFrame {
         cards.add(new SanPham(), "PRODUCT_PANEL_2");
         cards.add(loginPanel, "LOGIN_PANEL");
         cards.add(baoHanhPanel,"BAOHANH_PANEL");
+        cards.add(quanLyNhanVienPanel, "NHANVIEN_PANEL");
+        cards.add(nhapHangPanel, "NHAPHANG_PANEL");
         // Thêm menu bar và panel chứa cards vào content pane
         getContentPane().add(menuBar, BorderLayout.WEST);
         getContentPane().add(cards, BorderLayout.CENTER);
@@ -64,32 +68,54 @@ public class homeUI extends JFrame {
     }
 
     private JMenuBar createMenuBar() {
+    	 // Thiết lập màu nền và màu chữ cho menu bar
+        UIManager.put("Menu.foreground", Color.WHITE); // Màu trắng
         // Tạo menu bar
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(new Color(0, 0, 0));
         menuBar.setBounds(0, 0, 149, 751);
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
 
         // Tạo các menu
         JMenu homeMenu = new JMenu("Trang chủ");
+        homeMenu.setBackground(Color.BLACK);
         homeMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        homeMenu.setForeground(Color.WHITE);
+        
         JMenu productMenu = new JMenu("Sản phẩm");
         productMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        productMenu.setForeground(Color.WHITE);
+        
         JMenu invoiceMenu = new JMenu("Bảo hành");
         invoiceMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        invoiceMenu.setForeground(Color.WHITE);
+        
+        JMenu nhapHangMenu = new JMenu("Nhập hàng");
+        nhapHangMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        nhapHangMenu.setForeground(Color.WHITE);
+        
         JMenu statisticsMenu = new JMenu("Thống kê");
         statisticsMenu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        JMenu troGiupMenuItem = new JMenu("Trợ giúp");
-        troGiupMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        statisticsMenu.setForeground(Color.WHITE);
+        
+        JMenu nhanVienMenuItem = new JMenu("Nhân viên");
+        nhanVienMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        nhanVienMenuItem.setForeground(Color.WHITE);
+        
         JMenu loginMenuItem = new JMenu("Đăng nhập");
         loginMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        loginMenuItem.setForeground(Color.WHITE);
 
         // Thêm các menu vào menu bar
         menuBar.add(homeMenu);
         menuBar.add(productMenu);
         menuBar.add(invoiceMenu);
         menuBar.add(statisticsMenu);
-        menuBar.add(troGiupMenuItem);
+        menuBar.add(nhanVienMenuItem);
+        menuBar.add(nhapHangMenu);
         menuBar.add(loginMenuItem);
+        menuBar.setBackground(Color.decode("#333333"));
+
         // Thêm sự kiện cho menu
         homeMenu.addMouseListener(new MouseListener() {
             @Override
@@ -147,7 +173,27 @@ public class homeUI extends JFrame {
             @Override
             public void mouseReleased(MouseEvent e) {}
         });
+        
+        nhapHangMenu.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	cardLayout.show(cards, "NHAPHANG_PANEL");
+            }
 
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
+        
+        
         statisticsMenu.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -167,10 +213,10 @@ public class homeUI extends JFrame {
             public void mouseReleased(MouseEvent e) {}
         });
 
-        troGiupMenuItem.addMouseListener(new MouseListener() {
+        nhanVienMenuItem.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Handle help menu click
+            	cardLayout.show(cards, "NHANVIEN_PANEL");
             }
             @Override
             public void mouseEntered(MouseEvent e) {}
@@ -190,7 +236,9 @@ public class homeUI extends JFrame {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {
+            	
+            }
 
             @Override
             public void mouseExited(MouseEvent e) {}
