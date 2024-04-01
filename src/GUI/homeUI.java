@@ -38,7 +38,7 @@ public class homeUI extends JFrame {
 
         // Tạo menu bar
         JMenuBar menuBar = createMenuBar();
-
+        
         // Tạo JPanel chứa danh sách sản phẩm
         JPanel productPanel = createProductPanel(new String[]{"Sản phẩm 1", "Sản phẩm 2", "Sản phẩm 3", "Sản phẩm 4", "Sản phẩm 5", "Sản phẩm 6"});
 
@@ -53,7 +53,7 @@ public class homeUI extends JFrame {
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
         cards.add(productPanel, "PRODUCT_PANEL");
-        cards.add(productPanel2, "PRODUCT_PANEL_2");
+        cards.add(new SanPham(), "PRODUCT_PANEL_2");
         cards.add(loginPanel, "LOGIN_PANEL");
         cards.add(baoHanhPanel,"BAOHANH_PANEL");
         // Thêm menu bar và panel chứa cards vào content pane
@@ -90,7 +90,6 @@ public class homeUI extends JFrame {
         menuBar.add(statisticsMenu);
         menuBar.add(troGiupMenuItem);
         menuBar.add(loginMenuItem);
-
         // Thêm sự kiện cho menu
         homeMenu.addMouseListener(new MouseListener() {
             @Override
