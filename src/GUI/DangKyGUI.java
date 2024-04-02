@@ -6,18 +6,19 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import javax.swing.border.LineBorder;
 
-public class DangNhapGUI extends JFrame {
+public class DangKyGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField txtUsernameLogin;
-    private JPasswordField txtMatKhauLogin;
+    private JTextField txtUsernameRegister;
+    private JPasswordField txtMatKhauRegister;
+    private JPasswordField txtNhapLaiMatKhauRegister;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                DangNhapGUI frame = new DangNhapGUI();
+                DangKyGUI frame = new DangKyGUI();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -25,7 +26,7 @@ public class DangNhapGUI extends JFrame {
         });
     }
 
-    public DangNhapGUI() {
+    public DangKyGUI() {
         int width = 380;
         int height = 500;
 
@@ -53,7 +54,7 @@ public class DangNhapGUI extends JFrame {
         JLabel spacing = new JLabel("");
         pnlTitle.add(spacing);
         
-        JLabel lnlDangNhap = new JLabel("Đăng nhập vào hệ thống");
+        JLabel lnlDangNhap = new JLabel("Đăng ký tài khoản");
         lnlDangNhap.setHorizontalAlignment(SwingConstants.CENTER);
         lnlDangNhap.setFont(new Font("Tahoma", Font.BOLD, 18));
         pnlTitle.add(lnlDangNhap);
@@ -63,12 +64,12 @@ public class DangNhapGUI extends JFrame {
         pnlTop.add(pnlTitle_1);
         pnlTitle_1.setLayout(new GridLayout(0, 1, 0, 0));
         
-        JLabel lblHyNhpThng = new JLabel("Hãy nhập thông tin chi tiết của bạn để đăng nhập");
+        JLabel lblHyNhpThng = new JLabel("Chỉ cần một vài điều nhanh chóng");
         lblHyNhpThng.setHorizontalAlignment(SwingConstants.CENTER);
         lblHyNhpThng.setFont(new Font("Tahoma", Font.PLAIN, 14));
         pnlTitle_1.add(lblHyNhpThng);
         
-        JLabel lblngNhp = new JLabel("vào tài khoản của bạn");
+        JLabel lblngNhp = new JLabel("để bắt đầu");
         lblngNhp.setHorizontalAlignment(SwingConstants.CENTER);
         lblngNhp.setFont(new Font("Tahoma", Font.PLAIN, 14));
         pnlTitle_1.add(lblngNhp);
@@ -87,23 +88,34 @@ public class DangNhapGUI extends JFrame {
         txt.setFont(new Font("Tahoma", Font.BOLD, 12));
         pnlInput.add(txt);
         
-        txtUsernameLogin = new JTextField();
-        txtUsernameLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        txtUsernameLogin.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
-        txtUsernameLogin.setPreferredSize(new Dimension(7, 30));
-        pnlInput.add(txtUsernameLogin);
-        txtUsernameLogin.setColumns(10);
+        txtUsernameRegister = new JTextField();
+        txtUsernameRegister.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        txtUsernameRegister.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
+        txtUsernameRegister.setPreferredSize(new Dimension(7, 30));
+        pnlInput.add(txtUsernameRegister);
+        txtUsernameRegister.setColumns(10);
         
         JLabel lblPassword = new JLabel("Mật khẩu");
         lblPassword.setFont(new Font("Tahoma", Font.BOLD, 12));
         pnlInput.add(lblPassword);
         
-        txtMatKhauLogin = new JPasswordField();
-        txtMatKhauLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        txtMatKhauLogin.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
-        txtMatKhauLogin.setPreferredSize(new Dimension(7, 30));
-        txtMatKhauLogin.setColumns(10);
-        pnlInput.add(txtMatKhauLogin);
+        txtMatKhauRegister = new JPasswordField();
+        txtMatKhauRegister.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        txtMatKhauRegister.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
+        txtMatKhauRegister.setPreferredSize(new Dimension(7, 30));
+        txtMatKhauRegister.setColumns(10);
+        pnlInput.add(txtMatKhauRegister);
+        
+        JLabel lblNhpLiMt = new JLabel("Nhập lại mật khẩu");
+        lblNhpLiMt.setFont(new Font("Tahoma", Font.BOLD, 12));
+        pnlInput.add(lblNhpLiMt);
+        
+        txtNhapLaiMatKhauRegister = new JPasswordField();
+        txtNhapLaiMatKhauRegister.setPreferredSize(new Dimension(7, 30));
+        txtNhapLaiMatKhauRegister.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        txtNhapLaiMatKhauRegister.setColumns(10);
+        txtNhapLaiMatKhauRegister.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
+        pnlInput.add(txtNhapLaiMatKhauRegister);
         
         JPanel pnlService = new JPanel();
         pnlService.setBackground(new Color(255, 255, 255));
@@ -113,22 +125,17 @@ public class DangNhapGUI extends JFrame {
         JPanel panelSubService = new JPanel();
         panelSubService.setBackground(new Color(255, 255, 255));
         pnlService.add(panelSubService);
-        panelSubService.setLayout(new GridLayout(0, 2, 0, 0));
+        panelSubService.setLayout(new GridLayout(0, 1, 0, 0));
         
-        JCheckBox chckbxNewCheckBox = new JCheckBox("Giữ tôi đăng nhập lần sau");
+        JCheckBox chckbxNewCheckBox = new JCheckBox("Tôi đồng ý với những điều khoản");
+        chckbxNewCheckBox.setPreferredSize(new Dimension(300, 23));
         chckbxNewCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
         chckbxNewCheckBox.setFocusable(false);
         chckbxNewCheckBox.setBackground(Color.WHITE);
         panelSubService.add(chckbxNewCheckBox);
         
-        JLabel lblNewLabel_1_1 = new JLabel("Quên mật khẩu?");
-        lblNewLabel_1_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        panelSubService.add(lblNewLabel_1_1);
-        
-        JButton btnDangNhap = new JButton("Đăng nhập");
+        JButton btnDangNhap = new JButton("Đăng ký");
         btnDangNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnDangNhap.setBorder(null);
         btnDangNhap.setBackground(new Color(51, 51, 51));
@@ -141,18 +148,18 @@ public class DangNhapGUI extends JFrame {
         pnlSwichToRegister.setBackground(new Color(255, 255, 255));
         pnlService.add(pnlSwichToRegister);
         
-        JLabel lblNewLabel_2 = new JLabel("Bạn chưa có tài khoản?");
+        JLabel lblNewLabel_2 = new JLabel("Bạn đã có tài khoản?");
         lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
         pnlSwichToRegister.add(lblNewLabel_2);
         
-        JButton btnDangKyNgay = new JButton("Đăng ký ngay!");
-        btnDangKyNgay.setFocusable(false);
-        btnDangKyNgay.setForeground(new Color(0, 64, 128));
-        btnDangKyNgay.setBackground(new Color(255, 255, 255));
-        btnDangKyNgay.setBorder(null);
-        btnDangKyNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnDangKyNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
-        pnlSwichToRegister.add(btnDangKyNgay);
+        JButton btnDangNhapNgay = new JButton("Đăng nhập ngay!");
+        btnDangNhapNgay.setFocusable(false);
+        btnDangNhapNgay.setForeground(new Color(0, 64, 128));
+        btnDangNhapNgay.setBackground(new Color(255, 255, 255));
+        btnDangNhapNgay.setBorder(null);
+        btnDangNhapNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnDangNhapNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
+        pnlSwichToRegister.add(btnDangNhapNgay);
     }
 }
 
