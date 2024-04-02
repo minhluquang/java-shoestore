@@ -84,15 +84,15 @@ public class main extends JFrame implements ActionListener, MouseListener {
      * Create the frame.
      */
     public main() {
-    	addWindowListener(new WindowAdapter() {
-    		@Override
-    		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng ứng dụng không?", "Xác nhận đóng ứng dụng", JOptionPane.YES_NO_OPTION);
-                if (choice == JOptionPane.YES_OPTION) {
-                	System.exit(1);
-                }
-    		}
-    	});
+//    	addWindowListener(new WindowAdapter() {
+//    		@Override
+//    		public void windowClosing(WindowEvent e) {
+//    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng ứng dụng không?", "Xác nhận đóng ứng dụng", JOptionPane.YES_NO_OPTION);
+//                if (choice == JOptionPane.YES_OPTION) {
+//                	System.exit(1);
+//                }
+//    		}
+//    	});
         int width = 1280;
         int height = 720;
 
@@ -103,7 +103,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
-        contentPane.setLayout(new BorderLayout(0, 15));
+        contentPane.setLayout(new BorderLayout(10, 10));
 
         pnlSidebar = new JPanel();
         pnlSidebar.setBackground(new Color(51, 51, 51));
@@ -265,7 +265,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlNhanVien = new JPanel();
         pnlCards.add(pnlNhanVien, "pnlNhanVien");
         pnlNhanVien.setLayout(new BorderLayout(0, 0));
-        pnlNhanVien.add(new NhanVienGUI(), BorderLayout.CENTER);
+        pnlNhanVien.add(new NhanVienPanel(), BorderLayout.CENTER);
         
         pnlKhachHang = new JPanel();
         pnlCards.add(pnlKhachHang, "pnlKhachHang");
