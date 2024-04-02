@@ -84,6 +84,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
      * Create the frame.
      */
     public main() {
+    	setBackground(new Color(230, 230, 230));
 //    	addWindowListener(new WindowAdapter() {
 //    		@Override
 //    		public void windowClosing(WindowEvent e) {
@@ -100,6 +101,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
         contentPane = new JPanel();
+        contentPane.setBackground(new Color(230, 230, 230));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
@@ -265,7 +267,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlNhanVien = new JPanel();
         pnlCards.add(pnlNhanVien, "pnlNhanVien");
         pnlNhanVien.setLayout(new BorderLayout(0, 0));
-        pnlNhanVien.add(new NhanVienPanel(), BorderLayout.CENTER);
+        pnlNhanVien.add(new NhanVienGUI(), BorderLayout.CENTER);
         
         pnlKhachHang = new JPanel();
         pnlCards.add(pnlKhachHang, "pnlKhachHang");

@@ -2,223 +2,170 @@ package GUI;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import javax.swing.JTabbedPane;
 import java.awt.Color;
 import java.awt.Dimension;
-
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
+import javax.swing.JComboBox;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.io.File;
 
-import javax.swing.BoxLayout;
-import javax.swing.border.EtchedBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.ButtonGroup;
-import javax.swing.JTable;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import java.awt.Cursor;
+import javax.swing.border.LineBorder;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Component;
-import java.awt.CardLayout;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.SpringLayout;
 
 public class NhanVienGUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField txtMaNhanVien;
-	private JTextField txtHoVaTen;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JTextField txtChucVu;
-	private JTextField txtSoDienThoai;
-	private JTable table;
-	private JTextField txtTimKiem;
+    public String absolutePath = new File("").getAbsolutePath();
+    private JTextField textField;
+    private JTable table;
+    private final ButtonGroup buttonGroup = new ButtonGroup();
+    private JTextField textField_1;
+    private JTextField textField_2;
 
 	/**
 	 * Create the panel.
 	 */
 	public NhanVienGUI() {
-		setLayout(new BorderLayout(0, 0));
+		setBackground(new Color(230, 230, 230));
+		setLayout(new BorderLayout(10, 10));
 		
-		JPanel panel = new JPanel();
-		add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
+		JPanel pnlTop = new JPanel();
+		pnlTop.setBackground(new Color(255, 255, 255));
+		add(pnlTop, BorderLayout.NORTH);
+		pnlTop.setLayout(new BorderLayout(20, 0));
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBackground(new Color(255, 255, 255));
-		panel.add(tabbedPane, BorderLayout.NORTH);
+		JPanel pnlSearch = new JPanel();
+		pnlSearch.setBackground(new Color(255, 255, 255));
+		pnlTop.add(pnlSearch, BorderLayout.CENTER);
+		pnlSearch.setLayout(new BorderLayout(5, 0));
 		
-		JPanel pnlThongTinNhanVien = new JPanel();
-		tabbedPane.addTab("Nhân viên", null, pnlThongTinNhanVien, null);
-		tabbedPane.setBackgroundAt(0, new Color(255, 255, 255));
-		pnlThongTinNhanVien.setLayout(new BorderLayout(0, 20));
+		JPanel pnlLocNangCao = new JPanel();
+		pnlLocNangCao.setBackground(new Color(255, 255, 255));
+		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
+		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
 		
-		JPanel pnlHeader = new JPanel();
-		pnlThongTinNhanVien.add(pnlHeader, BorderLayout.NORTH);
+		JPanel pnlTrangThai = new JPanel();
+		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
+		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JLabel lblNewLabel = new JLabel("QUẢN LÝ NHÂN VIÊN");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel.setForeground(new Color(0, 0, 0));
-		pnlHeader.add(lblNewLabel);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setFocusable(false);
+		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
+		pnlTrangThai.add(comboBox);
 		
-		JPanel pnlContent = new JPanel();
-		pnlThongTinNhanVien.add(pnlContent, BorderLayout.CENTER);
-		pnlContent.setLayout(new BorderLayout(10, 5));
+		JPanel pnlChucVu = new JPanel();
+		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
+		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel pnlContent_Title = new JPanel();
-		pnlContent_Title.setBackground(new Color(55, 55, 55));
-		pnlContent.add(pnlContent_Title, BorderLayout.NORTH);
-		pnlContent_Title.setLayout(new GridLayout(0, 1, 0, 0));
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setFocusable(false);
+		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ", "Admin", "Nhân viên"}));
+		pnlChucVu.add(comboBox_1);
 		
-		JLabel lblNewLabel_1 = new JLabel("Thông tin nhân viên");
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		pnlContent_Title.add(lblNewLabel_1);
+		JPanel panel_1 = new JPanel();
+		pnlSearch.add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel pnlContent_Info = new JPanel();
-		pnlContent.add(pnlContent_Info, BorderLayout.CENTER);
-		pnlContent_Info.setLayout(new GridLayout(0, 2, 10, 10));
+		textField = new JTextField();
+		textField.setMinimumSize(new Dimension(250, 19));
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		textField.setColumns(10);
+		panel_1.add(textField);
 		
-		JLabel lblNewLabel_2 = new JLabel("Mã nhân viên");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2);
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(255, 255, 255));
+		pnlSearch.add(panel_2, BorderLayout.EAST);
+		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		txtMaNhanVien = new JTextField();
-		txtMaNhanVien.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2.setLabelFor(txtMaNhanVien);
-		txtMaNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlContent_Info.add(txtMaNhanVien);
-		txtMaNhanVien.setColumns(10);
+		JButton btnTim = new JButton("");
+		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnTim.setIcon(new ImageIcon(absolutePath + "/images/icons/search.png"));
+		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnTim.setFocusable(false);
+		btnTim.setBackground(new Color(255, 255, 255));
+		panel_2.add(btnTim);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("Họ và tên");
-		lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2_1);
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setPreferredSize(new Dimension(0, 5));
+		pnlSearch.add(lblNewLabel, BorderLayout.NORTH);
 		
-		txtHoVaTen = new JTextField();
-		txtHoVaTen.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtHoVaTen.setColumns(10);
-		pnlContent_Info.add(txtHoVaTen);
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setPreferredSize(new Dimension(0, 5));
+		pnlSearch.add(lblNewLabel_1, BorderLayout.SOUTH);
 		
-		JLabel lblNewLabel_2_1_1 = new JLabel("Giới tính");
-		lblNewLabel_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2_1_1);
+		JPanel pnlExcel = new JPanel();
+		pnlExcel.setBackground(new Color(255, 255, 255));
+		pnlTop.add(pnlExcel, BorderLayout.EAST);
+		pnlExcel.setLayout(new BorderLayout(0, 0));
 		
-		JPanel pnlGioiTinh = new JPanel();
-		pnlContent_Info.add(pnlGioiTinh);
-		pnlGioiTinh.setLayout(new GridLayout(0, 2, 0, 0));
+		JPanel pnlNhapExcel = new JPanel();
+		pnlExcel.add(pnlNhapExcel, BorderLayout.WEST);
+		pnlNhapExcel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JRadioButton rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlGioiTinh.add(rdbtnNam);
+		JButton btnNhapExcel = new JButton("Nhập excel");
+		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/images/icons/excel.png"));
+		btnNhapExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNhapExcel.setFocusable(false);
+		btnNhapExcel.setBackground(Color.WHITE);
+		pnlNhapExcel.add(btnNhapExcel);
 		
-		JRadioButton rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlGioiTinh.add(rdbtnNu);
+		JPanel pnlXuatExcel = new JPanel();
+		pnlExcel.add(pnlXuatExcel, BorderLayout.CENTER);
+		pnlXuatExcel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JLabel lblNewLabel_2_1_2 = new JLabel("Chức vụ");
-		lblNewLabel_2_1_2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2_1_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2_1_2);
+		JButton btnXuatExcel = new JButton("Xuất excel");
+		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/images/icons/excel.png"));
+		btnXuatExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnXuatExcel.setFocusable(false);
+		btnXuatExcel.setBackground(Color.WHITE);
+		pnlXuatExcel.add(btnXuatExcel);
 		
-		txtChucVu = new JTextField();
-		txtChucVu.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtChucVu.setColumns(10);
-		pnlContent_Info.add(txtChucVu);
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setPreferredSize(new Dimension(0, 5));
+		pnlExcel.add(lblNewLabel_2, BorderLayout.NORTH);
 		
-		JLabel lblNewLabel_2_1_3 = new JLabel("Số điện thoại");
-		lblNewLabel_2_1_3.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2_1_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2_1_3);
+		JLabel lblNewLabel_1_1 = new JLabel("");
+		lblNewLabel_1_1.setPreferredSize(new Dimension(0, 5));
+		pnlExcel.add(lblNewLabel_1_1, BorderLayout.SOUTH);
 		
-		txtSoDienThoai = new JTextField();
-		txtSoDienThoai.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtSoDienThoai.setColumns(10);
-		pnlContent_Info.add(txtSoDienThoai);
+		JLabel lblNewLabel_3 = new JLabel("");
+		pnlTop.add(lblNewLabel_3, BorderLayout.WEST);
 		
-		JLabel lblNewLabel_2_1_3_1 = new JLabel("Trạng thái");
-		lblNewLabel_2_1_3_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2_1_3_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlContent_Info.add(lblNewLabel_2_1_3_1);
-		
-		JComboBox cmbTrangThai = new JComboBox();
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
-		pnlContent_Info.add(cmbTrangThai);
-		
-		JPanel pnlContent_Buttons = new JPanel();
-		pnlContent.add(pnlContent_Buttons, BorderLayout.EAST);
-		pnlContent_Buttons.setLayout(new GridLayout(0, 1, 0, 10));
-		
-		JButton btnThem = new JButton("Thêm");
-		btnThem.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnThem.setIcon(new ImageIcon("C:\\Users\\lumin\\OneDrive\\Máy tính\\LƯU TRỮ TÀI LIỆU HK2 23-24\\JAVA\\SWING\\Java_ShoesStore\\images\\add-icon.png"));
-		pnlContent_Buttons.add(btnThem);
-		
-		JButton btnSua = new JButton("Sửa");
-		btnSua.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSua.setIcon(new ImageIcon("C:\\Users\\lumin\\OneDrive\\Máy tính\\LƯU TRỮ TÀI LIỆU HK2 23-24\\JAVA\\SWING\\Java_ShoesStore\\images\\Pencil-icon.png"));
-		pnlContent_Buttons.add(btnSua);
-		
-		JButton btnXoa = new JButton("Xoá");
-		btnXoa.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnXoa.setIcon(new ImageIcon("C:\\Users\\lumin\\OneDrive\\Máy tính\\LƯU TRỮ TÀI LIỆU HK2 23-24\\JAVA\\SWING\\Java_ShoesStore\\images\\delete-icon.png"));
-		btnXoa.setSelectedIcon(new ImageIcon("C:\\Users\\lumin\\OneDrive\\Máy tính\\LƯU TRỮ TÀI LIỆU HK2 23-24\\JAVA\\SWING\\Java_ShoesStore\\images\\delete-icon.png"));
-		pnlContent_Buttons.add(btnXoa);
-		
-		JPanel pnlTable = new JPanel();
-		pnlThongTinNhanVien.add(pnlTable, BorderLayout.SOUTH);
+		JPanel pnlCenter = new JPanel();
+		pnlCenter.setBackground(new Color(255, 255, 255));
+		add(pnlCenter, BorderLayout.CENTER);
+		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
 		Object data[][] = {{"1", "Lữ Quang Minh", "Nam", "Admin", "0931814480", "Hoạt động"}};
 		String column[] = {"ID", "Họ và tên", "Giới tính", "Chức vụ", "Số điện thoại", "Trạng thái"};
-		pnlTable.setLayout(new BorderLayout(0, 10));
 		
-		JPanel pnlTable_Top = new JPanel();
-		pnlTable.add(pnlTable_Top, BorderLayout.NORTH);
-		pnlTable_Top.setLayout(new BorderLayout(0, 5));
-		
-		JPanel pnlTable_TopSearch = new JPanel();
-		pnlTable_Top.add(pnlTable_TopSearch);
-		pnlTable_TopSearch.setLayout(new BorderLayout(10, 0));
-		
-		JLabel lblNewLabel_3 = new JLabel("Tìm kiếm:");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlTable_TopSearch.add(lblNewLabel_3, BorderLayout.WEST);
-		
-		txtTimKiem = new JTextField();
-		pnlTable_TopSearch.add(txtTimKiem, BorderLayout.CENTER);
-		txtTimKiem.setColumns(10);
-		
-		JButton btnTimKiem = new JButton("Tìm");
-		btnTimKiem.setIcon(new ImageIcon("C:\\Users\\lumin\\OneDrive\\Máy tính\\LƯU TRỮ TÀI LIỆU HK2 23-24\\JAVA\\SWING\\Java_ShoesStore\\images\\Search-icon.png"));
-		pnlTable_TopSearch.add(btnTimKiem, BorderLayout.EAST);
-		
-		JPanel pnlTable_TopTitle = new JPanel();
-		pnlTable_TopTitle.setBackground(new Color(55, 55, 55));
-		pnlTable_Top.add(pnlTable_TopTitle, BorderLayout.NORTH);
-		pnlTable_TopTitle.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Thông tin danh sách");
-		lblNewLabel_1_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		pnlTable_TopTitle.add(lblNewLabel_1_1);
-		
-		JTable table = new JTable(data, column);
-		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		table = new JTable(data,column);
+		table.setBorder(null);
+		table.setSelectionBackground(new Color(232, 57, 95));
+		table.setRowHeight(25);
+		table.setIntercellSpacing(new Dimension(0, 0));
+		table.setFocusable(false);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"1", "L\u1EEF Quang Minh", "Nam", "Admin", "0931814480", "Ho\u1EA1t \u0111\u1ED9ng"},
@@ -228,45 +175,194 @@ public class NhanVienGUI extends JPanel {
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
-				false, true, true, true, true, true
+				false, false, false, true, true, true
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
+		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
-		pnlTable.add(scrollPane, BorderLayout.CENTER);
-		pnlTable.setVisible(getFocusTraversalKeysEnabled());
+		scrollPane.setBorder(null);
+		scrollPane.setBackground(new Color(255, 255, 255));
+		pnlCenter.add(scrollPane);
 		
-		JPanel pblPhanQuyen = new JPanel();
-		tabbedPane.addTab("Phân quyền", null, pblPhanQuyen, null);
-		pblPhanQuyen.setLayout(new BorderLayout(0, 0));
+		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		table.getTableHeader().setOpaque(false);
+		table.getTableHeader().setBackground(new Color(36,136,203));
+		table.getTableHeader().setForeground(new Color(255,255,255));
+		table.setRowHeight(25);
 		
-		JPanel pnlPhanQuyen_Header = new JPanel();
-		pblPhanQuyen.add(pnlPhanQuyen_Header, BorderLayout.NORTH);
-		pnlPhanQuyen_Header.setLayout(new GridLayout(0, 1, 0, 0));
+		JPanel pnlRight = new JPanel();
+		pnlRight.setBorder(null);
+		pnlRight.setPreferredSize(new Dimension(200, 10));
+		pnlRight.setBackground(new Color(255, 255, 255));
+		add(pnlRight, BorderLayout.EAST);
+		pnlRight.setLayout(new BorderLayout(0, 10));
 		
-		JLabel lblQunLPhn = new JLabel("QUẢN LÝ PHÂN QUYỀN");
-		lblQunLPhn.setHorizontalAlignment(SwingConstants.CENTER);
-		lblQunLPhn.setForeground(Color.BLACK);
-		lblQunLPhn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		pnlPhanQuyen_Header.add(lblQunLPhn);
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		pnlRight.add(panel, BorderLayout.NORTH);
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JCheckBox chckbxNewCheckBox_1_1 = new JCheckBox("Quản lý sản phẩm");
-		pnlPhanQuyen_Header.add(chckbxNewCheckBox_1_1);
+		JLabel lblNewLabel_5 = new JLabel("");
+		panel.add(lblNewLabel_5);
 		
-		JCheckBox chckbxNewCheckBox_3_1 = new JCheckBox("Quản lý khách hàng");
-		pnlPhanQuyen_Header.add(chckbxNewCheckBox_3_1);
+		JLabel lblNewLabel_4 = new JLabel("Thông tin nhân viên");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
+		panel.add(lblNewLabel_4);
 		
-		JCheckBox chckbxNewCheckBox_2_1 = new JCheckBox("Quản lý nhân viên");
-		pnlPhanQuyen_Header.add(chckbxNewCheckBox_2_1);
+		JPanel panel_3 = new JPanel();
+		pnlRight.add(panel_3, BorderLayout.CENTER);
+		panel_3.setLayout(new BorderLayout(0, 0));
 		
-		JCheckBox chckbxNewCheckBox_4 = new JCheckBox("Quản lý nhập hàng");
-		pnlPhanQuyen_Header.add(chckbxNewCheckBox_4);
+		JPanel panel_4 = new JPanel();
+		panel_4.setBackground(new Color(255, 255, 255));
+		panel_3.add(panel_4, BorderLayout.CENTER);
+		panel_4.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnNewButton = new JButton("Lưu");
-		pnlPhanQuyen_Header.add(btnNewButton);
-		tabbedPane.setBackgroundAt(1, new Color(255, 255, 255));
-
+		JPanel panel_5 = new JPanel();
+		panel_5.setBackground(new Color(255, 255, 255));
+		panel_4.add(panel_5);
+		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
+		
+		JLabel lblNewLabel_6 = new JLabel("Họ và tên");
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6);
+		
+		textField_1 = new JTextField();
+		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		textField_1.setColumns(10);
+		panel_5.add(textField_1);
+		
+		JLabel lblNewLabel_6_1 = new JLabel("Giới tính");
+		lblNewLabel_6_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_1);
+		
+		JPanel panel_4_1 = new JPanel();
+		panel_4_1.setBackground(Color.WHITE);
+		panel_5.add(panel_4_1);
+		panel_4_1.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JRadioButton rdbtnNam = new JRadioButton("Nam");
+		rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		rdbtnNam.setFocusable(false);
+		rdbtnNam.setBackground(Color.WHITE);
+		panel_4_1.add(rdbtnNam);
+		
+		JRadioButton rdbtnNu = new JRadioButton("Nữ");
+		rdbtnNu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		rdbtnNu.setFocusable(false);
+		rdbtnNu.setBackground(Color.WHITE);
+		panel_4_1.add(rdbtnNu);
+		
+		JLabel lblNewLabel_6_2 = new JLabel("Chức vụ");
+		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_2);
+		
+		JComboBox cmbChucVu = new JComboBox();
+		cmbChucVu.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
+		cmbChucVu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cmbChucVu.setFocusable(false);
+		panel_5.add(cmbChucVu);
+		
+		JLabel lblNewLabel_6_3 = new JLabel("Số điện thoại");
+		lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_3);
+		
+		textField_2 = new JTextField();
+		textField_2.setPreferredSize(new Dimension(100, 19));
+		textField_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		textField_2.setColumns(10);
+		panel_5.add(textField_2);
+		
+		JLabel lblNewLabel_6_2_1 = new JLabel("Trạng thái");
+		lblNewLabel_6_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_2_1);
+		
+		JComboBox cmbTrangThai = new JComboBox();
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
+		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cmbTrangThai.setFocusable(false);
+		panel_5.add(cmbTrangThai);
+		
+		JLabel lblNewLabel_7_1_1 = new JLabel("");
+		panel_5.add(lblNewLabel_7_1_1);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setBackground(new Color(255, 255, 255));
+		panel_3.add(panel_6, BorderLayout.WEST);
+		
+		JPanel panel_6_1 = new JPanel();
+		panel_6_1.setBackground(new Color(255, 255, 255));
+		panel_3.add(panel_6_1, BorderLayout.EAST);
+		
+		JPanel panel_7 = new JPanel();
+		panel_7.setBackground(new Color(255, 255, 255));
+		panel_7.setPreferredSize(new Dimension(10, 160));
+		panel_3.add(panel_7, BorderLayout.SOUTH);
+		panel_7.setLayout(new BorderLayout(0, 0));
+		
+		JPanel pnlBtns = new JPanel();
+		pnlBtns.setBackground(new Color(255, 255, 255));
+		panel_7.add(pnlBtns);
+		pnlBtns.setLayout(new GridLayout(0, 1, 0, 5));
+		
+		JButton btnChiTietQuyen = new JButton("Chi tiết quyền");
+		btnChiTietQuyen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ChiTietQuyenGUI chiTietQuyenGUI = new ChiTietQuyenGUI();
+				chiTietQuyenGUI.setVisible(true);
+			}
+		});
+		btnChiTietQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/images/icons/information.png"));
+		btnChiTietQuyen.setPreferredSize(new Dimension(0, 30));
+		btnChiTietQuyen.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnChiTietQuyen.setFocusable(false);
+		btnChiTietQuyen.setBackground(Color.WHITE);
+		pnlBtns.add(btnChiTietQuyen);
+		
+		JButton btnThem = new JButton("Thêm");
+		btnThem.setFocusable(false);
+		btnThem.setPreferredSize(new Dimension(0, 30));
+		btnThem.setIcon(new ImageIcon(absolutePath + "/images/icons/add.png"));
+		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnThem.setBackground(new Color(255, 255, 255));
+		pnlBtns.add(btnThem);
+		
+		JButton btnSua = new JButton("Sửa");
+		btnSua.setFocusable(false);
+		btnSua.setPreferredSize(new Dimension(0, 30));
+		btnSua.setIcon(new ImageIcon(absolutePath + "/images/icons/edit.png"));
+		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSua.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnSua.setBackground(new Color(255, 255, 255));
+		pnlBtns.add(btnSua);
+		
+		JButton btnXoa = new JButton("Xoá");
+		btnXoa.setFocusable(false);
+		btnXoa.setPreferredSize(new Dimension(0, 30));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/images/icons/delete.png"));
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setBackground(new Color(255, 255, 255));
+		pnlBtns.add(btnXoa);
+		
+		JPanel panel_8 = new JPanel();
+		panel_8.setBackground(new Color(255, 255, 255));
+		panel_7.add(panel_8, BorderLayout.WEST);
+		
+		JPanel panel_9 = new JPanel();
+		panel_9.setBackground(new Color(255, 255, 255));
+		panel_7.add(panel_9, BorderLayout.EAST);
+		
+		JPanel panel_10 = new JPanel();
+		panel_10.setBackground(new Color(255, 255, 255));
+		panel_7.add(panel_10, BorderLayout.SOUTH);
+		
 	}
+
 }
