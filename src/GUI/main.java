@@ -257,7 +257,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlSanPham = new JPanel();
         pnlCards.add(pnlSanPham, "pnlSanPham");
         pnlSanPham.setLayout(new BorderLayout(0, 0));
-        pnlSanPham.add(new SanPhamGUI(), BorderLayout.CENTER);
+        pnlSanPham.add(new QuanLySanPhamGUI(), BorderLayout.CENTER);
         
         pnlKhuyenMai = new JPanel();
         pnlCards.add(pnlKhuyenMai, "pnlKhuyenMai");
