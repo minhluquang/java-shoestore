@@ -87,7 +87,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
     	addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng ứng dụng không?", "Xác nhận đóng ứng dụng", JOptionPane.YES_NO_OPTION);
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng phần mềm không?", "Xác nhận đóng phần mềm", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            System.exit(0);
     	        }

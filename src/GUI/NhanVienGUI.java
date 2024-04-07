@@ -27,16 +27,22 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class NhanVienGUI extends JPanel {
-
+public class NhanVienGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
-    private JTextField textField;
+    private JTextField txtTmKim;
     private JTable table;
     private final ButtonGroup buttonGroup = new ButtonGroup();
-    private JTextField textField_1;
-    private JTextField textField_2;
-
+    private JButton btnChiTietQuyen;
+    private JButton btnThem;
+    private JButton btnSua;
+    private JButton btnXoa;
+    private JButton btnNhapExcel;
+    private JButton btnXuatExcel;
+    
+    private static ChiTietQuyenGUI chiTietQuyenGUI;
+    private static ChiTietNhanVienGUI chiTietNhanVienGUI;
+    
 	/**
 	 * Create the panel.
 	 */
@@ -47,12 +53,12 @@ public class NhanVienGUI extends JPanel {
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(new Color(255, 255, 255));
 		add(pnlTop, BorderLayout.NORTH);
-		pnlTop.setLayout(new BorderLayout(20, 0));
+		pnlTop.setLayout(new BorderLayout(20, 5));
 		
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(new Color(255, 255, 255));
 		pnlTop.add(pnlSearch, BorderLayout.CENTER);
-		pnlSearch.setLayout(new BorderLayout(5, 0));
+		pnlSearch.setLayout(new BorderLayout(5, 10));
 		
 		JPanel pnlLocNangCao = new JPanel();
 		pnlLocNangCao.setBackground(new Color(255, 255, 255));
@@ -85,11 +91,11 @@ public class NhanVienGUI extends JPanel {
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		textField = new JTextField();
-		textField.setMinimumSize(new Dimension(250, 19));
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField.setColumns(10);
-		panel_1.add(textField);
+		txtTmKim = new JTextField();
+		txtTmKim.setMinimumSize(new Dimension(250, 19));
+		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtTmKim.setColumns(10);
+		panel_1.add(txtTmKim);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
@@ -104,53 +110,78 @@ public class NhanVienGUI extends JPanel {
 		btnTim.setBackground(new Color(255, 255, 255));
 		panel_2.add(btnTim);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setPreferredSize(new Dimension(0, 5));
-		pnlSearch.add(lblNewLabel, BorderLayout.NORTH);
+		JPanel pnlTopBottom = new JPanel();
+		pnlTopBottom.setBackground(Color.WHITE);
+		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
+		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setPreferredSize(new Dimension(0, 5));
-		pnlSearch.add(lblNewLabel_1, BorderLayout.SOUTH);
+		btnChiTietQuyen = new JButton("Quyền");
+		btnChiTietQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
+		btnChiTietQuyen.setPreferredSize(new Dimension(150, 40));
+		btnChiTietQuyen.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnChiTietQuyen.setFocusable(false);
+		btnChiTietQuyen.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnChiTietQuyen);
 		
-		JPanel pnlExcel = new JPanel();
-		pnlExcel.setBackground(new Color(255, 255, 255));
-		pnlTop.add(pnlExcel, BorderLayout.EAST);
-		pnlExcel.setLayout(new BorderLayout(0, 0));
+		btnThem = new JButton("Thêm");
+		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
+		btnThem.setPreferredSize(new Dimension(0, 40));
+		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnThem.setFocusable(false);
+		btnThem.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnThem);
 		
-		JPanel pnlNhapExcel = new JPanel();
-		pnlExcel.add(pnlNhapExcel, BorderLayout.WEST);
-		pnlNhapExcel.setLayout(new GridLayout(0, 1, 0, 0));
+		btnSua = new JButton("Sửa");
+		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSua.setIcon(new ImageIcon(absolutePath + "/src/images/icons/edit.png"));
+		btnSua.setPreferredSize(new Dimension(0, 40));
+		btnSua.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnSua.setFocusable(false);
+		btnSua.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnSua);
 		
-		JButton btnNhapExcel = new JButton("Nhập excel");
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
+		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnNhapExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNhapExcel.setPreferredSize(new Dimension(0, 40));
+		btnNhapExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnNhapExcel.setFocusable(false);
 		btnNhapExcel.setBackground(Color.WHITE);
-		pnlNhapExcel.add(btnNhapExcel);
+		pnlTopBottom.add(btnNhapExcel);
 		
-		JPanel pnlXuatExcel = new JPanel();
-		pnlExcel.add(pnlXuatExcel, BorderLayout.CENTER);
-		pnlXuatExcel.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JButton btnXuatExcel = new JButton("Xuất excel");
+		btnXuatExcel = new JButton("Xuất excel");
 		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnXuatExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnXuatExcel.setPreferredSize(new Dimension(0, 40));
+		btnXuatExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnXuatExcel.setFocusable(false);
 		btnXuatExcel.setBackground(Color.WHITE);
-		pnlXuatExcel.add(btnXuatExcel);
+		pnlTopBottom.add(btnXuatExcel);
+		
+		JPanel panel_7 = new JPanel();
+		panel_7.setBackground(new Color(255, 255, 255));
+		pnlTop.add(panel_7, BorderLayout.NORTH);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		pnlTop.add(lblNewLabel_1, BorderLayout.WEST);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setPreferredSize(new Dimension(0, 5));
-		pnlExcel.add(lblNewLabel_2, BorderLayout.NORTH);
+		pnlTop.add(lblNewLabel_2, BorderLayout.EAST);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("");
-		lblNewLabel_1_1.setPreferredSize(new Dimension(0, 5));
-		pnlExcel.add(lblNewLabel_1_1, BorderLayout.SOUTH);
-		
-		JLabel lblNewLabel_3 = new JLabel("");
-		pnlTop.add(lblNewLabel_3, BorderLayout.WEST);
+		JPanel panel_8 = new JPanel();
+		panel_8.setBackground(new Color(255, 255, 255));
+		pnlTop.add(panel_8, BorderLayout.SOUTH);
 		
 		JPanel pnlCenter = new JPanel();
 		pnlCenter.setBackground(new Color(255, 255, 255));
@@ -193,183 +224,53 @@ public class NhanVienGUI extends JPanel {
 		table.getTableHeader().setForeground(new Color(255,255,255));
 		table.setRowHeight(25);
 		
-		JPanel pnlRight = new JPanel();
-		pnlRight.setBorder(null);
-		pnlRight.setPreferredSize(new Dimension(200, 10));
-		pnlRight.setBackground(new Color(255, 255, 255));
-		add(pnlRight, BorderLayout.EAST);
-		pnlRight.setLayout(new BorderLayout(0, 10));
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(255, 255, 255));
-		pnlRight.add(panel, BorderLayout.NORTH);
-		panel.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JLabel lblNewLabel_5 = new JLabel("");
-		panel.add(lblNewLabel_5);
-		
-		JLabel lblNewLabel_4 = new JLabel("Thông tin nhân viên");
-		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
-		panel.add(lblNewLabel_4);
-		
-		JPanel panel_3 = new JPanel();
-		pnlRight.add(panel_3, BorderLayout.CENTER);
-		panel_3.setLayout(new BorderLayout(0, 0));
-		
-		JPanel panel_4 = new JPanel();
-		panel_4.setBackground(new Color(255, 255, 255));
-		panel_3.add(panel_4, BorderLayout.CENTER);
-		panel_4.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.setBackground(new Color(255, 255, 255));
-		panel_4.add(panel_5);
-		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
-		
-		JLabel lblNewLabel_6 = new JLabel("Họ và tên");
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6);
-		
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField_1.setColumns(10);
-		panel_5.add(textField_1);
-		
-		JLabel lblNewLabel_6_1 = new JLabel("Giới tính");
-		lblNewLabel_6_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_1);
-		
-		JPanel panel_4_1 = new JPanel();
-		panel_4_1.setBackground(Color.WHITE);
-		panel_5.add(panel_4_1);
-		panel_4_1.setLayout(new GridLayout(0, 2, 0, 0));
-		
-		JRadioButton rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonGroup.add(rdbtnNam);
-		rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnNam.setFocusable(false);
-		rdbtnNam.setBackground(Color.WHITE);
-		panel_4_1.add(rdbtnNam);
-		
-		JRadioButton rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonGroup.add(rdbtnNu);
-		rdbtnNu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnNu.setFocusable(false);
-		rdbtnNu.setBackground(Color.WHITE);
-		panel_4_1.add(rdbtnNu);
-		
-		JLabel lblNewLabel_6_2 = new JLabel("Chức vụ");
-		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_2);
-		
-		JComboBox cmbChucVu = new JComboBox();
-		cmbChucVu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		cmbChucVu.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
-		cmbChucVu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbChucVu.setFocusable(false);
-		panel_5.add(cmbChucVu);
-		
-		JLabel lblNewLabel_6_3 = new JLabel("Số điện thoại");
-		lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_3);
-		
-		textField_2 = new JTextField();
-		textField_2.setPreferredSize(new Dimension(100, 19));
-		textField_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField_2.setColumns(10);
-		panel_5.add(textField_2);
-		
-		JLabel lblNewLabel_6_2_1 = new JLabel("Trạng thái");
-		lblNewLabel_6_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_2_1);
-		
-		JComboBox cmbTrangThai = new JComboBox();
-		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
-		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbTrangThai.setFocusable(false);
-		panel_5.add(cmbTrangThai);
-		
-		JLabel lblNewLabel_7_1_1 = new JLabel("");
-		panel_5.add(lblNewLabel_7_1_1);
-		
-		JPanel panel_6 = new JPanel();
-		panel_6.setBackground(new Color(255, 255, 255));
-		panel_3.add(panel_6, BorderLayout.WEST);
-		
-		JPanel panel_6_1 = new JPanel();
-		panel_6_1.setBackground(new Color(255, 255, 255));
-		panel_3.add(panel_6_1, BorderLayout.EAST);
-		
-		JPanel panel_7 = new JPanel();
-		panel_7.setBackground(new Color(255, 255, 255));
-		panel_7.setPreferredSize(new Dimension(10, 160));
-		panel_3.add(panel_7, BorderLayout.SOUTH);
-		panel_7.setLayout(new BorderLayout(0, 0));
-		
-		JPanel pnlBtns = new JPanel();
-		pnlBtns.setBackground(new Color(255, 255, 255));
-		panel_7.add(pnlBtns);
-		pnlBtns.setLayout(new GridLayout(0, 1, 0, 5));
-		
-		JButton btnChiTietQuyen = new JButton("Chi tiết quyền");
-		btnChiTietQuyen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ChiTietQuyenGUI chiTietQuyenGUI = new ChiTietQuyenGUI();
-				chiTietQuyenGUI.setVisible(true);
-				chiTietQuyenGUI.requestFocus();
-			}
-		});
-		btnChiTietQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTietQuyen.setPreferredSize(new Dimension(0, 30));
-		btnChiTietQuyen.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTietQuyen.setFocusable(false);
-		btnChiTietQuyen.setBackground(Color.WHITE);
-		pnlBtns.add(btnChiTietQuyen);
-		
-		JButton btnThem = new JButton("Thêm");
-		btnThem.setFocusable(false);
-		btnThem.setPreferredSize(new Dimension(0, 30));
-		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
-		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnThem.setBackground(new Color(255, 255, 255));
-		pnlBtns.add(btnThem);
-		
-		JButton btnSua = new JButton("Sửa");
-		btnSua.setFocusable(false);
-		btnSua.setPreferredSize(new Dimension(0, 30));
-		btnSua.setIcon(new ImageIcon(absolutePath + "/src/images/icons/edit.png"));
-		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSua.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnSua.setBackground(new Color(255, 255, 255));
-		pnlBtns.add(btnSua);
-		
-		JButton btnXoa = new JButton("Xoá");
-		btnXoa.setFocusable(false);
-		btnXoa.setPreferredSize(new Dimension(0, 30));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setBackground(new Color(255, 255, 255));
-		pnlBtns.add(btnXoa);
-		
-		JPanel panel_8 = new JPanel();
-		panel_8.setBackground(new Color(255, 255, 255));
-		panel_7.add(panel_8, BorderLayout.WEST);
-		
-		JPanel panel_9 = new JPanel();
-		panel_9.setBackground(new Color(255, 255, 255));
-		panel_7.add(panel_9, BorderLayout.EAST);
-		
-		JPanel panel_10 = new JPanel();
-		panel_10.setBackground(new Color(255, 255, 255));
-		panel_7.add(panel_10, BorderLayout.SOUTH);
-		
+		// Sự kiện lắng nghe click
+		btnChiTietQuyen.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnNhapExcel.addActionListener(this);
+		btnXuatExcel.addActionListener(this);
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnChiTietQuyen) {
+            if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
+                chiTietQuyenGUI = new ChiTietQuyenGUI();
+            } else {
+                chiTietQuyenGUI.toFront();
+            }
+            chiTietQuyenGUI.setVisible(true);
+            chiTietQuyenGUI.requestFocus();
+        } else if (e.getSource() == btnThem) {
+            if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+            } else {
+            	chiTietNhanVienGUI.toFront();
+            }
+            chiTietNhanVienGUI.setVisible(true);
+            chiTietNhanVienGUI.requestFocus();
+        } else if (e.getSource() == btnSua) {
+        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+            } else {
+            	chiTietNhanVienGUI.toFront();
+            }
+            chiTietNhanVienGUI.setVisible(true);
+            chiTietNhanVienGUI.requestFocus();
+        } else if (e.getSource() == btnXoa) {
+        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+            } else {
+            	chiTietNhanVienGUI.toFront();
+            }
+            chiTietNhanVienGUI.setVisible(true);
+            chiTietNhanVienGUI.requestFocus();
+        } else if (e.getSource() == btnNhapExcel) {
+            // Xử lý khi button "Nhập excel" được nhấn
+        } else if (e.getSource() == btnXuatExcel) {
+            // Xử lý khi button "Xuất excel" được nhấn
+        }
+	}
 }

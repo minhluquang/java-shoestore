@@ -10,6 +10,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
@@ -19,6 +21,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class ChiTietQuyenGUI extends JFrame {
@@ -47,12 +51,23 @@ public class ChiTietQuyenGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public ChiTietQuyenGUI() {
+		addWindowListener(new WindowAdapter() {
+    		@Override
+    		public void windowClosing(WindowEvent e) {
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết quyền không?", "Xác nhận đóng chi tiết quyền", JOptionPane.YES_NO_OPTION);
+    	        if (choice == JOptionPane.YES_OPTION) {
+    	            dispose();
+    	        }
+    		}
+    	});
+		
 		int width = 800;
 		int height = 300;
 		
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
+        setTitle("Chi tiết quyền nhân viên");
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
