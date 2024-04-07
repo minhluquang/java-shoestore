@@ -98,7 +98,7 @@ public class NhanVienGUI extends JPanel {
 		
 		JButton btnTim = new JButton("");
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnTim.setIcon(new ImageIcon(absolutePath + "/images/icons/search.png"));
+		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnTim.setFocusable(false);
 		btnTim.setBackground(new Color(255, 255, 255));
@@ -123,7 +123,7 @@ public class NhanVienGUI extends JPanel {
 		
 		JButton btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/images/icons/excel.png"));
+		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
 		btnNhapExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNhapExcel.setFocusable(false);
 		btnNhapExcel.setBackground(Color.WHITE);
@@ -135,7 +135,7 @@ public class NhanVienGUI extends JPanel {
 		
 		JButton btnXuatExcel = new JButton("Xuất excel");
 		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/images/icons/excel.png"));
+		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
 		btnXuatExcel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnXuatExcel.setFocusable(false);
 		btnXuatExcel.setBackground(Color.WHITE);
@@ -314,10 +314,11 @@ public class NhanVienGUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				ChiTietQuyenGUI chiTietQuyenGUI = new ChiTietQuyenGUI();
 				chiTietQuyenGUI.setVisible(true);
+				chiTietQuyenGUI.requestFocus();
 			}
 		});
 		btnChiTietQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/images/icons/information.png"));
+		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
 		btnChiTietQuyen.setPreferredSize(new Dimension(0, 30));
 		btnChiTietQuyen.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnChiTietQuyen.setFocusable(false);
@@ -327,7 +328,7 @@ public class NhanVienGUI extends JPanel {
 		JButton btnThem = new JButton("Thêm");
 		btnThem.setFocusable(false);
 		btnThem.setPreferredSize(new Dimension(0, 30));
-		btnThem.setIcon(new ImageIcon(absolutePath + "/images/icons/add.png"));
+		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnThem.setBackground(new Color(255, 255, 255));
@@ -336,7 +337,7 @@ public class NhanVienGUI extends JPanel {
 		JButton btnSua = new JButton("Sửa");
 		btnSua.setFocusable(false);
 		btnSua.setPreferredSize(new Dimension(0, 30));
-		btnSua.setIcon(new ImageIcon(absolutePath + "/images/icons/edit.png"));
+		btnSua.setIcon(new ImageIcon(absolutePath + "/src/images/icons/edit.png"));
 		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSua.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnSua.setBackground(new Color(255, 255, 255));
@@ -345,7 +346,7 @@ public class NhanVienGUI extends JPanel {
 		JButton btnXoa = new JButton("Xoá");
 		btnXoa.setFocusable(false);
 		btnXoa.setPreferredSize(new Dimension(0, 30));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/images/icons/delete.png"));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
 		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnXoa.setBackground(new Color(255, 255, 255));

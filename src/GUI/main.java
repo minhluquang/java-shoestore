@@ -33,7 +33,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class main extends JFrame implements ActionListener, MouseListener {
-
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JPanel pnlSidebar;
@@ -85,15 +84,17 @@ public class main extends JFrame implements ActionListener, MouseListener {
      */
     public main() {
     	setBackground(new Color(230, 230, 230));
-//    	addWindowListener(new WindowAdapter() {
-//    		@Override
-//    		public void windowClosing(WindowEvent e) {
-//    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng ứng dụng không?", "Xác nhận đóng ứng dụng", JOptionPane.YES_NO_OPTION);
-//                if (choice == JOptionPane.YES_OPTION) {
-//                	System.exit(1);
-//                }
-//    		}
-//    	});
+    	addWindowListener(new WindowAdapter() {
+    		@Override
+    		public void windowClosing(WindowEvent e) {
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng ứng dụng không?", "Xác nhận đóng ứng dụng", JOptionPane.YES_NO_OPTION);
+    	        if (choice == JOptionPane.YES_OPTION) {
+    	            System.exit(0);
+    	        }
+    			
+    		}
+    	});
+    	
         int width = 1280;
         int height = 720;
 
@@ -126,7 +127,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         JLabel lblLogoIcon = new JLabel("");
         lblLogoIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        lblLogoIcon.setIcon(new ImageIcon(absolutePath + "/images/icons/logo.png"));
+        lblLogoIcon.setIcon(new ImageIcon(absolutePath + "src/images/icons/logo.png"));
         pnlSidebarTop.add(lblLogoIcon);
 
         JLabel lblLogo = new JLabel("Shopgiay88");
@@ -147,7 +148,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnTrangChu = new JButton(" Trang chủ");
         btnTrangChu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnTrangChu.setIcon(new ImageIcon(absolutePath + "/images/icons/home.png"));
+        btnTrangChu.setIcon(new ImageIcon(absolutePath + "/src/images/icons/home.png"));
         btnTrangChu.setForeground(new Color(255, 255, 255));
         btnTrangChu.setBackground(new Color(51, 51, 51));
         btnTrangChu.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -157,7 +158,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnBanHang = new JButton(" Bán hàng");
         btnBanHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBanHang.setIcon(new ImageIcon(absolutePath + "/images/icons/cart.png"));
+        btnBanHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/cart.png"));
         btnBanHang.setForeground(new Color(255, 255, 255));
         btnBanHang.setBackground(new Color(51, 51, 51));
         btnBanHang.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -167,7 +168,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnSanPham = new JButton(" Sản phẩm");
         btnSanPham.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnSanPham.setIcon(new ImageIcon(absolutePath + "/images/icons/sneakers.png"));
+        btnSanPham.setIcon(new ImageIcon(absolutePath + "/src/images/icons/sneakers.png"));
         btnSanPham.setForeground(new Color(255, 255, 255));
         btnSanPham.setBackground(new Color(51, 51, 51));
         btnSanPham.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -177,7 +178,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnKhuyenMai = new JButton(" Khuyến mãi");
         btnKhuyenMai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnKhuyenMai.setIcon(new ImageIcon(absolutePath + "/images/icons/coupon.png"));
+        btnKhuyenMai.setIcon(new ImageIcon(absolutePath + "/src/images/icons/coupon.png"));
         btnKhuyenMai.setForeground(new Color(255, 255, 255));
         btnKhuyenMai.setBackground(new Color(51, 51, 51));
         btnKhuyenMai.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -187,7 +188,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnNhanVien = new JButton(" Nhân viên");
         btnNhanVien.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnNhanVien.setIcon(new ImageIcon(absolutePath + "/images/icons/staff.png"));
+        btnNhanVien.setIcon(new ImageIcon(absolutePath + "/src/images/icons/staff.png"));
         btnNhanVien.setForeground(new Color(255, 255, 255));
         btnNhanVien.setBackground(new Color(51, 51, 51));
         btnNhanVien.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -197,7 +198,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnKhachHang = new JButton(" Khách hàng");
         btnKhachHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnKhachHang.setIcon(new ImageIcon(absolutePath + "/images/icons/customer.png"));
+        btnKhachHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/customer.png"));
         btnKhachHang.setForeground(new Color(255, 255, 255));
         btnKhachHang.setBackground(new Color(51, 51, 51));
         btnKhachHang.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -207,7 +208,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnNhapHang = new JButton(" Nhập hàng");
         btnNhapHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnNhapHang.setIcon(new ImageIcon(absolutePath + "/images/icons/import.png"));
+        btnNhapHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/import.png"));
         btnNhapHang.setForeground(new Color(255, 255, 255));
         btnNhapHang.setBackground(new Color(51, 51, 51));
         btnNhapHang.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -217,7 +218,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         
         btnBaoHanh = new JButton(" Bảo hành");
         btnBaoHanh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBaoHanh.setIcon(new ImageIcon(absolutePath + "/images/icons/support.png"));
+        btnBaoHanh.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
         btnBaoHanh.setForeground(Color.WHITE);
         btnBaoHanh.setFont(new Font("Tahoma", Font.BOLD, 18));
         btnBaoHanh.setFocusable(false);
@@ -232,7 +233,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         btnDangXuat = new JButton(" Đăng xuất");
         btnDangXuat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnDangXuat.setIcon(new ImageIcon(absolutePath + "/images/icons/logout.png"));
+        btnDangXuat.setIcon(new ImageIcon(absolutePath + "/src/images/icons/logout.png"));
         btnDangXuat.setPreferredSize(new Dimension(200, 30));
         btnDangXuat.setForeground(Color.WHITE);
         btnDangXuat.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -305,40 +306,51 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnBaoHanh.addActionListener(this);
         
         // Add mouse listener to buttons
+        btnTrangChu.addMouseListener(this);
         btnBanHang.addMouseListener(this);
-        btnDangXuat.addMouseListener(this);
-        btnKhachHang.addMouseListener(this);
+        btnSanPham.addMouseListener(this);
         btnKhuyenMai.addMouseListener(this);
         btnNhanVien.addMouseListener(this);
+        btnKhachHang.addMouseListener(this);
         btnNhapHang.addMouseListener(this);
-        btnSanPham.addMouseListener(this);
-        btnTrangChu.addMouseListener(this);
+        btnDangXuat.addMouseListener(this);
         btnBaoHanh.addMouseListener(this);
     }
     
     // ========== Start: Xử lý click btn ==========
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnTrangChu) {
-			cardLayout.show(pnlCards, "pnlTrangChu");
-		} else if (e.getSource() == btnBanHang) {
-			cardLayout.show(pnlCards, "pnlBanHang");
-		} else if (e.getSource() == btnSanPham) {
-			cardLayout.show(pnlCards, "pnlSanPham");
-		} else if (e.getSource() == btnKhuyenMai) {
-			cardLayout.show(pnlCards, "pnlKhuyenMai");
-		} else if (e.getSource() == btnNhanVien) {
-			cardLayout.show(pnlCards, "pnlNhanVien");
-		} else if (e.getSource() == btnKhachHang) {
-			cardLayout.show(pnlCards, "pnlKhachHang");
-		} else if (e.getSource() == btnNhapHang) {
-			cardLayout.show(pnlCards, "pnlNhapHang");
-		} else if (e.getSource() == btnDangXuat) {
+	    if (e.getSource() == btnTrangChu) {
+	        cardLayout.show(pnlCards, "pnlTrangChu");	        
+	        resetButtonColors(btnTrangChu); 
+	    } else if (e.getSource() == btnBanHang) {
+	        cardLayout.show(pnlCards, "pnlBanHang");
+	        resetButtonColors(btnBanHang); 
+	    } else if (e.getSource() == btnSanPham) {
+	        cardLayout.show(pnlCards, "pnlSanPham");
+	        resetButtonColors(btnSanPham); 
+	    } else if (e.getSource() == btnKhuyenMai) {
+	        cardLayout.show(pnlCards, "pnlKhuyenMai");
+	        resetButtonColors(btnKhuyenMai); 
+	    } else if (e.getSource() == btnNhanVien) {
+	        cardLayout.show(pnlCards, "pnlNhanVien");
+	        resetButtonColors(btnNhanVien); 
+	    } else if (e.getSource() == btnKhachHang) {
+	        cardLayout.show(pnlCards, "pnlKhachHang");
+	        resetButtonColors(btnKhachHang); 
+	    } else if (e.getSource() == btnNhapHang) {
+	        cardLayout.show(pnlCards, "pnlNhapHang");
+	        resetButtonColors(btnNhapHang); 
+	    } else if (e.getSource() == btnBaoHanh) {
+	        cardLayout.show(pnlCards, "pnlBaoHanh");
+	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
+	        resetButtonColors(btnBaoHanh); 
+	    } else if (e.getSource() == btnDangXuat) {
 	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
 	        if (choice == JOptionPane.YES_OPTION) {
-	           System.exit(1);
+	            System.exit(0);
 	        }
-		}
+	    }
 	}
     // ========== End: Xử lý click btn ==========
 
@@ -346,7 +358,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	
 	// ========== Start: Xử lý hover btn ==========
 	public void mouseEntered(MouseEvent e) {
-	    if (e.getSource() == btnTrangChu) {
+		if (e.getSource() == btnTrangChu) {
 	        btnTrangChu.setBackground(new Color(100, 100, 100));
 	    } else if (e.getSource() == btnBanHang) {
 	        btnBanHang.setBackground(new Color(100, 100, 100));
@@ -368,28 +380,25 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	}
 	
 	public void mouseExited(MouseEvent e) {
-	    if (e.getSource() == btnTrangChu) {
-	        btnTrangChu.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnBanHang) {
-	        btnBanHang.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnSanPham) {
-	        btnSanPham.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnKhuyenMai) {
-	        btnKhuyenMai.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnNhanVien) {
-	        btnNhanVien.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnKhachHang) {
-	        btnKhachHang.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnNhapHang) {
-	        btnNhapHang.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnDangXuat) {
-	        btnDangXuat.setBackground(new Color(51, 51, 51));
-	    } else if (e.getSource() == btnBaoHanh) {
-	    	btnBaoHanh.setBackground(new Color(51, 51, 51));
+	    JButton sourceButton = (JButton) e.getSource();
+	    if (!sourceButton.getBackground().equals(new Color(100, 100, 100))) {
+	        sourceButton.setBackground(new Color(51, 51, 51));
 	    }
 	}
 	// ========== End: Xử lý hover btn ==========
 
+
+	
+	// ========== Start: Reset màu btns ==========
+	private void resetButtonColors(JButton selectedButton) {
+	    JButton[] buttons = {btnTrangChu, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang, btnNhapHang, btnDangXuat, btnBaoHanh};
+	    for (JButton button : buttons) {
+	        if (button != selectedButton) {
+	            button.setBackground(new Color(51, 51, 51));
+	        }
+	    }
+	}
+	// ========== End: Reset màu btns ==========
 	@Override
 	public void mouseClicked(MouseEvent e) {}
 	

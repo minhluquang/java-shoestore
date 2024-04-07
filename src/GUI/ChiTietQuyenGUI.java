@@ -18,6 +18,8 @@ import javax.swing.JButton;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.border.LineBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ChiTietQuyenGUI extends JFrame {
 
@@ -48,7 +50,7 @@ public class ChiTietQuyenGUI extends JFrame {
 		int width = 800;
 		int height = 300;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
 		contentPane = new JPanel();
@@ -393,6 +395,11 @@ public class ChiTietQuyenGUI extends JFrame {
 		pnlBtns.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnNewButton_1.setForeground(new Color(255, 255, 255));
 		btnNewButton_1.setBorder(null);
 		btnNewButton_1.setPreferredSize(new Dimension(100, 30));
