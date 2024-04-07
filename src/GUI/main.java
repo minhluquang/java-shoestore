@@ -98,9 +98,10 @@ public class main extends JFrame implements ActionListener, MouseListener {
         int width = 1280;
         int height = 720;
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
+        setTitle("Phần mềm quản lý cửa hàng bán giày");
         contentPane = new JPanel();
         contentPane.setBackground(new Color(230, 230, 230));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -127,7 +128,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 
         JLabel lblLogoIcon = new JLabel("");
         lblLogoIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        lblLogoIcon.setIcon(new ImageIcon(absolutePath + "src/images/icons/logo.png"));
+        lblLogoIcon.setIcon(new ImageIcon(absolutePath + "/src/images/icons/logo.png"));
         pnlSidebarTop.add(lblLogoIcon);
 
         JLabel lblLogo = new JLabel("Shopgiay88");
@@ -321,31 +322,40 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    if (e.getSource() == btnTrangChu) {
-	        cardLayout.show(pnlCards, "pnlTrangChu");	        
+	        cardLayout.show(pnlCards, "pnlTrangChu");	
+	        btnTrangChu.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnTrangChu); 
 	    } else if (e.getSource() == btnBanHang) {
 	        cardLayout.show(pnlCards, "pnlBanHang");
+	        btnBanHang.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnBanHang); 
 	    } else if (e.getSource() == btnSanPham) {
 	        cardLayout.show(pnlCards, "pnlSanPham");
+	        btnSanPham.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnSanPham); 
 	    } else if (e.getSource() == btnKhuyenMai) {
 	        cardLayout.show(pnlCards, "pnlKhuyenMai");
+	        btnKhuyenMai.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnKhuyenMai); 
 	    } else if (e.getSource() == btnNhanVien) {
 	        cardLayout.show(pnlCards, "pnlNhanVien");
+	        btnNhanVien.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnNhanVien); 
 	    } else if (e.getSource() == btnKhachHang) {
 	        cardLayout.show(pnlCards, "pnlKhachHang");
+	        btnKhachHang.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnKhachHang); 
 	    } else if (e.getSource() == btnNhapHang) {
 	        cardLayout.show(pnlCards, "pnlNhapHang");
+	        btnNhapHang.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnNhapHang); 
 	    } else if (e.getSource() == btnBaoHanh) {
 	        cardLayout.show(pnlCards, "pnlBaoHanh");
 	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnBaoHanh); 
 	    } else if (e.getSource() == btnDangXuat) {
+	        resetButtonColors(btnBaoHanh); 
+	        btnDangXuat.setBackground(new Color(100, 100, 100)); 
 	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
 	        if (choice == JOptionPane.YES_OPTION) {
 	            System.exit(0);
@@ -358,31 +368,14 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	
 	// ========== Start: Xử lý hover btn ==========
 	public void mouseEntered(MouseEvent e) {
-		if (e.getSource() == btnTrangChu) {
-	        btnTrangChu.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnBanHang) {
-	        btnBanHang.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnSanPham) {
-	        btnSanPham.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnKhuyenMai) {
-	        btnKhuyenMai.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnNhanVien) {
-	        btnNhanVien.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnKhachHang) {
-	        btnKhachHang.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnNhapHang) {
-	        btnNhapHang.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnDangXuat) {
-	        btnDangXuat.setBackground(new Color(100, 100, 100));
-	    } else if (e.getSource() == btnBaoHanh) {
-	    	btnBaoHanh.setBackground(new Color(100, 100, 100));
-	    }
+		JButton sourceButton = (JButton) e.getSource();
+		sourceButton.setBackground(new Color(101, 101, 101));
 	}
 	
 	public void mouseExited(MouseEvent e) {
 	    JButton sourceButton = (JButton) e.getSource();
 	    if (!sourceButton.getBackground().equals(new Color(100, 100, 100))) {
-	        sourceButton.setBackground(new Color(51, 51, 51));
+	    	sourceButton.setBackground(new Color(51,51,51));
 	    }
 	}
 	// ========== End: Xử lý hover btn ==========

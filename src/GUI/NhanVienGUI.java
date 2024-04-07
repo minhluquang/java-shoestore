@@ -171,7 +171,7 @@ public class NhanVienGUI extends JPanel {
 				{"1", "L\u1EEF Quang Minh", "Nam", "Admin", "0931814480", "Ho\u1EA1t \u0111\u1ED9ng"},
 			},
 			new String[] {
-				"ID", "H\u1ECD v\u00E0 t\u00EAn", "Gi\u1EDBi t\u00EDnh", "Ch\u1EE9c v\u1EE5", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i"
+				"Mã NV", "H\u1ECD v\u00E0 t\u00EAn", "Gi\u1EDBi t\u00EDnh", "Ch\u1EE9c v\u1EE5", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
@@ -246,12 +246,16 @@ public class NhanVienGUI extends JPanel {
 		panel_4_1.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		JRadioButton rdbtnNam = new JRadioButton("Nam");
+		rdbtnNam.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		buttonGroup.add(rdbtnNam);
 		rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		rdbtnNam.setFocusable(false);
 		rdbtnNam.setBackground(Color.WHITE);
 		panel_4_1.add(rdbtnNam);
 		
 		JRadioButton rdbtnNu = new JRadioButton("Nữ");
+		rdbtnNu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		buttonGroup.add(rdbtnNu);
 		rdbtnNu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		rdbtnNu.setFocusable(false);
 		rdbtnNu.setBackground(Color.WHITE);
@@ -262,6 +266,7 @@ public class NhanVienGUI extends JPanel {
 		panel_5.add(lblNewLabel_6_2);
 		
 		JComboBox cmbChucVu = new JComboBox();
+		cmbChucVu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		cmbChucVu.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
 		cmbChucVu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbChucVu.setFocusable(false);
@@ -282,6 +287,7 @@ public class NhanVienGUI extends JPanel {
 		panel_5.add(lblNewLabel_6_2_1);
 		
 		JComboBox cmbTrangThai = new JComboBox();
+		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
 		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbTrangThai.setFocusable(false);
