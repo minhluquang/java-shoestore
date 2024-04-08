@@ -26,15 +26,13 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Cursor;
 import javax.swing.JButton;
 
-public class ChiTietNhanVienGUI extends JFrame {
+public class ChiTietTaiKhoanGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtMaNV;
+	private JTextField txtUsername;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JTextField textField_2;
-	private JTextField textField_3;
 
 	/**
 	 * Launch the application.
@@ -44,7 +42,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietNhanVienGUI frame = new ChiTietNhanVienGUI();
+                    ChiTietTaiKhoanGUI frame = new ChiTietTaiKhoanGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -56,11 +54,11 @@ public class ChiTietNhanVienGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChiTietNhanVienGUI() {
+	public ChiTietTaiKhoanGUI() {
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?", "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết tài khoản không?", "Xác nhận đóng chi tiết tài khoản", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }
@@ -73,7 +71,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
-        setTitle("Thông tin nhân viên");
+        setTitle("Thông tin tài khoản");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -95,7 +93,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 		JLabel lblNewLabel_5 = new JLabel("");
 		panel.add(lblNewLabel_5);
 		
-		JLabel lblNewLabel_4 = new JLabel("Thông tin nhân viên");
+		JLabel lblNewLabel_4 = new JLabel("Thông tin tài khoản");
 		lblNewLabel_4.setForeground(new Color(255, 255, 255));
 		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -119,50 +117,16 @@ public class ChiTietNhanVienGUI extends JFrame {
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6_2 = new JLabel("Mã nhân viên");
-		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_2);
-		
-		textField_3 = new JTextField();
-		textField_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField_3.setEnabled(false);
-		textField_3.setEditable(false);
-		textField_3.setColumns(10);
-		panel_5.add(textField_3);
-		
-		JLabel lblNewLabel_6 = new JLabel("Họ và tên");
+		JLabel lblNewLabel_6 = new JLabel("Mã nhân viên");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField.setColumns(10);
-		panel_5.add(textField);
-		
-		JLabel lblNewLabel_6_1 = new JLabel("Giới tính");
-		lblNewLabel_6_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_1);
-		
-		JPanel panel_4_1 = new JPanel();
-		panel_4_1.setBackground(Color.WHITE);
-		panel_5.add(panel_4_1);
-		panel_4_1.setLayout(new GridLayout(0, 2, 0, 0));
-		
-		JRadioButton rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonGroup.add(rdbtnNam);
-		rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnNam.setFocusable(false);
-		rdbtnNam.setBackground(Color.WHITE);
-		panel_4_1.add(rdbtnNam);
-		
-		JRadioButton rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonGroup.add(rdbtnNu);
-		rdbtnNu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnNu.setFocusable(false);
-		rdbtnNu.setBackground(Color.WHITE);
-		panel_4_1.add(rdbtnNu);
+		txtMaNV = new JTextField();
+		txtMaNV.setEnabled(false);
+		txtMaNV.setEditable(false);
+		txtMaNV.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtMaNV.setColumns(10);
+		panel_5.add(txtMaNV);
 		
 //		JLabel lblNewLabel_6_2 = new JLabel("Chức vụ");
 //		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -175,25 +139,37 @@ public class ChiTietNhanVienGUI extends JFrame {
 //		cmbChucVu.setFocusable(false);
 //		panel_5.add(cmbChucVu);
 		
-		JLabel lblNewLabel_6_3 = new JLabel("Số điện thoại");
+		JLabel lblNewLabel_6_3 = new JLabel("Username");
 		lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3);
 		
-		textField_1 = new JTextField();
-		textField_1.setPreferredSize(new Dimension(100, 19));
-		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField_1.setColumns(10);
-		panel_5.add(textField_1);
+		txtUsername = new JTextField();
+		txtUsername.setPreferredSize(new Dimension(100, 19));
+		txtUsername.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtUsername.setColumns(10);
+		panel_5.add(txtUsername);
 		
-		JLabel lblNewLabel_6_3_1 = new JLabel("Email");
+		JLabel lblNewLabel_6_3_1 = new JLabel("Chức vụ");
 		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1);
 		
-		textField_2 = new JTextField();
-		textField_2.setPreferredSize(new Dimension(100, 19));
-		textField_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textField_2.setColumns(10);
-		panel_5.add(textField_2);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setFocusable(false);
+		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_5.add(comboBox);
+		
+		JLabel lblNewLabel_6_3_1_1 = new JLabel("Trạng thái");
+		lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_3_1_1);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setFocusable(false);
+		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
+		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_5.add(comboBox_1);
 		
 //		JLabel lblNewLabel_6_2_1 = new JLabel("Trạng thái");
 //		lblNewLabel_6_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
