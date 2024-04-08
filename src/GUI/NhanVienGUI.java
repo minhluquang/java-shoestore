@@ -18,6 +18,7 @@ import java.awt.Cursor;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -33,14 +34,13 @@ public class NhanVienGUI extends JPanel implements ActionListener {
     private JTextField txtTmKim;
     private JTable table;
     private final ButtonGroup buttonGroup = new ButtonGroup();
-    private JButton btnChiTietQuyen;
+//    private JButton btnChiTiet;
     private JButton btnThem;
     private JButton btnSua;
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     
-    private static ChiTietQuyenGUI chiTietQuyenGUI;
     private static ChiTietNhanVienGUI chiTietNhanVienGUI;
     
 	/**
@@ -73,19 +73,19 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		comboBox.setFocusable(false);
 		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Giới tính", "Nam", "Nữ"}));
 		pnlTrangThai.add(comboBox);
 		
 		JPanel pnlChucVu = new JPanel();
 		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
 		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFocusable(false);
-		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ", "Admin", "Nhân viên"}));
-		pnlChucVu.add(comboBox_1);
+//		JComboBox comboBox_1 = new JComboBox();
+//		comboBox_1.setFocusable(false);
+//		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ", "Admin", "Nhân viên"}));
+//		pnlChucVu.add(comboBox_1);
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -102,9 +102,9 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnTim = new JButton("");
+		JButton btnTim = new JButton("Làm mới");
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
+		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnTim.setFocusable(false);
 		btnTim.setBackground(new Color(255, 255, 255));
@@ -115,14 +115,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-		btnChiTietQuyen = new JButton("Quyền");
-		btnChiTietQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTietQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTietQuyen.setPreferredSize(new Dimension(150, 40));
-		btnChiTietQuyen.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTietQuyen.setFocusable(false);
-		btnChiTietQuyen.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnChiTietQuyen);
+//		btnChiTiet = new JButton("Chi tiết");
+//		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
+//		btnChiTiet.setPreferredSize(new Dimension(150, 40));
+//		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnChiTiet.setFocusable(false);
+//		btnChiTiet.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnChiTiet);
 		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -188,10 +188,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
-		Object data[][] = {{"1", "Lữ Quang Minh", "Nam", "Admin", "0931814480", "Hoạt động"}};
-		String column[] = {"ID", "Họ và tên", "Giới tính", "Chức vụ", "Số điện thoại", "Trạng thái"};
-		
-		table = new JTable(data,column);
+		table = new JTable();
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
 		table.setRowHeight(25);
@@ -199,10 +196,10 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		table.setFocusable(false);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				{"1", "L\u1EEF Quang Minh", "Nam", "Admin", "0931814480", "Ho\u1EA1t \u0111\u1ED9ng"},
+				{"NV001", "L\u1EEF Quang Minh", "Nam", "0931814480", "minhlq2911@gmail.com"},
 			},
 			new String[] {
-				"Mã NV", "H\u1ECD v\u00E0 t\u00EAn", "Gi\u1EDBi t\u00EDnh", "Ch\u1EE9c v\u1EE5", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i"
+				"Mã NV", "H\u1ECD v\u00E0 t\u00EAn", "Gi\u1EDBi t\u00EDnh", "Số điện thoại", "Email"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
@@ -225,7 +222,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		table.setRowHeight(25);
 		
 		// Sự kiện lắng nghe click
-		btnChiTietQuyen.addActionListener(this);
+//		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnXoa.addActionListener(this);
@@ -235,15 +232,16 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnChiTietQuyen) {
-            if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-                chiTietQuyenGUI = new ChiTietQuyenGUI();
-            } else {
-                chiTietQuyenGUI.toFront();
-            }
-            chiTietQuyenGUI.setVisible(true);
-            chiTietQuyenGUI.requestFocus();
-        } else if (e.getSource() == btnThem) {
+//		if (e.getSource() == btnChiTiet) {
+//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+//            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+//            } else {
+//            	chiTietNhanVienGUI.toFront();
+//            }
+//            chiTietNhanVienGUI.setVisible(true);
+//            chiTietNhanVienGUI.requestFocus();} 
+		
+		if (e.getSource() == btnThem) {
             if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
             	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
             } else {
@@ -260,13 +258,12 @@ public class NhanVienGUI extends JPanel implements ActionListener {
             chiTietNhanVienGUI.setVisible(true);
             chiTietNhanVienGUI.requestFocus();
         } else if (e.getSource() == btnXoa) {
-        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-            } else {
-            	chiTietNhanVienGUI.toFront();
-            }
-            chiTietNhanVienGUI.setVisible(true);
-            chiTietNhanVienGUI.requestFocus();
+        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
+        	if (choice == JOptionPane.YES_OPTION) {
+        		
+        	} else {
+        		
+        	}
         } else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
