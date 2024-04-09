@@ -48,6 +48,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JButton btnNhapHang;
     private JButton btnTaiKhoan;
     private JButton btnDangXuat;
+    // phân quyền
+    private JButton btnPhanQuyen;
     public String absolutePath = new File("").getAbsolutePath();
     private JPanel pnlCards;
     
@@ -63,7 +65,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JPanel pnlBaoHanh;
     private JPanel pnlTrangChu;
     private JPanel pnlTaiKhoan;
-
+    private JPanel pnlPhanQuyen;
     /**
      * Launch the application.
      */
@@ -228,6 +230,18 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnBaoHanh.setBackground(new Color(51, 51, 51));
         pnlSidebarCenter.add(btnBaoHanh);
         
+        // phân quyền
+        btnPhanQuyen = new JButton(" Phân Quyền");
+        btnPhanQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnPhanQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
+        btnPhanQuyen.setForeground(Color.WHITE);
+        btnPhanQuyen.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnPhanQuyen.setFocusable(false);
+        btnPhanQuyen.setBorder(null);
+        btnPhanQuyen.setBackground(new Color(51, 51, 51));
+        pnlSidebarCenter.add(btnPhanQuyen);
+        
+        
         btnTaiKhoan = new JButton(" Tài khoản");
         btnTaiKhoan.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnTaiKhoan.setIcon(new ImageIcon(absolutePath + "/src/images/icons/account.png"));
@@ -297,6 +311,13 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlBaoHanh.setLayout(new BorderLayout(0, 0));
         pnlBaoHanh.add(new BaoHanhGUI(), BorderLayout.CENTER);
         
+        // phân quyền
+        pnlPhanQuyen = new JPanel();
+        pnlCards.add(pnlPhanQuyen, "pnlPhanQuyen");
+        pnlPhanQuyen.setLayout(new BorderLayout(0, 0));
+        pnlPhanQuyen.add(new PhanQuyenGUI(), BorderLayout.CENTER);
+        
+        
         pnlTrangChu = new JPanel();
         pnlCards.add(pnlTrangChu, "pnlTrangChu");
         pnlTrangChu.setLayout(new BorderLayout(0, 0));
@@ -322,6 +343,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnTrangChu.addActionListener(this);
         btnBaoHanh.addActionListener(this);
         btnTaiKhoan.addActionListener(this);
+        btnPhanQuyen.addActionListener(this);
         
         // Add mouse listener to buttons
         btnTrangChu.addMouseListener(this);
@@ -334,6 +356,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnDangXuat.addMouseListener(this);
         btnBaoHanh.addMouseListener(this);
         btnTaiKhoan.addMouseListener(this);
+        btnPhanQuyen.addMouseListener(this);
     }
     
     // ========== Start: Xử lý click btn ==========
@@ -371,6 +394,10 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	        cardLayout.show(pnlCards, "pnlBaoHanh");
 	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnBaoHanh); 
+	    } else if (e.getSource() == btnPhanQuyen) {
+	        cardLayout.show(pnlCards, "pnlPhanQuyen");
+	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
+	        resetButtonColors(btnPhanQuyen);  
 	    } else if (e.getSource() == btnTaiKhoan) {
 	        cardLayout.show(pnlCards, "pnlTaiKhoan");
 	        btnTaiKhoan.setBackground(new Color(100, 100, 100)); 
