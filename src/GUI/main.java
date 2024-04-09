@@ -93,7 +93,6 @@ public class main extends JFrame implements ActionListener, MouseListener {
     	        if (choice == JOptionPane.YES_OPTION) {
     	            System.exit(0);
     	        }
-    			
     		}
     	});
     	

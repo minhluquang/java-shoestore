@@ -68,7 +68,7 @@ public class ChiTietNhanVienGUI extends JFrame {
     	});
 		
 		int width = 380;
-        int height = 500;
+        int height = 600;
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
@@ -194,6 +194,16 @@ public class ChiTietNhanVienGUI extends JFrame {
 		textField_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		textField_2.setColumns(10);
 		panel_5.add(textField_2);
+		
+		JLabel lblNewLabel_6_3_1_1 = new JLabel("Trạng thái");
+		lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_3_1_1);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
+		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox_1.setFocusable(false);
+		panel_5.add(comboBox_1);
 		
 //		JLabel lblNewLabel_6_2_1 = new JLabel("Trạng thái");
 //		lblNewLabel_6_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));

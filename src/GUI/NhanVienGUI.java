@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -28,20 +29,25 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import DTO.NhanVien;
+import BUS.NhanVienBUS;
+
 public class NhanVienGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
     private JTextField txtTmKim;
     private JTable table;
     private final ButtonGroup buttonGroup = new ButtonGroup();
-//    private JButton btnChiTiet;
+    private JButton btnChiTiet;
     private JButton btnThem;
     private JButton btnSua;
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
+    private DefaultTableModel dtmNhanVien;
     
     private static ChiTietNhanVienGUI chiTietNhanVienGUI;
+    private static ChiTietQuyenGUI chiTietQuyenGUI;
     
 	/**
 	 * Create the panel.
@@ -69,23 +75,23 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
 		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Giới tính", "Nam", "Nữ"}));
-		pnlTrangThai.add(comboBox);
-		
 		JPanel pnlChucVu = new JPanel();
 		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
 		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
-//		JComboBox comboBox_1 = new JComboBox();
-//		comboBox_1.setFocusable(false);
-//		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-//		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ", "Admin", "Nhân viên"}));
-//		pnlChucVu.add(comboBox_1);
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setFocusable(false);
+		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
+		pnlChucVu.add(comboBox_1);
+		
+//		JComboBox comboBox = new JComboBox();
+//		comboBox.setFocusable(false);
+//		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Giới tính", "Nam", "Nữ"}));
+//		pnlTrangThai.add(comboBox);
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -115,14 +121,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-//		btnChiTiet = new JButton("Chi tiết");
-//		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-//		btnChiTiet.setPreferredSize(new Dimension(150, 40));
-//		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
-//		btnChiTiet.setFocusable(false);
-//		btnChiTiet.setBackground(Color.WHITE);
-//		pnlTopBottom.add(btnChiTiet);
+		btnChiTiet = new JButton("Quyền");
+		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
+		btnChiTiet.setPreferredSize(new Dimension(150, 40));
+		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnChiTiet.setFocusable(false);
+		btnChiTiet.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnChiTiet);
 		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -142,14 +148,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
-		btnXoa = new JButton("Xoá");
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setPreferredSize(new Dimension(0, 40));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setFocusable(false);
-		btnXoa.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXoa);
+//		btnXoa = new JButton("Xoá");
+//		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+//		btnXoa.setPreferredSize(new Dimension(0, 40));
+//		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnXoa.setFocusable(false);
+//		btnXoa.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnXoa);
 		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -188,27 +194,17 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
+		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
 		table = new JTable();
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
 		table.setRowHeight(25);
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"NV001", "L\u1EEF Quang Minh", "Nam", "0931814480", "minhlq2911@gmail.com"},
-			},
-			new String[] {
-				"Mã NV", "H\u1ECD v\u00E0 t\u00EAn", "Gi\u1EDBi t\u00EDnh", "Số điện thoại", "Email"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, true, true, true
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		
+		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email", "Trạng thái"}, 0);
+		table.setModel(dtmNhanVien);
+		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(null);
@@ -221,27 +217,32 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		table.getTableHeader().setForeground(new Color(255,255,255));
 		table.setRowHeight(25);
 		
+
+		loadDanhSachNhanVien();
+		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
+		
+		
+		
 		// Sự kiện lắng nghe click
-//		btnChiTiet.addActionListener(this);
+		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-		btnXoa.addActionListener(this);
+//		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		if (e.getSource() == btnChiTiet) {
-//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-//            } else {
-//            	chiTietNhanVienGUI.toFront();
-//            }
-//            chiTietNhanVienGUI.setVisible(true);
-//            chiTietNhanVienGUI.requestFocus();} 
-		
-		if (e.getSource() == btnThem) {
+		if (e.getSource() == btnChiTiet) {
+			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
+				chiTietQuyenGUI = new ChiTietQuyenGUI();
+            } else {
+            	chiTietQuyenGUI.toFront();
+            }
+			chiTietQuyenGUI.setVisible(true);
+			chiTietQuyenGUI.requestFocus();
+        } else if (e.getSource() == btnThem) {
             if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
             	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
             } else {
@@ -257,17 +258,38 @@ public class NhanVienGUI extends JPanel implements ActionListener {
             }
             chiTietNhanVienGUI.setVisible(true);
             chiTietNhanVienGUI.requestFocus();
-        } else if (e.getSource() == btnXoa) {
-        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
-        	if (choice == JOptionPane.YES_OPTION) {
-        		
-        	} else {
-        		
-        	}
-        } else if (e.getSource() == btnNhapExcel) {
+        } 
+//        else if (e.getSource() == btnXoa) {
+//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
+//        	if (choice == JOptionPane.YES_OPTION) {
+//        		
+//        	} else {
+//        		
+//        	}
+//        }
+        else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
         }
+	}
+
+	public void loadDanhSachNhanVien() {
+		dtmNhanVien.setRowCount(0);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien();
+		
+		for (NhanVien nv : dsnv) {
+			int accountStatus = nv.getAccountStatus();
+			String status;
+			if (accountStatus == 1) {
+				status = "Hoạt động";
+			} else {
+				status = "Ngưng hoạt động";
+			}
+			
+			Object[] row = {nv.getAccount_id(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
+			dtmNhanVien.addRow(row);
+		}
+		
 	}
 }

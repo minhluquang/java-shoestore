@@ -143,14 +143,14 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
-		btnXoa = new JButton("Xoá");
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setPreferredSize(new Dimension(0, 40));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setFocusable(false);
-		btnXoa.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXoa);
+//		btnXoa = new JButton("Xoá");
+//		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+//		btnXoa.setPreferredSize(new Dimension(0, 40));
+//		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnXoa.setFocusable(false);
+//		btnXoa.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnXoa);
 		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -229,7 +229,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		btnChiTietQuyen.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-		btnXoa.addActionListener(this);
+//		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
@@ -260,14 +260,16 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
             }
         	chiTietTaiKhoanGUI.setVisible(true);
         	chiTietTaiKhoanGUI.requestFocus();
-        } else if (e.getSource() == btnXoa) {
-        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin tài khoản có mã tài khoản là NV001", "Xác nhận xoá thông tin tài khoản", JOptionPane.YES_NO_OPTION);
-        	if (choice == JOptionPane.YES_OPTION) {
-        		
-        	} else {
-        		
-        	}
-        } else if (e.getSource() == btnNhapExcel) {
+        } 
+//        else if (e.getSource() == btnXoa) {
+//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin tài khoản có mã tài khoản là NV001", "Xác nhận xoá thông tin tài khoản", JOptionPane.YES_NO_OPTION);
+//        	if (choice == JOptionPane.YES_OPTION) {
+//        		
+//        	} else {
+//        		
+//        	}
+//        } 
+        else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
