@@ -1,5 +1,6 @@
 package DAO;
 
+import java.security.AlgorithmParametersSpi;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -12,17 +13,16 @@ public class NhanVienDAO {
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT account_id as staff_id, full_name, phone_number, email, account_status as status "
-                    + "FROM account "
-                    + "WHERE position = 'staff'";
+			String sql = "SELECT * FROM staff";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
-			    nv.setAccount_id(rs.getInt("staff_id"));
-			    nv.setFull_name(rs.getString("full_name"));
+			    nv.setStaffId(rs.getInt("staff_id"));
+			    nv.setFull_name(rs.getString("fullname"));
 			    nv.setPhone_number(rs.getString("phone_number"));
 			    nv.setEmail(rs.getString("email"));
-			    nv.setAccountStatus(rs.getInt("status"));
+			    nv.setStaffStatus(rs.getInt("status"));
+			    nv.setAccount_id(rs.getString("account_id"));
 			    dsnv.add(nv);
 			}
 		} catch (Exception e) {
@@ -30,5 +30,89 @@ public class NhanVienDAO {
 		}
 		
 		return dsnv;
+	}
+	
+	public static int generateIdNhanVien() {
+		int idNhanVien = 0;
+		
+		try {
+			String sql = "SELECT staff_id "
+					+ "FROM staff "
+					+ "ORDER BY staff_id DESC "
+					+ "LIMIT 1";
+			ResultSet rs = connectDB.runQuery(sql);
+			while (rs.next()) {
+				int lastId = rs.getInt("staff_id");
+				idNhanVien = lastId + 1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return idNhanVien;
+	}
+	
+	public static boolean isExistNhanVien(int id) {
+		boolean isExist = false;
+		
+		try {
+			String sql = "SELECT * FROM staff WHERE staff_id = " + id;
+			ResultSet rs = connectDB.runQuery(sql);
+			
+			if (rs.next()) {
+				isExist = true;
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return isExist;
+	}
+	
+	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status, String accountId) {
+		boolean success = false;
+		
+		try {
+			String sql = "UPDATE staff "
+					+ "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = " + status;
+			if (!accountId.trim().isEmpty()) {
+				sql += " , account_id = '" + accountId + "'";
+			}
+			sql += " WHERE staff_id = " + id;
+			
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return success;
+	}
+	
+	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String accountId) {
+		boolean success = false;
+		
+		try {
+			String sql = "";
+			
+			if (!accountId.trim().isEmpty()) {
+				sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status, account_id) "
+					     + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ", " + accountId + ")";
+			} else {
+				sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status) "
+		                + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ")";
+			}
+			
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return success;
 	}
 }

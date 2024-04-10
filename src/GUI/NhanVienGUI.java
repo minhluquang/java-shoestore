@@ -31,12 +31,14 @@ import java.awt.event.ActionEvent;
 
 import DTO.NhanVien;
 import BUS.NhanVienBUS;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class NhanVienGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
     private JTextField txtTmKim;
-    private JTable table;
+    private JTable tblNhanVien;
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private JButton btnChiTiet;
     private JButton btnThem;
@@ -48,6 +50,8 @@ public class NhanVienGUI extends JPanel implements ActionListener {
     
     private static ChiTietNhanVienGUI chiTietNhanVienGUI;
     private static ChiTietQuyenGUI chiTietQuyenGUI;
+    
+    private NhanVien nv = new NhanVien();
     
 	/**
 	 * Create the panel.
@@ -195,27 +199,33 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
 		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
-		table = new JTable();
-		table.setBorder(null);
-		table.setSelectionBackground(new Color(232, 57, 95));
-		table.setRowHeight(25);
-		table.setIntercellSpacing(new Dimension(0, 0));
-		table.setFocusable(false);
+		tblNhanVien = new JTable();
+		tblNhanVien.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				xuLyClickTable();
+			}
+		});
+		tblNhanVien.setBorder(null);
+		tblNhanVien.setSelectionBackground(new Color(232, 57, 95));
+		tblNhanVien.setRowHeight(25);
+		tblNhanVien.setIntercellSpacing(new Dimension(0, 0));
+		tblNhanVien.setFocusable(false);
 		
-		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email", "Trạng thái"}, 0);
-		table.setModel(dtmNhanVien);
-		table.setDefaultEditor(Object.class, null);
-		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(table);
+		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email", "Trạng thái", "Tài khoản"}, 0);
+		tblNhanVien.setModel(dtmNhanVien);
+		tblNhanVien.setDefaultEditor(Object.class, null);
+		tblNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(tblNhanVien);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
 		pnlCenter.add(scrollPane);
 		
-		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-		table.getTableHeader().setOpaque(false);
-		table.getTableHeader().setBackground(new Color(36,136,203));
-		table.getTableHeader().setForeground(new Color(255,255,255));
-		table.setRowHeight(25);
+		tblNhanVien.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		tblNhanVien.getTableHeader().setOpaque(false);
+		tblNhanVien.getTableHeader().setBackground(new Color(36,136,203));
+		tblNhanVien.getTableHeader().setForeground(new Color(255,255,255));
+		tblNhanVien.setRowHeight(25);
 		
 
 		loadDanhSachNhanVien();
@@ -243,21 +253,25 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 			chiTietQuyenGUI.setVisible(true);
 			chiTietQuyenGUI.requestFocus();
         } else if (e.getSource() == btnThem) {
-            if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+            	chiTietNhanVienGUI = new ChiTietNhanVienGUI(new NhanVien(), this);
             } else {
             	chiTietNhanVienGUI.toFront();
             }
             chiTietNhanVienGUI.setVisible(true);
             chiTietNhanVienGUI.requestFocus();
         } else if (e.getSource() == btnSua) {
-        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
+        	if (nv.getStaffId() > 0) {
+            	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+                	chiTietNhanVienGUI = new ChiTietNhanVienGUI(nv, this);
+                } else {
+                	chiTietNhanVienGUI.toFront();
+                }
+                chiTietNhanVienGUI.setVisible(true);
+                chiTietNhanVienGUI.requestFocus();
             } else {
-            	chiTietNhanVienGUI.toFront();
+            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn nhân viên cần sửa", "Thông báo lỗi sửa thông tin nhân viên", JOptionPane.CLOSED_OPTION);
             }
-            chiTietNhanVienGUI.setVisible(true);
-            chiTietNhanVienGUI.requestFocus();
         } 
 //        else if (e.getSource() == btnXoa) {
 //        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
@@ -274,22 +288,47 @@ public class NhanVienGUI extends JPanel implements ActionListener {
         }
 	}
 
+	// Load danh sách nhân viên
 	public void loadDanhSachNhanVien() {
 		dtmNhanVien.setRowCount(0);
 		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien();
 		
 		for (NhanVien nv : dsnv) {
-			int accountStatus = nv.getAccountStatus();
+			int staffStatus = nv.getStaffStatus();
 			String status;
-			if (accountStatus == 1) {
+			if (staffStatus == 1) {
 				status = "Hoạt động";
 			} else {
 				status = "Ngưng hoạt động";
 			}
 			
-			Object[] row = {nv.getAccount_id(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
+			String accountId = nv.getAccount_id();
+			if (accountId == null) {
+				accountId = "Chưa có";
+			}
+			
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status, accountId};
 			dtmNhanVien.addRow(row);
 		}
 		
+	}
+	
+	// Xử lý click vào row table
+	public void xuLyClickTable() {
+		int row = tblNhanVien.getSelectedRow();
+		if (row > -1) {
+			nv.setStaffId((int) tblNhanVien.getValueAt(row, 0));
+			nv.setFull_name((String) tblNhanVien.getValueAt(row, 1));
+			nv.setPhone_number((String) tblNhanVien.getValueAt(row, 2));
+			nv.setEmail((String) tblNhanVien.getValueAt(row, 3));
+			
+			String status = (String) tblNhanVien.getValueAt(row, 4);
+			System.out.println(status);
+			if (status.equals("Hoạt động")) {
+				nv.setStaffStatus(1);
+			} else if (status.equals("Ngưng hoạt động")) {
+				nv.setStaffStatus(0);
+			}
+		}
 	}
 }
