@@ -115,4 +115,36 @@ public class NhanVienDAO {
 		
 		return success;
 	}
+	
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int status) {
+		ArrayList<NhanVien> dsnv = new ArrayList<>();
+		
+		try {
+			System.out.println(status);
+			
+			String sql = "SELECT * "
+					+ "FROM staff "
+					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')";
+			
+			if (status != -1) {
+				sql += " AND status = " + status; 
+			}
+			
+			ResultSet rs = connectDB.runQuery(sql);
+			while (rs.next()) {
+				NhanVien nv = new NhanVien();
+				nv.setStaffId(rs.getInt("staff_id"));
+			    nv.setFull_name(rs.getString("fullname"));
+			    nv.setPhone_number(rs.getString("phone_number"));
+			    nv.setEmail(rs.getString("email"));
+			    nv.setStaffStatus(rs.getInt("status"));
+			    nv.setAccount_id(rs.getString("account_id"));
+			    dsnv.add(nv);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dsnv;
+	}
 }

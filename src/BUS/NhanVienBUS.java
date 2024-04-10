@@ -6,11 +6,11 @@ import DAO.NhanVienDAO;
 import DTO.NhanVien;
 
 public class NhanVienBUS {
-	private static ArrayList<NhanVien> dssv;
+	private static ArrayList<NhanVien> dsnv;
 	
 	public static ArrayList<NhanVien> getDanhSachNhanVien() {
-		dssv = NhanVienDAO.getDanhSachNhanVien();
-		return dssv;
+		dsnv = NhanVienDAO.getDanhSachNhanVien();
+		return dsnv;
 	}
 	
 	public static int generateIdNhanVien() {
@@ -31,5 +31,10 @@ public class NhanVienBUS {
 	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String accountId) {
 		boolean success = NhanVienDAO.insertNhanVien(fullname, email, phoneNumber, status, accountId);
 		return success;
+	}
+	
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int status) {
+		dsnv = NhanVienDAO.searchNhanVien(keyword, status);
+		return dsnv;
 	}
 }

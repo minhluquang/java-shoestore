@@ -33,11 +33,15 @@ import DTO.NhanVien;
 import BUS.NhanVienBUS;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class NhanVienGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
-    private JTextField txtTmKim;
+    private JTextField txtTimKiem;
     private JTable tblNhanVien;
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private JButton btnChiTiet;
@@ -47,6 +51,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     private DefaultTableModel dtmNhanVien;
+    private JComboBox cmbTrangThai;
     
     private static ChiTietNhanVienGUI chiTietNhanVienGUI;
     private static ChiTietQuyenGUI chiTietQuyenGUI;
@@ -83,12 +88,30 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
 		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFocusable(false);
-		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
-		pnlChucVu.add(comboBox_1);
+		cmbTrangThai = new JComboBox();
+		
+		// ========== Start: Xử lý search trạng thái ==========
+		cmbTrangThai.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				int searchStatus = cmbTrangThai.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
+			}
+		});
+		// ========== End: Xử lý search trạng thái ==========
+		
+		cmbTrangThai.setFocusable(false);
+		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
+		pnlChucVu.add(cmbTrangThai);
 		
 //		JComboBox comboBox = new JComboBox();
 //		comboBox.setFocusable(false);
@@ -101,11 +124,31 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		txtTmKim = new JTextField();
-		txtTmKim.setMinimumSize(new Dimension(250, 19));
-		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTmKim.setColumns(10);
-		panel_1.add(txtTmKim);
+		txtTimKiem = new JTextField();
+		
+		// ========== Start: Xử lý search ==========
+		txtTimKiem.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// Nếu có chọn trạng thái thì lọc luôn
+				int searchStatus = cmbTrangThai.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
+			}
+		});
+		// ========== End: Xử lý search ==========
+		
+		txtTimKiem.setMinimumSize(new Dimension(250, 19));
+		txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtTimKiem.setColumns(10);
+		panel_1.add(txtTimKiem);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
@@ -113,6 +156,17 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JButton btnTim = new JButton("Làm mới");
+		
+		// ========== Start: Xử lý làm mới search ==========
+		btnTim.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txtTimKiem.setText("");
+				cmbTrangThai.setSelectedIndex(0);
+				xuLyTimKiem("", -1);
+			}
+		});
+		// ========== End: Xử lý làm mới search ==========
+		
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -329,6 +383,30 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 			} else if (status.equals("Ngưng hoạt động")) {
 				nv.setStaffStatus(0);
 			}
+		}
+	}
+	
+	// Xử lý tìm kiếm
+	public void xuLyTimKiem(String keyword, int searchStatus) {
+		dtmNhanVien.setRowCount(0);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, searchStatus);
+		
+		for (NhanVien nv : dsnv) {
+			int staffStatus = nv.getStaffStatus();
+			String status;
+			if (staffStatus == 1) {
+				status = "Hoạt động";
+			} else {
+				status = "Ngưng hoạt động";
+			}
+			
+			String accountId = nv.getAccount_id();
+			if (accountId == null) {
+				accountId = "Chưa có";
+			}
+			
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getEmail(), nv.getPhone_number(), status, accountId};
+			dtmNhanVien.addRow(row);
 		}
 	}
 }
