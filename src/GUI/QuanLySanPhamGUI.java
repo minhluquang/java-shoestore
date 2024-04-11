@@ -73,7 +73,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		comboBox.setFocusable(false);
 		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Giới tính", "Nam", "Nữ"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Hãng", "SGU"}));
 		pnlTrangThai.add(comboBox);
 		
 		JPanel pnlChucVu = new JPanel();

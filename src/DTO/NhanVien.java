@@ -1,7 +1,7 @@
 package DTO;
 
 public class NhanVien {
-	private int account_id;
+	private String username;
 	private String full_name;
 	private String email;
 	private String phone_number;
@@ -11,9 +11,9 @@ public class NhanVien {
 	
 	public NhanVien() {}
 
-	public NhanVien(int account_id, String full_name, String email, String phone_number, String password,
+	public NhanVien(String username, String full_name, String email, String phone_number, String password,
 			int accountStatus, String position) {
-		this.account_id = account_id;
+		this.username = username;
 		this.full_name = full_name;
 		this.email = email;
 		this.phone_number = phone_number;
@@ -22,11 +22,11 @@ public class NhanVien {
 		this.position = position;
 	}
 	
-	public int getAccount_id() {
-		return account_id;
+	public String getUsername() {
+		return username;
 	}
-	public void setAccount_id(int account_id) {
-		this.account_id = account_id;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getFull_name() {
 		return full_name;

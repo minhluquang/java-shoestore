@@ -7,7 +7,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
-
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -23,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import DTO.Role;
+import BUS.RoleBUS;
+
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
@@ -44,6 +47,9 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
     public PhanQuyenGUI() {
 		setBackground(new Color(230, 230, 230));
 		setLayout(new BorderLayout(10, 10));
+		// render
+		ArrayList<Role> danhSachRole = RoleBUS.getDanhSachRole();
+		Object[][] rowData = new Object[danhSachRole.size()][2];
 		
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(new Color(255, 255, 255));
@@ -166,24 +172,20 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		table.setRowHeight(25);
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
-		table.setModel(new DefaultTableModel(
-			    new Object[][] {
-			        {"1", "Quản lý kho"},
-			        {"2", "Nhân viên nhập hàng"},
-			        {"3", "Nhân viên xuất hàng"},
-			        {"4", "Nhân viên kiểm kho"},
-			    },
-			    new String[] {
-			        "Mã nhóm quyền", "Tên nhóm quyền"
-			    }
-			) {
-			    boolean[] columnEditables = new boolean[] {
-			        false, false
-			    };
-			    public boolean isCellEditable(int row, int column) {
-			        return columnEditables[column];
-			    }
-			});
+		
+		// render DANH SACH
+		for (int i = 0; i < danhSachRole.size(); i++) {
+		    Role role = danhSachRole.get(i);
+		    rowData[i][0] = role.getRole_id(); // Mã nhóm quyền
+		    rowData[i][1] = role.getRole_name(); // Tên nhóm quyền
+		}
+		DefaultTableModel model = new DefaultTableModel(rowData, new String[] {"Mã nhóm quyền", "Tên nhóm quyền"}) {
+		    boolean[] columnEditables = new boolean[] {false, false};
+		    public boolean isCellEditable(int row, int column) {
+		        return columnEditables[column];
+		    }
+		};
+		table.setModel(model);
 		 // Căn giữa tiêu đề
 		 ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		 // Căn giữa dữ liệu trong bảng

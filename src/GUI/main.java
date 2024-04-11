@@ -309,7 +309,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlBaoHanh = new JPanel();
         pnlCards.add(pnlBaoHanh, "pnlBaoHanh");
         pnlBaoHanh.setLayout(new BorderLayout(0, 0));
-        pnlBaoHanh.add(new BaoHanhGUI(), BorderLayout.CENTER);
+//        pnlBaoHanh.add(new BaoHanhGUI(), BorderLayout.CENTER);
+        pnlBaoHanh.add(new ReturnGUI(), BorderLayout.CENTER);
         
         // phân quyền
         pnlPhanQuyen = new JPanel();

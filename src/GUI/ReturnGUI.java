@@ -1,19 +1,20 @@
 package GUI;
-
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.util.ArrayList;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
@@ -23,16 +24,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JRadioButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import DTO.NhanVien;
-import BUS.NhanVienBUS;
-
-public class NhanVienGUI extends JPanel implements ActionListener {
+import BUS.ReturnBUS;
+import DTO.Return;
+import DTO.Role;
+public class ReturnGUI extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
     private JTextField txtTmKim;
@@ -44,18 +47,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
-    private DefaultTableModel dtmNhanVien;
-    
-    private static ChiTietNhanVienGUI chiTietNhanVienGUI;
-    private static ChiTietQuyenGUI chiTietQuyenGUI;
-    
-	/**
-	 * Create the panel.
-	 */
-	public NhanVienGUI() {
-		setBackground(new Color(230, 230, 230));
+    private DefaultTableModel dtmReturn;
+    static JTextField productNameField, warrantyPeriodField, warrantyReasonField;
+    public ReturnGUI() {
+    	setBackground(new Color(230, 230, 230));
 		setLayout(new BorderLayout(10, 10));
-		
+		Font font = new Font(getFont().getName(), Font.PLAIN, 16);
+		ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
+       
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(new Color(255, 255, 255));
 		add(pnlTop, BorderLayout.NORTH);
@@ -86,22 +85,50 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
 		pnlChucVu.add(comboBox_1);
 		
-//		JComboBox comboBox = new JComboBox();
-//		comboBox.setFocusable(false);
-//		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-//		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Giới tính", "Nam", "Nữ"}));
-//		pnlTrangThai.add(comboBox);
-		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
+		
+		 JPanel inputPanel = new JPanel(new GridBagLayout());
+	     inputPanel.setBorder(BorderFactory.createTitledBorder("Thông tin sản phẩm"));
+	     GridBagConstraints gbc = new GridBagConstraints();
+	     gbc.gridx = 0;
+	     gbc.gridy = 0;
+	     gbc.insets = new Insets(5, 5, 5, 5);
+	     JLabel productNameLabel = new JLabel("Tên sản phẩm:");
+	      inputPanel.add(productNameLabel, gbc);
+	      productNameLabel.setFont(font);
+	      gbc.gridx = 1;
+	      gbc.gridwidth = 2;
+	      productNameField = new JTextField(20);
+	      inputPanel.add(productNameField, gbc);
+	      gbc.gridx = 0;
+	      gbc.gridy++;
+	      gbc.gridwidth = 1;
+	      JLabel warrantyPeriodLabel = new JLabel("Thời gian bảo hành:");
+	        inputPanel.add(warrantyPeriodLabel, gbc);
+	        warrantyPeriodLabel.setFont(font);
+	        gbc.gridx = 1;
+	        warrantyPeriodField = new JTextField(20);
+	        inputPanel.add(warrantyPeriodField, gbc);
+	        gbc.gridx = 0;
+	        gbc.gridy++;
+	        JLabel reasonLabel = new JLabel("Lý do bảo hành:");
+	        reasonLabel.setFont(font);
+	        inputPanel.add(reasonLabel, gbc);
+	        gbc.gridx = 1;
+	        warrantyReasonField = new JTextField(20); 
+	        inputPanel.add(warrantyReasonField, gbc);
+	       
 		txtTmKim = new JTextField();
 		txtTmKim.setMinimumSize(new Dimension(250, 19));
 		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtTmKim.setColumns(10);
 		panel_1.add(txtTmKim);
+		
+		
+		
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
@@ -121,14 +148,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-		btnChiTiet = new JButton("Quyền");
-		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTiet.setPreferredSize(new Dimension(150, 40));
-		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTiet.setFocusable(false);
-		btnChiTiet.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnChiTiet);
+
 		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -147,15 +167,6 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		btnSua.setFocusable(false);
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
-		
-//		btnXoa = new JButton("Xoá");
-//		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-//		btnXoa.setPreferredSize(new Dimension(0, 40));
-//		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-//		btnXoa.setFocusable(false);
-//		btnXoa.setBackground(Color.WHITE);
-//		pnlTopBottom.add(btnXoa);
 		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -194,6 +205,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
+		panel_8.add(inputPanel);
 		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
 		table = new JTable();
 		table.setBorder(null);
@@ -202,8 +214,13 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email", "Trạng thái"}, 0);
-		table.setModel(dtmNhanVien);
+		dtmReturn = new DefaultTableModel(new Object[]{"Return_ID", "Product_ID", "Date_Return", "Reason"}, 0);
+		for (Return returnItem : danhSachBaoHanh) {
+		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_id(), returnItem.getDate_return(), returnItem.getReason()};
+		    dtmReturn.addRow(rowData);
+		}
+
+		table.setModel(dtmReturn);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -216,48 +233,31 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		table.getTableHeader().setBackground(new Color(36,136,203));
 		table.getTableHeader().setForeground(new Color(255,255,255));
 		table.setRowHeight(25);
-		
-
-		loadDanhSachNhanVien();
-		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
-		
-		
-		
+		 // Căn giữa tiêu đề
+		 ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		 // Căn giữa dữ liệu trong bảng
+		 DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		 centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		 table.setDefaultRenderer(Object.class, centerRenderer);
 		// Sự kiện lắng nghe click
-		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 //		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
+    }
+    
+    
+    
+    
+    
+    public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnChiTiet) {
-			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-				chiTietQuyenGUI = new ChiTietQuyenGUI();
-            } else {
-            	chiTietQuyenGUI.toFront();
-            }
-			chiTietQuyenGUI.setVisible(true);
-			chiTietQuyenGUI.requestFocus();
+			
         } else if (e.getSource() == btnThem) {
-            if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-            } else {
-            	chiTietNhanVienGUI.toFront();
-            }
-            chiTietNhanVienGUI.setVisible(true);
-            chiTietNhanVienGUI.requestFocus();
+           
         } else if (e.getSource() == btnSua) {
-        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-            } else {
-            	chiTietNhanVienGUI.toFront();
-            }
-            chiTietNhanVienGUI.setVisible(true);
-            chiTietNhanVienGUI.requestFocus();
+        	
         } 
 //        else if (e.getSource() == btnXoa) {
 //        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
@@ -272,24 +272,5 @@ public class NhanVienGUI extends JPanel implements ActionListener {
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
         }
-	}
-
-	public void loadDanhSachNhanVien() {
-		dtmNhanVien.setRowCount(0);
-		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien();
-		
-		for (NhanVien nv : dsnv) {
-			int accountStatus = nv.getAccountStatus();
-			String status;
-			if (accountStatus == 1) {
-				status = "Hoạt động";
-			} else {
-				status = "Ngưng hoạt động";
-			}
-			
-			Object[] row = {nv.getUsername(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
-			dtmNhanVien.addRow(row);
-		}
-		
 	}
 }
