@@ -6,6 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+
+import BUS.TaiKhoanBUS;
+import DTO.TaiKhoan;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
@@ -26,14 +30,24 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Cursor;
 import javax.swing.JButton;
 
+import DTO.TaiKhoan;
+import GUI.TaiKhoanGUI;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class ChiTietTaiKhoanGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField txtMaNV;
 	private JTextField txtUsername;
+	private JComboBox cmbChucVu;
+	private JComboBox cmbTrangThai;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
+	
+	private TaiKhoan tk;
+	private TaiKhoanGUI parentGUI;
+	private JTextField txtMaTaiKhoan;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -42,7 +56,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietTaiKhoanGUI frame = new ChiTietTaiKhoanGUI();
+                    ChiTietTaiKhoanGUI frame = new ChiTietTaiKhoanGUI(new TaiKhoan(), new TaiKhoanGUI());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,7 +68,10 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChiTietTaiKhoanGUI() {
+	public ChiTietTaiKhoanGUI(TaiKhoan tk, TaiKhoanGUI parentGUI) {
+		this.tk = tk;
+		this.parentGUI = parentGUI;
+		
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
@@ -117,16 +134,16 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6 = new JLabel("Mã nhân viên");
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6);
+		JLabel lblNewLabel_6_2 = new JLabel("Mã nhân viên");
+		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_2);
 		
-		txtMaNV = new JTextField();
-		txtMaNV.setEnabled(false);
-		txtMaNV.setEditable(false);
-		txtMaNV.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtMaNV.setColumns(10);
-		panel_5.add(txtMaNV);
+		txtMaTaiKhoan = new JTextField();
+		txtMaTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtMaTaiKhoan.setEnabled(false);
+		txtMaTaiKhoan.setEditable(false);
+		txtMaTaiKhoan.setColumns(10);
+		panel_5.add(txtMaTaiKhoan);
 		
 //		JLabel lblNewLabel_6_2 = new JLabel("Chức vụ");
 //		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -153,44 +170,45 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_5.add(comboBox);
+		cmbChucVu = new JComboBox();
+		cmbChucVu.setFocusable(false);
+		cmbChucVu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cmbChucVu.setModel(new DefaultComboBoxModel(new String[] {"Nhân viên", "Admin"}));
+		cmbChucVu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_5.add(cmbChucVu);
 		
 		JLabel lblNewLabel_6_3_1_1 = new JLabel("Trạng thái");
 		lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1_1);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFocusable(false);
-		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_5.add(comboBox_1);
+		cmbTrangThai = new JComboBox();
+		cmbTrangThai.setFocusable(false);
+		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
+		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_5.add(cmbTrangThai);
 		
-//		JLabel lblNewLabel_6_2_1 = new JLabel("Trạng thái");
-//		lblNewLabel_6_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-//		panel_5.add(lblNewLabel_6_2_1);
-//		
-//		JComboBox cmbTrangThai = new JComboBox();
-//		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
-//		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-//		cmbTrangThai.setFocusable(false);
-//		panel_5.add(cmbTrangThai);
-		
-		JLabel lblNewLabel_7_1_1 = new JLabel("");
-		panel_5.add(lblNewLabel_7_1_1);
+		JLabel lblNewLabel_7_1_1_1 = new JLabel("");
+		panel_5.add(lblNewLabel_7_1_1_1);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);
 		panel_5.add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 		
+		
+		
+		// ========= Xử lý lưu thông tin tài khoản =========
 		JButton btnNewButton = new JButton("Lưu");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				xuLyLuuThongTinTaiKhoan();
+			}
+		});
+		// ========= Xử lý lưu thông tin tài khoản =========
+		
+		
+		
 		btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNewButton.setPreferredSize(new Dimension(100, 30));
 		btnNewButton.setForeground(Color.WHITE);
@@ -201,6 +219,14 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_2.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết tài khoản không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết tài khoản", JOptionPane.YES_NO_OPTION);
+    	        if (choice == JOptionPane.YES_OPTION) {
+    	            dispose();
+    	        }
+			}
+		});
 		btnNewButton_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNewButton_1.setPreferredSize(new Dimension(100, 30));
 		btnNewButton_1.setForeground(Color.WHITE);
@@ -225,6 +251,75 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("");
 		panel_1.add(lblNewLabel);
+		
+		// ========== Gắn giá trị tự động ==========
+		if (tk != null) {
+			xuLyTuDongGanGiaTri();	
+		}
 	}
 
+	public void xuLyTuDongGanGiaTri() {
+		if (tk.getAccountId() == 0) {
+			txtMaTaiKhoan.setText(Integer.toString(TaiKhoanBUS.generateIdTaiKhoan()));
+		} else {
+			txtMaTaiKhoan.setText(Integer.toString(tk.getAccountId()));
+		}
+		
+		txtUsername.setText(tk.getUsername());
+		
+		if (tk.getPosition() != null) {
+		    if (tk.getPosition().equals("admin")) {
+		        cmbChucVu.setSelectedIndex(1);
+		    } else if (tk.getPosition().equals("staff")) {
+		        cmbChucVu.setSelectedIndex(0);
+		    }
+		}
+		
+		if (tk.getAccountStatus() == 1) {
+			cmbTrangThai.setSelectedIndex(0);
+		} else if (tk.getAccountStatus() == 0) {
+			cmbTrangThai.setSelectedIndex(1);
+		}
+	}
+	
+	public void xuLyLuuThongTinTaiKhoan() {
+		int accountId = Integer.parseInt(txtMaTaiKhoan.getText());
+		String username = txtUsername.getText();
+		
+		int status = 0;
+		if (cmbTrangThai.getSelectedItem().equals("Hoạt động")) {
+			status = 1;
+		} else if (cmbTrangThai.getSelectedItem().equals("Ngưng hoạt động")) {
+			status = 0;
+		}
+		
+		String position = "";
+		if (cmbChucVu.getSelectedItem().equals("Nhân viên")) {
+			position = "staff";
+		} else if (cmbChucVu.getSelectedItem().equals("Admin")) {
+			position = "admin";
+		}
+		
+		if (TaiKhoanBUS.isExistUsername(username, accountId)) {
+			JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			if (TaiKhoanBUS.isExistIdTaiKhoan(accountId)) {
+				if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position)) {
+					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					parentGUI.loadDanhSachTaiKhoan();
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else {
+				if (TaiKhoanBUS.insertTaiKhoan(accountId, username, status, position)) {
+					JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					parentGUI.loadDanhSachTaiKhoan();
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		}
+	}
 }

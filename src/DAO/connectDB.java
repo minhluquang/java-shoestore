@@ -5,7 +5,7 @@ import java.sql.*;
 public class connectDB {
     static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
     static final String USER = "root";
-    static final String PASS = "20112004";
+    static final String PASS = "";
 
     public static Connection getConnection() throws SQLException {
         Connection conn = null;

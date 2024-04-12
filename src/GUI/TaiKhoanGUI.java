@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -23,16 +24,29 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+//import org.jcp.xml.dsig.internal.dom.DOMTransform;
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import DTO.TaiKhoan;
+import BUS.NhanVienBUS;
+import BUS.TaiKhoanBUS;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+
 public class TaiKhoanGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
-    private JTextField txtTmKim;
-    private JTable table;
+    private JTextField txtTimKiem;
+    private JTable tblTaiKhoan;
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private JButton btnChiTietQuyen;
     private JButton btnThem;
@@ -40,9 +54,14 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
+    private DefaultTableModel dtmTaiKhoan;
     
     private static ChiTietQuyenGUI chiTietQuyenGUI;
     private static ChiTietTaiKhoanGUI chiTietTaiKhoanGUI;
+    
+    private TaiKhoan tk = new TaiKhoan();
+    private int searchStatus = -1;
+    private String searchRole = "";
     
 	/**
 	 * Create the panel.
@@ -70,33 +89,102 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
 		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
-		pnlTrangThai.add(comboBox);
+		JComboBox cmbTrangThai = new JComboBox();
+		
+		// ========== Start: Xử lý search trạng thái ==========
+		cmbTrangThai.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				searchStatus = cmbTrangThai.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus, searchRole);
+			}
+		});
+		// ========== End: Xử lý search trạng thái ==========
+
+		
+		cmbTrangThai.setFocusable(false);
+		cmbTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
+		pnlTrangThai.add(cmbTrangThai);
 		
 		JPanel pnlChucVu = new JPanel();
 		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
 		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFocusable(false);
-		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ", "Admin", "Nhân viên"}));
-		pnlChucVu.add(comboBox_1);
+		JComboBox cmbQuyen = new JComboBox();
+		
+		// ========== Start: Xử lý search role ==========
+		cmbQuyen.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (cmbQuyen.getSelectedIndex() == 1) {
+					searchRole = "admin"; 
+				} else if (cmbQuyen.getSelectedIndex() == 2) {
+					searchRole = "staff";
+				} else {
+					searchRole = "";
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus, searchRole);
+			}
+		});
+		// ========== Start: Xử lý search role ==========
+		
+		cmbQuyen.setFocusable(false);
+		cmbQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cmbQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cmbQuyen.setModel(new DefaultComboBoxModel(new String[] {"Quyền", "Admin", "Nhân viên"}));
+		pnlChucVu.add(cmbQuyen);
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		txtTmKim = new JTextField();
-		txtTmKim.setMinimumSize(new Dimension(250, 19));
-		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTmKim.setColumns(10);
-		panel_1.add(txtTmKim);
+		txtTimKiem = new JTextField();
+		
+		
+		
+		// ========== Start: Xử lý search ==========
+		txtTimKiem.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// Nếu có chọn trạng thái thì lọc luôn
+				searchStatus = cmbTrangThai.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				searchRole = "";
+				if (cmbQuyen.getSelectedIndex() == 1) {
+					searchRole = "admin";
+				} else if (cmbQuyen.getSelectedIndex() == 2) {
+					searchRole = "staff";
+				} else {
+					searchRole = "";
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus, searchRole);
+			}
+		});
+		// ========== End: Xử lý search ==========
+		
+		
+		
+		txtTimKiem.setMinimumSize(new Dimension(250, 19));
+		txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtTimKiem.setColumns(10);
+		panel_1.add(txtTimKiem);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
@@ -104,6 +192,14 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JButton btnTim = new JButton("Làm mới");
+		btnTim.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txtTimKiem.setText("");
+				cmbTrangThai.setSelectedIndex(0);
+				cmbQuyen.setSelectedIndex(0);
+				xuLyTimKiem("", -1, "");
+			}
+		});
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -189,41 +285,41 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
-		Object data[][] = {{"1", "Lữ Quang Minh", "Nam", "Admin", "0931814480", "Hoạt động"}};
-		String column[] = {"ID", "Họ và tên", "Giới tính", "Chức vụ", "Số điện thoại", "Trạng thái"};
 		
-		table = new JTable(data,column);
-		table.setBorder(null);
-		table.setSelectionBackground(new Color(232, 57, 95));
-		table.setRowHeight(25);
-		table.setIntercellSpacing(new Dimension(0, 0));
-		table.setFocusable(false);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"NV001", "minhlq2911@gmail.com", "Admin", "Ho\u1EA1t \u0111\u1ED9ng"},
-			},
-			new String[] {
-				"Mã TK", "Username", "Chức vụ", "Trạng thái"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, true, true, true
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+		
+		// ========== START: TABLE DANH SÁCH TÀI KHOẢN ==========
+		tblTaiKhoan = new JTable();
+		tblTaiKhoan.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				xuLyClickTable();
 			}
 		});
-		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(table);
+		tblTaiKhoan.setBorder(null);
+		tblTaiKhoan.setSelectionBackground(new Color(232, 57, 95));
+		tblTaiKhoan.setRowHeight(25);
+		tblTaiKhoan.setIntercellSpacing(new Dimension(0, 0));
+		tblTaiKhoan.setFocusable(false);
+		
+		dtmTaiKhoan = new DefaultTableModel(new Object[] {"Mã tài khoản", "Username", "Trạng thái", "Quyền"}, 0);
+		tblTaiKhoan.setModel(dtmTaiKhoan);
+		tblTaiKhoan.setDefaultEditor(Object.class, null);
+		tblTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(tblTaiKhoan);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
 		pnlCenter.add(scrollPane);
 		
-		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-		table.getTableHeader().setOpaque(false);
-		table.getTableHeader().setBackground(new Color(36,136,203));
-		table.getTableHeader().setForeground(new Color(255,255,255));
-		table.setRowHeight(25);
+		tblTaiKhoan.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		tblTaiKhoan.getTableHeader().setOpaque(false);
+		tblTaiKhoan.getTableHeader().setBackground(new Color(36,136,203));
+		tblTaiKhoan.getTableHeader().setForeground(new Color(255,255,255));
+		tblTaiKhoan.setRowHeight(25);
+		
+		loadDanhSachTaiKhoan();
+		// ========== END: TABLE DANH SÁCH TÀI KHOẢN ==========
+
+		
 		
 		// Sự kiện lắng nghe click
 		btnChiTietQuyen.addActionListener(this);
@@ -246,20 +342,24 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 			chiTietQuyenGUI.requestFocus();
         } else if (e.getSource() == btnThem) {
         	if (chiTietTaiKhoanGUI == null || !chiTietTaiKhoanGUI.isVisible()) {
-        		chiTietTaiKhoanGUI = new ChiTietTaiKhoanGUI();
+        		chiTietTaiKhoanGUI = new ChiTietTaiKhoanGUI(new TaiKhoan(), this);
             } else {
             	chiTietTaiKhoanGUI.toFront();
             }
         	chiTietTaiKhoanGUI.setVisible(true);
         	chiTietTaiKhoanGUI.requestFocus();
         } else if (e.getSource() == btnSua) {
-        	if (chiTietTaiKhoanGUI == null || !chiTietTaiKhoanGUI.isVisible()) {
-        		chiTietTaiKhoanGUI = new ChiTietTaiKhoanGUI();
-            } else {
-            	chiTietTaiKhoanGUI.toFront();
-            }
-        	chiTietTaiKhoanGUI.setVisible(true);
-        	chiTietTaiKhoanGUI.requestFocus();
+        	if (tk.getAccountId() > 0) {
+        		if (chiTietTaiKhoanGUI == null || !chiTietTaiKhoanGUI.isVisible()) {
+            		chiTietTaiKhoanGUI = new ChiTietTaiKhoanGUI(tk, this);
+                } else {
+                	chiTietTaiKhoanGUI.toFront();
+                }
+            	chiTietTaiKhoanGUI.setVisible(true);
+            	chiTietTaiKhoanGUI.requestFocus();
+        	} else {
+        		JOptionPane.showConfirmDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.CLOSED_OPTION);
+        	}
         } 
 //        else if (e.getSource() == btnXoa) {
 //        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin tài khoản có mã tài khoản là NV001", "Xác nhận xoá thông tin tài khoản", JOptionPane.YES_NO_OPTION);
@@ -274,5 +374,76 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
         }
+	}
+	
+	public void loadDanhSachTaiKhoan() {
+		dtmTaiKhoan.setRowCount(0);
+		ArrayList<TaiKhoan> dstk = TaiKhoanBUS.getDanhSachTaiKhoan();
+		
+		for (TaiKhoan tk : dstk) {
+			String status = "";
+			if (tk.getAccountStatus() == 1) {
+				status = "Hoạt động";
+			} else if (tk.getAccountStatus() == 0) {
+				status = "Ngưng hoạt động";
+			}
+			
+			String position = "";
+			if (tk.getPosition().equals("staff")) {
+				position = "Nhân viên";
+			} else if (tk.getPosition().equals("admin")) {
+				position = "Quản trị viên";
+			}
+			
+			Object[] row = {tk.getAccountId(), tk.getUsername(), status, position};
+			dtmTaiKhoan.addRow(row);
+		}
+	}
+	
+	public void xuLyClickTable() {
+		int row = tblTaiKhoan.getSelectedRow();
+		if (row > -1) {
+			tk.setAccountId((int) tblTaiKhoan.getValueAt(row, 0));
+			tk.setUsername((String) tblTaiKhoan.getValueAt(row, 1));
+			String status = (String) tblTaiKhoan.getValueAt(row, 2);
+			if (status.equals("Hoạt động")) {
+				tk.setAccountStatus(1);
+			} else if (status.equals("Ngưng hoạt động")) {
+				tk.setAccountStatus(0);
+			}
+			
+			String position = (String) tblTaiKhoan.getValueAt(row, 3);
+			if (position.equals("Nhân viên")) {
+				tk.setPosition("staff");
+			} else if (position.equals("Quản trị viên")) {
+				tk.setPosition("admin");
+			}
+		}
+	}
+	
+	// Xử lý tìm kiếm
+	public void xuLyTimKiem(String keyword, int searchStatus, String searchRole) {
+		dtmTaiKhoan.setRowCount(0);
+		ArrayList<TaiKhoan> dstk = TaiKhoanBUS.searchTaiKhoan(keyword, searchStatus, searchRole);
+		
+		for(TaiKhoan tk : dstk) {
+			String status;
+			if (tk.getAccountStatus() == 1) {
+				status = "Hoạt động";
+			} else {
+				status = "Ngưng hoạt động";
+			}
+			
+			String position = "";
+			if (tk.getPosition().equals("admin")) {
+				position = "Quản trị viên";
+			} else if (tk.getPosition().equals("staff")) {
+				position = "Nhân viên";
+			}
+			
+			Object[] row = {tk.getAccountId(), tk.getUsername(), status, position};
+			dtmTaiKhoan.addRow(row);
+		}
+		
 	}
 }

@@ -1,11 +1,7 @@
 package DTO;
 
 public class NhanVien {
-<<<<<<< HEAD
-	private String username;
-=======
 	private int staff_id;
->>>>>>> f16468cb86e654859291bcaa54ff23841dc0722b
 	private String full_name;
 	private String email;
 	private String phone_number;
@@ -15,15 +11,10 @@ public class NhanVien {
 	
 	public NhanVien() {}
 
-<<<<<<< HEAD
-	public NhanVien(String username, String full_name, String email, String phone_number, String password,
-			int accountStatus, String position) {
-		this.username = username;
-=======
+
 	public NhanVien(int staff_id, String full_name, String email, String phone_number, String password,
 			int staff_status, String account_id) {
 		this.staff_id = staff_id;
->>>>>>> f16468cb86e654859291bcaa54ff23841dc0722b
 		this.full_name = full_name;
 		this.email = email;
 		this.phone_number = phone_number;
@@ -31,20 +22,11 @@ public class NhanVien {
 		this.staff_status = staff_status;
 		this.account_id = account_id;
 	}
-	
-<<<<<<< HEAD
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-=======
 	public int getStaffId() {
 		return staff_id;
 	}
 	public void setStaffId(int staff_id) {
 		this.staff_id = staff_id;
->>>>>>> f16468cb86e654859291bcaa54ff23841dc0722b
 	}
 	public String getFull_name() {
 		return full_name;

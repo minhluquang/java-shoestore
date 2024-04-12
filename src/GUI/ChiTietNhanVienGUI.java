@@ -363,8 +363,6 @@ public class ChiTietNhanVienGUI extends JFrame {
 				}
 			} else {
 				// Nếu không có thì insert
-
-				System.out.println("HELLO");
 				if (NhanVienBUS.insertNhanVien(fullname, email, phoneNumber, status, accountId)) {
 					JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhân viên", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 					parentGUI.loadDanhSachNhanVien();

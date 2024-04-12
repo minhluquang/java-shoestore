@@ -13,23 +13,12 @@ public class NhanVienDAO {
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
-<<<<<<< HEAD
-			String sql = "SELECT username, full_name, phone_number, email, account_status as status "
-                    + "FROM account "
-                    + "WHERE position = 'staff'";
-			ResultSet rs = connectDB.runQuery(sql);
-			while (rs.next()) {
-				NhanVien nv = new NhanVien();
-			    nv.setUsername(rs.getString("username"));
-			    nv.setFull_name(rs.getString("full_name"));
-=======
 			String sql = "SELECT * FROM staff";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
 			    nv.setStaffId(rs.getInt("staff_id"));
 			    nv.setFull_name(rs.getString("fullname"));
->>>>>>> f16468cb86e654859291bcaa54ff23841dc0722b
 			    nv.setPhone_number(rs.getString("phone_number"));
 			    nv.setEmail(rs.getString("email"));
 			    nv.setStaffStatus(rs.getInt("status"));
@@ -131,8 +120,6 @@ public class NhanVienDAO {
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
-			System.out.println(status);
-			
 			String sql = "SELECT * "
 					+ "FROM staff "
 					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')";

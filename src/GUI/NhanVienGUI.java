@@ -179,14 +179,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-		btnChiTiet = new JButton("Quyền");
-		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTiet.setPreferredSize(new Dimension(150, 40));
-		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTiet.setFocusable(false);
-		btnChiTiet.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnChiTiet);
+//		btnChiTiet = new JButton("Quyền");
+//		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
+//		btnChiTiet.setPreferredSize(new Dimension(150, 40));
+//		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnChiTiet.setFocusable(false);
+//		btnChiTiet.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnChiTiet);
 		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -288,7 +288,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		
 		
 		// Sự kiện lắng nghe click
-		btnChiTiet.addActionListener(this);
+//		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 //		btnXoa.addActionListener(this);
@@ -298,15 +298,16 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnChiTiet) {
-			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-				chiTietQuyenGUI = new ChiTietQuyenGUI();
-            } else {
-            	chiTietQuyenGUI.toFront();
-            }
-			chiTietQuyenGUI.setVisible(true);
-			chiTietQuyenGUI.requestFocus();
-        } else if (e.getSource() == btnThem) {
+//		if (e.getSource() == btnChiTiet) {
+//			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
+//				chiTietQuyenGUI = new ChiTietQuyenGUI();
+//            } else {
+//            	chiTietQuyenGUI.toFront();
+//            }
+//			chiTietQuyenGUI.setVisible(true);
+//			chiTietQuyenGUI.requestFocus();
+//        } 
+		if (e.getSource() == btnThem) {
         	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
             	chiTietNhanVienGUI = new ChiTietNhanVienGUI(new NhanVien(), this);
             } else {
@@ -356,16 +357,12 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 				status = "Ngưng hoạt động";
 			}
 			
-<<<<<<< HEAD
-			Object[] row = {nv.getUsername(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
-=======
 			String accountId = nv.getAccount_id();
 			if (accountId == null) {
 				accountId = "Chưa có";
 			}
 			
 			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status, accountId};
->>>>>>> f16468cb86e654859291bcaa54ff23841dc0722b
 			dtmNhanVien.addRow(row);
 		}
 		
@@ -381,7 +378,6 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 			nv.setEmail((String) tblNhanVien.getValueAt(row, 3));
 			
 			String status = (String) tblNhanVien.getValueAt(row, 4);
-			System.out.println(status);
 			if (status.equals("Hoạt động")) {
 				nv.setStaffStatus(1);
 			} else if (status.equals("Ngưng hoạt động")) {
