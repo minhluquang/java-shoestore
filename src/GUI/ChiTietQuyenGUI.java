@@ -20,15 +20,26 @@ import javax.swing.JButton;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.border.LineBorder;
+
+import BUS.ChiTietQuyenBUS;
+import BUS.QuyenBUS;
+import DAO.QuyenDAO;
+import DTO.Quyen;
+
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class ChiTietQuyenGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JPanel pnlCenter;
+	
+	private ArrayList<Integer> listCheckboxSelected = new ArrayList<>();
+	private int accountId;
 
 	/**
 	 * Launch the application.
@@ -38,7 +49,7 @@ public class ChiTietQuyenGUI extends JFrame {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietQuyenGUI frame = new ChiTietQuyenGUI();
+					ChiTietQuyenGUI frame = new ChiTietQuyenGUI(0);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -50,7 +61,9 @@ public class ChiTietQuyenGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChiTietQuyenGUI() {
+	public ChiTietQuyenGUI(int id) {
+		this.accountId = id;
+		
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
@@ -61,7 +74,7 @@ public class ChiTietQuyenGUI extends JFrame {
     		}
     	});
 		
-		int width = 800;
+		int width = 400;
 		int height = 300;
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -75,7 +88,7 @@ public class ChiTietQuyenGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 20));
 		
-		JPanel pnlCenter = new JPanel();
+		pnlCenter = new JPanel();
 		pnlCenter.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new GridLayout(0, 1, 0, 0));
@@ -84,308 +97,22 @@ public class ChiTietQuyenGUI extends JFrame {
 		panel.setForeground(new Color(255, 255, 255));
 		panel.setBackground(new Color(36, 136, 203));
 		pnlCenter.add(panel);
-		panel.setLayout(new GridLayout(0, 5, 0, 0));
+		panel.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		JLabel lblDanhMcQuyn = new JLabel("Danh mục quyền");
+		lblDanhMcQuyn.setPreferredSize(new Dimension(80, 20));
 		lblDanhMcQuyn.setForeground(new Color(255, 255, 255));
 		lblDanhMcQuyn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblDanhMcQuyn);
 		
-		JLabel lblXem = new JLabel("Xem");
-		lblXem.setForeground(new Color(255, 255, 255));
-		lblXem.setHorizontalAlignment(SwingConstants.CENTER);
-		lblXem.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(lblXem);
+		// Load danh sách quyền
+		loadDanhSachQuyen();
 		
-		JLabel lblThm = new JLabel("Thêm");
-		lblThm.setForeground(new Color(255, 255, 255));
-		lblThm.setHorizontalAlignment(SwingConstants.CENTER);
-		lblThm.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(lblThm);
-		
-		JLabel lblCpNht = new JLabel("Cập nhật");
-		lblCpNht.setForeground(new Color(255, 255, 255));
-		lblCpNht.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCpNht.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(lblCpNht);
-		
-		JLabel lblXo = new JLabel("Xoá");
+		JLabel lblXo = new JLabel("");
 		lblXo.setForeground(new Color(255, 255, 255));
 		lblXo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblXo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panel.add(lblXo);
-		
-		JPanel pnlQLSP = new JPanel();
-		pnlQLSP.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLSP);
-		pnlQLSP.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLSn = new JLabel("Quản lý sản phẩm");
-		lblQunLSn.setBackground(new Color(255, 255, 255));
-		lblQunLSn.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLSP.add(lblQunLSn);
-		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("");
-		chckbxNewCheckBox.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLSP.add(chckbxNewCheckBox);
-		
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("");
-		chckbxNewCheckBox_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLSP.add(chckbxNewCheckBox_1);
-		
-		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("");
-		chckbxNewCheckBox_2.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLSP.add(chckbxNewCheckBox_2);
-		
-		JCheckBox chckbxNewCheckBox_3 = new JCheckBox("");
-		chckbxNewCheckBox_3.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLSP.add(chckbxNewCheckBox_3);
-		
-		JPanel pnlQLNV = new JPanel();
-		pnlQLNV.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLNV);
-		pnlQLNV.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNhn = new JLabel("Quản lý nhân viên");
-		lblQunLNhn.setBackground(new Color(255, 255, 255));
-		lblQunLNhn.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNV.add(lblQunLNhn);
-		
-		JCheckBox chckbxNewCheckBox_4 = new JCheckBox("");
-		chckbxNewCheckBox_4.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNV.add(chckbxNewCheckBox_4);
-		
-		JCheckBox chckbxNewCheckBox_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNV.add(chckbxNewCheckBox_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNV.add(chckbxNewCheckBox_2_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNV.add(chckbxNewCheckBox_3_1);
-		
-		JPanel pnlQLNCC = new JPanel();
-		pnlQLNCC.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLNCC);
-		pnlQLNCC.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh = new JLabel("Quản lý nhà cung cấp");
-		lblQunLNh.setBackground(new Color(255, 255, 255));
-		lblQunLNh.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNCC.add(lblQunLNh);
-		
-		JCheckBox chckbxNewCheckBox_4_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNCC.add(chckbxNewCheckBox_4_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNCC.add(chckbxNewCheckBox_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNCC.add(chckbxNewCheckBox_2_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNCC.add(chckbxNewCheckBox_3_1_1);
-		
-		JPanel pnlQLTK = new JPanel();
-		pnlQLTK.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLTK);
-		pnlQLTK.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh_1 = new JLabel("Quản lý tài khoản");
-		lblQunLNh_1.setBackground(new Color(255, 255, 255));
-		lblQunLNh_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLTK.add(lblQunLNh_1);
-		
-		JCheckBox chckbxNewCheckBox_4_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLTK.add(chckbxNewCheckBox_4_1_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLTK.add(chckbxNewCheckBox_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLTK.add(chckbxNewCheckBox_2_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLTK.add(chckbxNewCheckBox_3_1_1_1);
-		
-		JPanel pnlQLNH = new JPanel();
-		pnlQLNH.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLNH);
-		pnlQLNH.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh_1_1 = new JLabel("Quản lý nhập hàng");
-		lblQunLNh_1_1.setBackground(new Color(255, 255, 255));
-		lblQunLNh_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNH.add(lblQunLNh_1_1);
-		
-		JCheckBox chckbxNewCheckBox_4_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNH.add(chckbxNewCheckBox_4_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNH.add(chckbxNewCheckBox_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNH.add(chckbxNewCheckBox_2_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLNH.add(chckbxNewCheckBox_3_1_1_1_1);
-		
-		JPanel pnlQLXH = new JPanel();
-		pnlQLXH.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLXH);
-		pnlQLXH.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh_1_1_1 = new JLabel("Quản lý xuất hàng");
-		lblQunLNh_1_1_1.setBackground(new Color(255, 255, 255));
-		lblQunLNh_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLXH.add(lblQunLNh_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_4_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLXH.add(chckbxNewCheckBox_4_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLXH.add(chckbxNewCheckBox_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLXH.add(chckbxNewCheckBox_2_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLXH.add(chckbxNewCheckBox_3_1_1_1_1_1);
-		
-		JPanel pnlQLPQ = new JPanel();
-		pnlQLPQ.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLPQ);
-		pnlQLPQ.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh_1_1_1_1 = new JLabel("Quản lý phân quyền");
-		lblQunLNh_1_1_1_1.setBackground(new Color(255, 255, 255));
-		lblQunLNh_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLPQ.add(lblQunLNh_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_4_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLPQ.add(chckbxNewCheckBox_4_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLPQ.add(chckbxNewCheckBox_1_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLPQ.add(chckbxNewCheckBox_2_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLPQ.add(chckbxNewCheckBox_3_1_1_1_1_1_1);
-		
-		JPanel pnlQLKK = new JPanel();
-		pnlQLKK.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(pnlQLKK);
-		pnlQLKK.setLayout(new GridLayout(0, 5, 0, 0));
-		
-		JLabel lblQunLNh_1_1_1_1_1 = new JLabel("Quản lý thống kê");
-		lblQunLNh_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		lblQunLNh_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLKK.add(lblQunLNh_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_4_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_4_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_4_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_4_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLKK.add(chckbxNewCheckBox_4_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_1_1_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_1_1_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_1_1_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_1_1_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLKK.add(chckbxNewCheckBox_1_1_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_2_1_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_2_1_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_2_1_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_2_1_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLKK.add(chckbxNewCheckBox_2_1_1_1_1_1_1_1);
-		
-		JCheckBox chckbxNewCheckBox_3_1_1_1_1_1_1_1 = new JCheckBox("");
-		chckbxNewCheckBox_3_1_1_1_1_1_1_1.setBackground(new Color(255, 255, 255));
-		chckbxNewCheckBox_3_1_1_1_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxNewCheckBox_3_1_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlQLKK.add(chckbxNewCheckBox_3_1_1_1_1_1_1_1);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -399,7 +126,31 @@ public class ChiTietQuyenGUI extends JFrame {
 		pnlBtns.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlBtns, BorderLayout.SOUTH);
 		
+		// ========= Xử lý lưu quyền tài khoản =========
 		JButton btnNewButton = new JButton("Lưu");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Xoá hết quyền rồi thêm lại quyền mới
+				ChiTietQuyenBUS.deleteTatCaQuyenCuaTaiKhoanBangId(accountId);
+				
+				boolean success = true;
+				for (int roleId : listCheckboxSelected) {
+					System.out.println(roleId);
+					System.out.println(accountId);
+					if (!ChiTietQuyenBUS.insertQuyenVaoTaiKhoan(roleId, accountId)) {
+						success = false;
+					}
+				}
+				if (success == false) {
+					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại quyền của tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công quyền của tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					dispose();
+				}
+			}
+		});
+		// ========= Xử lý lưu quyền tài khoản =========
+		
 		btnNewButton.setForeground(new Color(255, 255, 255));
 		btnNewButton.setBorder(null);
 		btnNewButton.setPreferredSize(new Dimension(100, 30));
@@ -412,7 +163,10 @@ public class ChiTietQuyenGUI extends JFrame {
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa quyền tài khoản không?", "Xác nhận huỷ bỏ chỉnh sửa quyền tài khoản", JOptionPane.YES_NO_OPTION);
+    	        if (choice == JOptionPane.YES_OPTION) {
+    	            dispose();
+    	        }
 			}
 		});
 		btnNewButton_1.setForeground(new Color(255, 255, 255));
@@ -425,4 +179,97 @@ public class ChiTietQuyenGUI extends JFrame {
 		pnlBtns.add(btnNewButton_1);
 	}
 
+	public void loadDanhSachQuyen() {
+		ArrayList<Quyen> dsq = QuyenBUS.getDanhSachQuyen();
+		
+		// Gán quyền của tài khoản cho listCheckboxSelected
+		listCheckboxSelected = ChiTietQuyenBUS.getDanhSachQuyenCuaTaiKhoanBangId(accountId);
+		
+		for (Quyen q : dsq) {
+			JLabel label = new JLabel(q.getRoleName());
+			label.setBackground(new Color(255, 255, 255));
+			label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			
+			JCheckBox checkBox = new JCheckBox();
+			checkBox.setBackground(new Color(255, 255, 255));
+	        checkBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+	        
+	        // Kiểm tra xem q.getRoleId() có trong listCheckboxSelected hay không
+	        if (listCheckboxSelected.contains(q.getRoleId())) {
+	        	checkBox.setSelected(true);
+	        }
+	        
+	        checkBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (checkBox.isSelected()) {
+						listCheckboxSelected.add(q.getRoleId());
+					} else {
+						listCheckboxSelected.remove(Integer.valueOf(q.getRoleId()));
+					}
+				}
+			});
+	        
+	        JPanel panel = new JPanel();
+	        panel.setBackground(new Color(255, 255, 255));
+	        panel.setLayout(new GridLayout(0, 2, 0, 0));
+	        
+	        panel.add(label);
+	        panel.add(checkBox);
+	        
+	        pnlCenter.add(panel);
+		}
+	}
+	
+	public void printCheckboxSelectedList() {
+	    System.out.print("listCheckboxSelected: [");
+	    for (int i = 0; i < listCheckboxSelected.size(); i++) {
+	        System.out.print(listCheckboxSelected.get(i));
+	        if (i < listCheckboxSelected.size() - 1) {
+	            System.out.print(", ");
+	        }
+	    }
+	    System.out.println("]");
+	}
+
 }
+
+
+// Component: label + checkbox
+//JLabel label = new JLabel(q.getRoleName());
+//label.setBackground(new Color(255, 255, 255));
+//label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//
+//JCheckBox checkBox = new JCheckBox();
+//checkBox.setBackground(new Color(255, 255, 255));
+//checkBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+//
+//checkBox.addActionListener(new ActionListener() {
+//	@Override
+//	public void actionPerformed(ActionEvent e) {
+//		if (checkBox.isSelected()) {
+//			listCheckboxSelected.add(q.getRoleId());
+//		} else {
+//			listCheckboxSelected.remove(Integer.valueOf(q.getRoleId()));
+//		}
+//	}
+//});
+//
+//JPanel panel = new JPanel();
+//panel.setBackground(new Color(255, 255, 255));
+//panel.setLayout(new GridLayout(0, 2, 0, 0));
+//
+//panel.add(label);
+//panel.add(checkBox);
+//
+//pnlCenter.add(panel);
+
+
+
+
+
+
+
+

@@ -334,7 +334,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnChiTietQuyen) {
 			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-            	chiTietQuyenGUI = new ChiTietQuyenGUI();
+            	chiTietQuyenGUI = new ChiTietQuyenGUI(tk.getAccountId());
             } else {
             	chiTietQuyenGUI.toFront();
             }
