@@ -1,3 +1,5 @@
+
+
 package GUI;
 
 import javax.swing.JPanel;
@@ -8,6 +10,7 @@ import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -23,33 +26,45 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import DTO.Role;
-import BUS.RoleBUS;
-
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class PhanQuyenGUI extends JPanel implements ActionListener{
+import DTO.NhanVien;
+import BUS.NhanVienBUS;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import DTO.Role;
+import BUS.RoleBUS;
+public class PhanQuyenGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
-    private JTextField txtTmKim;
-    private JTable table;
+    private JTextField txtTimKiem;
+    private JTable tblRole;
     private final ButtonGroup buttonGroup = new ButtonGroup();
+    private JButton btnChiTiet;
     private JButton btnThem;
     private JButton btnSua;
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
-	
-    public PhanQuyenGUI() {
+    private DefaultTableModel dtmRole;
+    
+    private static ChiTietPhanQuyenGUI chiTietPhanQuyenGUI;
+    
+    private Role rl = new Role();
+    
+	/**
+	 * Create the panel.
+	 */
+	public PhanQuyenGUI() {
 		setBackground(new Color(230, 230, 230));
 		setLayout(new BorderLayout(10, 10));
-		// render
-		ArrayList<Role> danhSachRole = RoleBUS.getDanhSachRole();
-		Object[][] rowData = new Object[danhSachRole.size()][2];
 		
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(new Color(255, 255, 255));
@@ -61,28 +76,30 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		pnlTop.add(pnlSearch, BorderLayout.CENTER);
 		pnlSearch.setLayout(new BorderLayout(5, 10));
 		
-		JPanel pnlLocNangCao = new JPanel();
-		pnlLocNangCao.setBackground(new Color(255, 255, 255));
-		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
-		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
-		
-		JPanel pnlTrangThai = new JPanel();
-		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
-		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		
-		JPanel pnlChucVu = new JPanel();
-		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
-		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
-		
+				
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
-		txtTmKim = new JTextField();
-		txtTmKim.setMinimumSize(new Dimension(250, 19));
-		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTmKim.setColumns(10);
-		panel_1.add(txtTmKim);
+		
+		
+		// ========== Start: Xử lý search ==========
+		 txtTimKiem = new JTextField();
+	        txtTimKiem.addKeyListener(new KeyAdapter() {
+	            @Override
+	            public void keyReleased(KeyEvent e) {               
+	                xuLyTimKiem(txtTimKiem.getText());
+	            }
+	        });
+	        txtTimKiem.setMinimumSize(new Dimension(250, 19));
+	        txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	        txtTimKiem.setColumns(10);
+	        panel_1.add(txtTimKiem);
+		// ========== End: Xử lý search ==========
+		
+		txtTimKiem.setMinimumSize(new Dimension(250, 19));
+		txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtTimKiem.setColumns(10);
+		panel_1.add(txtTimKiem);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
@@ -90,6 +107,16 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JButton btnTim = new JButton("Làm mới");
+		
+		// ========== Start: Xử lý làm mới search ==========
+		btnTim.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txtTimKiem.setText("");				
+				xuLyTimKiem("");
+			}
+		});
+		// ========== End: Xử lý làm mới search ==========
+		
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -97,11 +124,12 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		btnTim.setBackground(new Color(255, 255, 255));
 		panel_2.add(btnTim);
 		
-		
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
+
+		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
@@ -119,15 +147,6 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		btnSua.setFocusable(false);
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
-		
-		btnXoa = new JButton("Xoá");
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setPreferredSize(new Dimension(0, 40));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setFocusable(false);
-		btnXoa.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXoa);
 		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -166,69 +185,141 @@ public class PhanQuyenGUI extends JPanel implements ActionListener{
 		add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
-		table = new JTable();
-		table.setBorder(null);
-		table.setSelectionBackground(new Color(232, 57, 95));
-		table.setRowHeight(25);
-		table.setIntercellSpacing(new Dimension(0, 0));
-		table.setFocusable(false);
+		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
+		tblRole = new JTable();
+		tblRole.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				xuLyClickTable();
+			}
+		});
+		tblRole.setBorder(null);
+		tblRole.setSelectionBackground(new Color(232, 57, 95));
+		tblRole.setRowHeight(25);
+		tblRole.setIntercellSpacing(new Dimension(0, 0));
+		tblRole.setFocusable(false);
 		
-		// render DANH SACH
-		for (int i = 0; i < danhSachRole.size(); i++) {
-		    Role role = danhSachRole.get(i);
-		    rowData[i][0] = role.getRole_id(); // Mã nhóm quyền
-		    rowData[i][1] = role.getRole_name(); // Tên nhóm quyền
-		}
-		DefaultTableModel model = new DefaultTableModel(rowData, new String[] {"Mã nhóm quyền", "Tên nhóm quyền"}) {
-		    boolean[] columnEditables = new boolean[] {false, false};
-		    public boolean isCellEditable(int row, int column) {
-		        return columnEditables[column];
-		    }
-		};
-		table.setModel(model);
-		 // Căn giữa tiêu đề
-		 ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-		 // Căn giữa dữ liệu trong bảng
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        table.setDefaultRenderer(Object.class, centerRenderer);
-
-		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		JScrollPane scrollPane = new JScrollPane(table);
+		dtmRole = new DefaultTableModel(new Object[]{"Mã Nhóm Quyền", "Tên Nhóm Quyền"},0);
+		tblRole.setModel(dtmRole);
+		tblRole.setDefaultEditor(Object.class, null);
+		tblRole.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(tblRole);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
 		pnlCenter.add(scrollPane);
 		
-		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-		table.getTableHeader().setOpaque(false);
-		table.getTableHeader().setBackground(new Color(36,136,203));
-		table.getTableHeader().setForeground(new Color(255,255,255));
-		table.setRowHeight(25);
+		tblRole.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		tblRole.getTableHeader().setOpaque(false);
+		tblRole.getTableHeader().setBackground(new Color(36,136,203));
+		tblRole.getTableHeader().setForeground(new Color(255,255,255));
+		tblRole.setRowHeight(25);
+		
+
+		loadDanhSachRole();
+		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
+		
+		
 		
 		// Sự kiện lắng nghe click
 //		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-		btnXoa.addActionListener(this);
+//		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
-	
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	    // Xử lý sự kiện khi các nút được nhấn
-	    if (e.getSource() == btnThem) {
-	        // Xử lý khi nút Thêm được nhấn
-	    } else if (e.getSource() == btnSua) {
-	        // Xử lý khi nút Chỉnh sửa được nhấn
-	    } else if (e.getSource() == btnXoa) {
-	        // Xử lý khi nút Xóa được nhấn
-	    } else if (e.getSource() == btnNhapExcel) {
-	        // Xử lý khi nút Chi tiết được nhấn
-	    } else if (e.getSource() == btnXuatExcel) {
-	        // Xử lý khi nút Xuất được nhấn
+//		if (e.getSource() == btnChiTiet) {
+//			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
+//				chiTietQuyenGUI = new ChiTietQuyenGUI();
+//            } else {
+//            	chiTietQuyenGUI.toFront();
+//            }
+//			chiTietQuyenGUI.setVisible(true);
+//			chiTietQuyenGUI.requestFocus();
+//        } 
+		if (e.getSource() == btnThem) {
+        	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
+        		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);
+            } else {
+            	chiTietPhanQuyenGUI.toFront();
+            }
+        	chiTietPhanQuyenGUI.setVisible(true);
+        	chiTietPhanQuyenGUI.requestFocus();
+        } else if (e.getSource() == btnSua) {
+        	 hienThiGiaoDienSua();
+        } 
+        else if (e.getSource() == btnNhapExcel) {
+            // Xử lý khi button "Nhập excel" được nhấn
+        } else if (e.getSource() == btnXuatExcel) {
+            // Xử lý khi button "Xuất excel" được nhấn
+        }
+	}
+
+	// Load danh sách nhân viên
+	public void loadDanhSachRole() {
+		dtmRole.setRowCount(0);
+		ArrayList<Role> dsrl = RoleBUS.getDanhSachRole();
+		
+		 for (Role role : dsrl) {
+	            Object[] row = {role.getRole_id(), role.getRole_name()};
+	            dtmRole.addRow(row); // Thêm dữ liệu mới
+	        }		
+	}
+	
+	// Xử lý click vào row table
+	public void xuLyClickTable() {
+	    int selectedRow = tblRole.getSelectedRow();
+	    if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+	        int role_id = (int) tblRole.getValueAt(selectedRow, 0); // Lấy role_id từ hàng được chọn
+	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
+	        if (choice == JOptionPane.YES_OPTION) {
+	            boolean success = RoleBUS.deleteRole(role_id); // Gọi phương thức xóa từ RoleBUS hoặc RoleDAO
+	            if (success) {
+	                JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
+	                loadDanhSachRole(); // Sau khi xóa thành công, cập nhật lại danh sách vai trò
+	            } else {
+	                JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
+	            }
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
 
+	
+	// Xử lý tìm kiếm
+		public void xuLyTimKiem(String keyword) {
+		    	dtmRole.setRowCount(0);
+		        ArrayList<Role> dsrl = RoleBUS.searchRole(keyword);
+		        for (Role role : dsrl) {
+		            Object[] row = {role.getRole_id(), role.getRole_name()};
+		            dtmRole.addRow(row);
+		        }
+		 }
+		public void hienThiGiaoDienSua() {
+		    int selectedRow = tblRole.getSelectedRow();
+		    if (selectedRow != -1) {
+		        int role_id = (int) tblRole.getValueAt(selectedRow, 0);
+		        // Lấy thông tin nhóm quyền từ cơ sở dữ liệu dựa trên role_id
+		        Role role = RoleBUS.getRoleById(role_id);
+		        if (role != null) {
+		            // Hiển thị giao diện sửa thông tin nhóm quyền
+		            if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
+		                chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(role, this);
+		            } else {
+		                chiTietPhanQuyenGUI.toFront();
+		            }
+		            chiTietPhanQuyenGUI.setVisible(true);
+		            chiTietPhanQuyenGUI.requestFocus();
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Không tìm thấy thông tin nhóm quyền", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        }
+		    } else {
+		        JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhóm quyền để sửa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		    }
+		}
 }
+

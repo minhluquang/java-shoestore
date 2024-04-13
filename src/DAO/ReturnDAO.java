@@ -3,14 +3,15 @@ package DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-import DTO.Return;
+import DTO.Return; // Thêm import cho lớp Return
+
 
 public class ReturnDAO {
     public static ArrayList<Return> getDanhSachReturn() {
-        ArrayList<Return> dsrt = new ArrayList<>();
+        ArrayList<Return> dsReturn = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -33,7 +34,8 @@ public class ReturnDAO {
                 rt.setProduct_id(resultSet.getInt("product_id"));
                 rt.setDate_return(resultSet.getString("date_return"));
                 rt.setReason(resultSet.getString("reason"));
-                dsrt.add(rt);
+
+                dsReturn.add(rt);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,8 +55,25 @@ public class ReturnDAO {
                 e.printStackTrace();
             }
         }
+        return dsReturn;
+    }
 
-        return dsrt;
+    public static ArrayList<Return> searchReturn(String keyword) {
+        ArrayList<Return> dsReturn = new ArrayList<>();
+        try {
+        	 String sql = "SELECT * FROM `return` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_id LIKE '%" + keyword + "%'";
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                Return rt = new Return();
+                rt.setReturn_id(rs.getInt("return_id"));
+                rt.setProduct_id(rs.getInt("product_id"));
+                rt.setDate_return(rs.getString("date_return"));
+                rt.setReason(rs.getString("reason"));
+                dsReturn.add(rt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dsReturn;
     }
 }
-

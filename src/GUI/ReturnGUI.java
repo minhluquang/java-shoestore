@@ -30,9 +30,12 @@ import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 
 import BUS.ReturnBUS;
+import BUS.RoleBUS;
 import DTO.Return;
 import DTO.Role;
 public class ReturnGUI extends JPanel implements ActionListener{
@@ -122,6 +125,14 @@ public class ReturnGUI extends JPanel implements ActionListener{
 	        inputPanel.add(warrantyReasonField, gbc);
 	       
 		txtTmKim = new JTextField();
+		// ========== Start: Xử lý search ==========
+				txtTmKim.addKeyListener(new KeyAdapter() {
+							@Override
+							public void keyReleased(KeyEvent e) {				
+								xuLyTimKiem(txtTmKim.getText());
+							}
+						});
+						// ========== End: Xử lý search ==========
 		txtTmKim.setMinimumSize(new Dimension(250, 19));
 		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtTmKim.setColumns(10);
@@ -239,6 +250,11 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		 DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		 centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		 table.setDefaultRenderer(Object.class, centerRenderer);
+		 
+		 
+		 
+		 
+		 
 		// Sự kiện lắng nghe click
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
@@ -247,8 +263,16 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		btnXuatExcel.addActionListener(this);
     }
     
-    
-    
+    // search
+    public void xuLyTimKiem(String keyword) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        ArrayList<Return> dsrt = ReturnBUS.searchReturn(keyword);
+        for (Return rt : dsrt) {
+            Object[] row = {rt.getReturn_id(), rt.getProduct_id(),rt.getDate_return(),rt.getReason()};
+            model.addRow(row);
+        }
+    }
     
     
     public void actionPerformed(ActionEvent e) {
