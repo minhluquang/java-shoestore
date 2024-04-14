@@ -102,7 +102,7 @@ public class RoleDAO {
         return isExist;
     }
 
-    	public static boolean updateRole(int role_id, String role_name) {
+    public static boolean updateRole(int role_id, String role_name) {
     		boolean success = false;
     		try {
     			String sql = "UPDATE role "
@@ -119,7 +119,7 @@ public class RoleDAO {
     	}
 
     	// insert
-    	public static boolean insertRole(int role_id, String role_name) {
+    public static boolean insertRole(int role_id, String role_name) {
     	    boolean success = false;
     	    try {
     	        String sql = "INSERT INTO role (role_id, role_name) VALUES (" + role_id + ", '" + role_name + "')";

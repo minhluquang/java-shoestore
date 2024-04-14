@@ -106,8 +106,7 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnTim = new JButton("Làm mới");
-		
+		JButton btnTim = new JButton("Làm mới");		
 		// ========== Start: Xử lý làm mới search ==========
 		btnTim.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -221,25 +220,14 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		
 		
 		// Sự kiện lắng nghe click
-//		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-//		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-//		if (e.getSource() == btnChiTiet) {
-//			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-//				chiTietQuyenGUI = new ChiTietQuyenGUI();
-//            } else {
-//            	chiTietQuyenGUI.toFront();
-//            }
-//			chiTietQuyenGUI.setVisible(true);
-//			chiTietQuyenGUI.requestFocus();
-//        } 
+	public void actionPerformed(ActionEvent e) { 
 		if (e.getSource() == btnThem) {
         	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
         		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);

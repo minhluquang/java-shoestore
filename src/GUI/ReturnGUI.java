@@ -73,20 +73,6 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
 		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
 		
-		JPanel pnlTrangThai = new JPanel();
-		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
-		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JPanel pnlChucVu = new JPanel();
-		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
-		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFocusable(false);
-		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái", "Hoạt động", "Ngưng hoạt động"}));
-		pnlChucVu.add(comboBox_1);
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -99,7 +85,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 	     gbc.gridx = 0;
 	     gbc.gridy = 0;
 	     gbc.insets = new Insets(5, 5, 5, 5);
-	     JLabel productNameLabel = new JLabel("Tên sản phẩm:");
+	     JLabel productNameLabel = new JLabel("ID sản phẩm:");
 	      inputPanel.add(productNameLabel, gbc);
 	      productNameLabel.setFont(font);
 	      gbc.gridx = 1;
@@ -217,7 +203,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
 		panel_8.add(inputPanel);
-		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
+		// ========== TABLE DANH SÁCH ==========
 		table = new JTable();
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));

@@ -141,8 +141,7 @@ public class NhanVienDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		}		
 		return dsnv;
 	}
 }
