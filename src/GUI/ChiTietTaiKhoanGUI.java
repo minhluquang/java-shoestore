@@ -284,7 +284,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 	
 	public void xuLyLuuThongTinTaiKhoan() {
 		int accountId = Integer.parseInt(txtMaTaiKhoan.getText());
-		String username = txtUsername.getText();
+		String username = txtUsername.getText().trim();
 		
 		int status = 0;
 		if (cmbTrangThai.getSelectedItem().equals("Hoạt động")) {
@@ -300,24 +300,30 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 			position = "admin";
 		}
 		
-		if (TaiKhoanBUS.isExistUsername(username, accountId)) {
-			JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+		if (username.isEmpty()) {
+			String message = "Vui lòng nhập đầy đủ các trường:";
+			message += "\n - Username";
+			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} else {
-			if (TaiKhoanBUS.isExistIdTaiKhoan(accountId)) {
-				if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position)) {
-					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-					parentGUI.loadDanhSachTaiKhoan();
-					dispose();
-				} else {
-					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-				}
+			if (TaiKhoanBUS.isExistUsername(username, accountId)) {
+				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				if (TaiKhoanBUS.insertTaiKhoan(accountId, username, status, position)) {
-					JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-					parentGUI.loadDanhSachTaiKhoan();
-					dispose();
+				if (TaiKhoanBUS.isExistIdTaiKhoan(accountId)) {
+					if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position)) {
+						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						parentGUI.loadDanhSachTaiKhoan();
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+					if (TaiKhoanBUS.insertTaiKhoan(accountId, username, status, position)) {
+						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						parentGUI.loadDanhSachTaiKhoan();
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			}
 		}

@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import com.mysql.cj.xdevapi.Statement;
 
 import DTO.NhanVien;
+import DTO.TaiKhoan;
 
 public class NhanVienDAO {
 	public static ArrayList<NhanVien> getDanhSachNhanVien() {
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM staff";
+			String sql = "SELECT staff_id, fullname, email, phone_number, s.status, username "
+					+ "FROM staff s "
+					+ "INNER JOIN account a ON a.account_id = s.account_id";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
@@ -22,7 +25,7 @@ public class NhanVienDAO {
 			    nv.setPhone_number(rs.getString("phone_number"));
 			    nv.setEmail(rs.getString("email"));
 			    nv.setStaffStatus(rs.getInt("status"));
-			    nv.setAccount_id(rs.getString("account_id"));
+			    nv.setUsername(rs.getString("username"));
 			    dsnv.add(nv);
 			}
 		} catch (Exception e) {
@@ -69,15 +72,15 @@ public class NhanVienDAO {
 		return isExist;
 	}
 	
-	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status, String accountId) {
+	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status, String username) {
 		boolean success = false;
 		
 		try {
+			TaiKhoan tk = new TaiKhoan();
+			tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
+			
 			String sql = "UPDATE staff "
-					+ "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = " + status;
-			if (!accountId.trim().isEmpty()) {
-				sql += " , account_id = '" + accountId + "'";
-			}
+			           + "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = '" + status + "', account_id = " + tk.getAccountId();
 			sql += " WHERE staff_id = " + id;
 			
 			int i = connectDB.runUpdate(sql);
@@ -91,19 +94,16 @@ public class NhanVienDAO {
 		return success;
 	}
 	
-	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String accountId) {
+	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String username) {
 		boolean success = false;
 		
 		try {
-			String sql = "";
+			TaiKhoan tk = new TaiKhoan();
+			tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
 			
-			if (!accountId.trim().isEmpty()) {
-				sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status, account_id) "
-					     + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ", " + accountId + ")";
-			} else {
-				sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status) "
-		                + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ")";
-			}
+			String sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status, account_id) "
+					     + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ", " + tk.getAccountId() + ")";
+			
 			
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
@@ -136,12 +136,31 @@ public class NhanVienDAO {
 			    nv.setPhone_number(rs.getString("phone_number"));
 			    nv.setEmail(rs.getString("email"));
 			    nv.setStaffStatus(rs.getInt("status"));
-			    nv.setAccount_id(rs.getString("account_id"));
+			    nv.setUsername(rs.getString("username"));
 			    dsnv.add(nv);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
 		return dsnv;
+	}
+	
+	public static boolean isUsedAccountId(int accountId) {
+		boolean success = false;
+		
+		try {
+			String sql = "SELECT * "
+					+ "FROM staff "
+					+ "WHERE account_id = " + accountId;
+			ResultSet rs = connectDB.runQuery(sql);
+			
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return success;
 	}
 }

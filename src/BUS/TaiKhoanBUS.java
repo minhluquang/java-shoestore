@@ -43,4 +43,8 @@ public class TaiKhoanBUS {
 		dstk = TaiKhoanDAO.searchTaiKhoan(keyword, searchStatus, searchRole);
 		return dstk;
 	}
+	
+	public static TaiKhoan getDetailTaiKhoanByUsername(String username) {
+		return 	TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
+	}
 }

@@ -7,20 +7,20 @@ public class NhanVien {
 	private String phone_number;
 	private String password;
 	private int staff_status;
-	private String account_id;
+	private String username;
 	
 	public NhanVien() {}
 
 
 	public NhanVien(int staff_id, String full_name, String email, String phone_number, String password,
-			int staff_status, String account_id) {
+			int staff_status, String username) {
 		this.staff_id = staff_id;
 		this.full_name = full_name;
 		this.email = email;
 		this.phone_number = phone_number;
 		this.password = password;
 		this.staff_status = staff_status;
-		this.account_id = account_id;
+		this.username = username;
 	}
 	public int getStaffId() {
 		return staff_id;
@@ -58,13 +58,10 @@ public class NhanVien {
 	public void setStaffStatus(int staff_status) {
 		this.staff_status = staff_status;
 	}
-
-	public String getAccount_id() {
-		return account_id;
+	public String getUsername() {
+		return username;
 	}
-
-	public void setAccount_id(String account_id) {
-		this.account_id = account_id;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	
 }

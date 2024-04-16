@@ -26,29 +26,26 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Cursor;
 import javax.swing.JButton;
 
+import DTO.KhachHang;
 import DTO.NhanVien;
-import DTO.TaiKhoan;
+import BUS.KhachHangBUS;
 import BUS.NhanVienBUS;
-import BUS.TaiKhoanBUS;
 import GUI.NhanVienGUI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ChiTietNhanVienGUI extends JFrame {
+public class ChiTietKhachHangGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtHoTen;
 	private JTextField txtSoDienThoai;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JTextField txtEmail;
-	private JTextField txtMaNhanVien;
-	private JComboBox cmbTrangThai;
+	private JTextField txtMaKhachHang;
 	
-	private NhanVien nv;
-	private NhanVienGUI parentGUI;
-	private JTextField txtTaiKhoan;
+	private KhachHang kh;
+	private KhachHangGUI parentGUI;
 
 	/**
 	 * Launch the application.
@@ -58,7 +55,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietNhanVienGUI frame = new ChiTietNhanVienGUI(new NhanVien(), new NhanVienGUI());
+					ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(new KhachHang(), new KhachHangGUI());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,14 +67,14 @@ public class ChiTietNhanVienGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChiTietNhanVienGUI(NhanVien nv, NhanVienGUI parentGUI) {
-		this.nv = nv;
+	public ChiTietKhachHangGUI(KhachHang kh, KhachHangGUI parentGUI) {
+		this.kh = kh;
 		this.parentGUI = parentGUI;
 		
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?", "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết khách hàng không?", "Xác nhận đóng chi tiết khách hàng", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }
@@ -85,7 +82,7 @@ public class ChiTietNhanVienGUI extends JFrame {
     	});
 		
 		int width = 380;
-        int height = 600;
+        int height = 500;
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
@@ -112,7 +109,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 		JLabel lblNewLabel_5 = new JLabel("");
 		panel.add(lblNewLabel_5);
 		
-		JLabel lblNewLabel_4 = new JLabel("Thông tin nhân viên");
+		JLabel lblNewLabel_4 = new JLabel("Thông tin khách hàng");
 		lblNewLabel_4.setForeground(new Color(255, 255, 255));
 		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -136,16 +133,16 @@ public class ChiTietNhanVienGUI extends JFrame {
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6_2 = new JLabel("Mã nhân viên");
+		JLabel lblNewLabel_6_2 = new JLabel("Mã khách hàng");
 		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_2);
 		
-		txtMaNhanVien = new JTextField();
-		txtMaNhanVien.setEnabled(false);
-		txtMaNhanVien.setEditable(false);
-		txtMaNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtMaNhanVien.setColumns(10);
-		panel_5.add(txtMaNhanVien);
+		txtMaKhachHang = new JTextField();
+		txtMaKhachHang.setEnabled(false);
+		txtMaKhachHang.setEditable(false);
+		txtMaKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtMaKhachHang.setColumns(10);
+		panel_5.add(txtMaKhachHang);
 		
 		JLabel lblNewLabel_6 = new JLabel("Họ và tên");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -166,40 +163,11 @@ public class ChiTietNhanVienGUI extends JFrame {
 		txtSoDienThoai.setColumns(10);
 		panel_5.add(txtSoDienThoai);
 		
-		JLabel lblNewLabel_6_3_1 = new JLabel("Email");
-		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_3_1);
-		
-		txtEmail = new JTextField();
-		txtEmail.setPreferredSize(new Dimension(100, 19));
-		txtEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtEmail.setColumns(10);
-		panel_5.add(txtEmail);
-		
-		JLabel lblNewLabel_6_3_1_1 = new JLabel("Trạng thái");
-		lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_3_1_1);
-		
-		cmbTrangThai = new JComboBox();
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
-		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbTrangThai.setFocusable(false);
-		panel_5.add(cmbTrangThai);
-		
-		JLabel lblNewLabel_6_3_1_2 = new JLabel("Tài khoản");
-		lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_3_1_2);
-		
-		txtTaiKhoan = new JTextField();
-		txtTaiKhoan.setEditable(false);
-		txtTaiKhoan.setEnabled(false);
-		txtTaiKhoan.setPreferredSize(new Dimension(100, 19));
-		txtTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTaiKhoan.setColumns(10);
-		panel_5.add(txtTaiKhoan);
-		
 		JLabel lblNewLabel_7_1_1 = new JLabel("");
 		panel_5.add(lblNewLabel_7_1_1);
+		
+		JLabel lblNewLabel_7_1_1_1 = new JLabel("");
+		panel_5.add(lblNewLabel_7_1_1_1);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);
@@ -208,14 +176,14 @@ public class ChiTietNhanVienGUI extends JFrame {
 		
 		
 		
-		// ========= Xử lý lưu thông tin nhân viên =========
+		// ========= Xử lý lưu thông tin khách hàng =========
 		JButton btnNewButton = new JButton("Lưu");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				xuLyLuuThongTinNhanVien();
 			}
 		});
-		// ========= Xử lý lưu thông tin nhân viên =========
+		// ========= Xử lý lưu thông tin khách hàng =========
 		
 		
 		
@@ -231,7 +199,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết nhân viên không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
+				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết khách hàng không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết khách hàng", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }
@@ -263,86 +231,50 @@ public class ChiTietNhanVienGUI extends JFrame {
 		panel_1.add(lblNewLabel);
 		
 		// ========== Gắn giá trị tự động ==========
-		if (nv != null) {
+		if (kh != null) {
 			xuLyTuDongGanGiaTri();
 		}
 	}
 	
 	public void xuLyTuDongGanGiaTri() {
-		int staffId = nv.getStaffId();
-		if (staffId == 0) {
-			txtMaNhanVien.setText(Integer.toString(NhanVienBUS.generateIdNhanVien()));
-			txtTaiKhoan.setEnabled(true);
-			txtTaiKhoan.setEditable(true);
+		if (kh.getCustomerId() > 0) {
+			txtMaKhachHang.setText(Integer.toString(kh.getCustomerId()));			
 		} else {
-			txtMaNhanVien.setText(Integer.toString(nv.getStaffId()));
+			txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));						
 		}
-		
-		txtHoTen.setText(nv.getFull_name());
-		txtSoDienThoai.setText(nv.getPhone_number());
-		txtEmail.setText(nv.getEmail());
-		if (nv.getStaffStatus() == 1) {
-			cmbTrangThai.setSelectedIndex(0);
-		} else if (nv.getStaffStatus() == 0) {
-			cmbTrangThai.setSelectedIndex(1);
-		}
-		
-		txtTaiKhoan.setText(nv.getUsername());
+		txtHoTen.setText(kh.getCustomerName());
+		txtSoDienThoai.setText(kh.getPhoneNumber());
 	}
 
 	public void xuLyLuuThongTinNhanVien() {
-		int staffId = nv.getStaffId();
-		String fullname = txtHoTen.getText();
-		String phoneNumber = txtSoDienThoai.getText();
-		String email = txtEmail.getText();
-		String username = txtTaiKhoan.getText();
+		int customerId = Integer.parseInt(txtMaKhachHang.getText());
+		String customerName = txtHoTen.getText().trim();
+		String phoneNumber = txtSoDienThoai.getText().trim();
 		
-		int status = 0;
-		if (cmbTrangThai.getSelectedIndex() == 0) {
-			status = 1;
-		} else if (cmbTrangThai.getSelectedIndex() == 1) {
-			status = 0;
-		}
-		
-		// Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
-		if (fullname.trim().isEmpty() || phoneNumber.trim().isEmpty() || email.trim().isEmpty() || username.trim().isEmpty()) {
+		if (customerName.isEmpty() || phoneNumber.isEmpty()) {
 			String message = "Vui lòng nhập đầy đủ các trường:";
 			message += "\n - Họ và tên";
-			message += "\n - Email";
 			message += "\n - Số điện thoại";
-			message += "\n - Username";
 			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} else {
-//			TaiKhoan tk = new TaiKhoan();
-//			tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username);
-//			if (TaiKhoanBUS.isExistUsername(username, tk.getAccountId())) {
-//				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-//			} else {
-			
-			// Nếu tồn tại staff_id (tức: có nhân viên thì update)
-			if (NhanVienBUS.isExistNhanVien(staffId)) {
-				if (NhanVienBUS.updateNhanVien(staffId, fullname, email, phoneNumber, status, username)) {
-					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhân viên", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-					parentGUI.loadDanhSachNhanVien();
-					dispose();
-				} else {
-					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhân viên", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
-				}
+			if (KhachHangBUS.isExistPhoneNumber(phoneNumber, customerId)) {
+				JOptionPane.showMessageDialog(null, "Hệ thống đã có khách hàng sử dụng số điện thoại này", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username);
-				if (tk == null) {
-					JOptionPane.showMessageDialog(null, "Hệ thống không tồn tại username: " + username, "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
-				} else if (NhanVienBUS.isUsedAccountId(tk.getAccountId())) {
-					JOptionPane.showMessageDialog(null, "Hệ thống có nhân viên sử dụng username: " + username, "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
-				} else if (TaiKhoanBUS.isExistIdTaiKhoan(tk.getAccountId())) {
-					// Nếu không có thì insert
-					if (NhanVienBUS.insertNhanVien(fullname, email, phoneNumber, status, username)) {
-							JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhân viên", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-							parentGUI.loadDanhSachNhanVien();
-							dispose();
-						
+				if (KhachHangBUS.isExistKhachHang(customerId)) {
+					if (KhachHangBUS.updateKhachHang(customerId, customerName, phoneNumber)) {
+						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khách hàng", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						parentGUI.loadDanhSachKhachHang();
+						dispose();
 					} else {
-						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin nhân viên", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khách hàng", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+					}
+				} else { 
+					if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber)) {
+						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khách hàng", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						parentGUI.loadDanhSachKhachHang();
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khách hàng", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}

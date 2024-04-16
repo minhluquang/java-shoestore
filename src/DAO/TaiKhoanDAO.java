@@ -154,4 +154,26 @@ public class TaiKhoanDAO {
 		
 		return dstk;
 	}
+	
+	public static TaiKhoan getDetailTaiKhoanByUsername(String username) {
+		TaiKhoan tk = null;
+		
+		try {
+			String sql = "SELECT * FROM account WHERE username = '" + username + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+			
+			if (rs.next()) {
+				tk = new TaiKhoan();
+				tk.setAccountId(rs.getInt("account_id"));
+				tk.setUsername(rs.getString("username"));
+				tk.setPassword(rs.getString("password"));
+				tk.setAccountStatus(rs.getInt("account_status"));
+				tk.setPosition(rs.getString("position"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return tk;
+	}
 }

@@ -1,38 +1,43 @@
 package DAO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 public class connectDB {
     static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
     static final String USER = "root";
-    static final String PASS = "20112004";
+    static final String PASS = "";
 
-    public static Connection getConnection() throws SQLException {
-        Connection conn = null;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Đang kết nối tới cơ sở dữ liệu...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            System.out.println("Đã kết nối thành công!");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return conn;
-    }
+	public static Connection getConnection() throws SQLException {
+		Connection conn = null;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			System.out.println("Đang kết nối tới cơ sở dữ liệu...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("Đã kết nối thành công!");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return conn;
+	}
 
-    public static ResultSet runQuery(String sql) {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }
+	public static ResultSet runQuery(String sql) {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rs;
+	}
 
     public static int runUpdate(String sql) {
         Connection conn = null;
@@ -46,5 +51,17 @@ public class connectDB {
             e.printStackTrace();
         }
         return rowsAffected;
+    }
+    
+    public static PreparedStatement prepareStatement(String sql) {
+    	Connection conn = null;
+    	PreparedStatement prest = null;
+    	try {
+			conn = getConnection();
+			prest = conn.prepareStatement(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return prest;
     }
 }

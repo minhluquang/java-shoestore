@@ -31,6 +31,8 @@ import java.awt.event.ActionEvent;
 
 import DTO.NhanVien;
 import BUS.NhanVienBUS;
+import BUS.TaiKhoanBUS;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
@@ -328,14 +330,6 @@ public class NhanVienGUI extends JPanel implements ActionListener {
             	JOptionPane.showConfirmDialog(null, "Vui lòng chọn nhân viên cần sửa", "Thông báo lỗi sửa thông tin nhân viên", JOptionPane.CLOSED_OPTION);
             }
         } 
-//        else if (e.getSource() == btnXoa) {
-//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
-//        	if (choice == JOptionPane.YES_OPTION) {
-//        		
-//        	} else {
-//        		
-//        	}
-//        }
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
@@ -357,7 +351,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 				status = "Ngưng hoạt động";
 			}
 			
-			String accountId = nv.getAccount_id();
+			String accountId = nv.getUsername();
 			if (accountId == null) {
 				accountId = "Chưa có";
 			}
@@ -383,6 +377,8 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 			} else if (status.equals("Ngưng hoạt động")) {
 				nv.setStaffStatus(0);
 			}
+			
+			nv.setUsername((String) tblNhanVien.getValueAt(row, 5));
 		}
 	}
 	
@@ -400,12 +396,12 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 				status = "Ngưng hoạt động";
 			}
 			
-			String accountId = nv.getAccount_id();
-			if (accountId == null) {
-				accountId = "Chưa có";
+			String username = nv.getUsername();
+			if (username == null) {
+				username = "Chưa có";
 			}
 			
-			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getEmail(), nv.getPhone_number(), status, accountId};
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getEmail(), nv.getPhone_number(), status, username};
 			dtmNhanVien.addRow(row);
 		}
 	}

@@ -37,4 +37,8 @@ public class NhanVienBUS {
 		dsnv = NhanVienDAO.searchNhanVien(keyword, status);
 		return dsnv;
 	}
+	
+	public static boolean isUsedAccountId(int accountId) {
+		return NhanVienDAO.isUsedAccountId(accountId);
+	}
 }
