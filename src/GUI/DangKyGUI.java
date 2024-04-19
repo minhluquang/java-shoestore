@@ -4,6 +4,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import javax.swing.border.LineBorder;
+
+import BUS.DangKyBUS;
+import BUS.TaiKhoanBUS;
+import DAO.TaiKhoanDAO;
+import DTO.TaiKhoan;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -13,12 +19,12 @@ public class DangKyGUI extends JPanel {
     private JTextField txtUsernameRegister;
     private JPasswordField txtMatKhauRegister;
     private JPasswordField txtNhapLaiMatKhauRegister;
+	
 
     public DangKyGUI() {
         int width = 380;
         int height = 500;
-
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(380, 600));
         setBackground(new Color(255, 255, 255));
         setBorder(new EmptyBorder(5, 5, 5, 5));
         setLayout(new BorderLayout());
@@ -119,6 +125,51 @@ public class DangKyGUI extends JPanel {
         panelSubService.add(chckbxNewCheckBox);
         
         JButton btnDangNhap = new JButton("Đăng ký");
+        btnDangNhap.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		
+        		
+        		String username = txtUsernameRegister.getText();
+        		String password = txtMatKhauRegister.getText();
+        		String rePassword = txtNhapLaiMatKhauRegister.getText();
+        		
+        		if (!username.equals("") && !password.equals("") && !rePassword.equals("")) {
+        			int dk = JOptionPane.showConfirmDialog(null,"Bạn có muốn đăng kí", "Confirm", JOptionPane.YES_NO_OPTION );
+            		if(dk != JOptionPane.YES_OPTION) {
+            			return;
+            		}
+        			TaiKhoan tk = new TaiKhoan();
+					tk.setUsername(username);
+					tk.setAccountId(TaiKhoanBUS.generateIdTaiKhoan());
+					tk.setAccountStatus(1);
+					tk.setPosition("staff");
+					if (password.equals(rePassword)) {
+						tk.setPassword(password);
+					} else {
+						JOptionPane.showMessageDialog(null, "Mật khẩu nhập lại không chính xác");
+						return;
+					}
+        			if (!TaiKhoanBUS.isExistUsername(username,tk.getAccountId())) {
+        				DangKyBUS.register(tk);
+    					JOptionPane.showMessageDialog(null, "Đăng Ký Thành Công");
+//    					 JFrame frame = new JFrame("Đăng nhập");
+//    				        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    				        
+//    				        DangNhapGUI dangNhapGUI = new DangNhapGUI();
+//    				        frame.getContentPane().add(dangNhapGUI);
+//    				        
+//    				        frame.pack();
+//    				        frame.setVisible(true);
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Tài khoản đã tồn tại");
+					}				
+				} else {
+					JOptionPane.showMessageDialog(null, "Thông tin không được bỏ trống");
+				}
+        		
+        	}
+        });
         btnDangNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnDangNhap.setBorder(null);
         btnDangNhap.setBackground(new Color(51, 51, 51));
@@ -127,4 +178,8 @@ public class DangKyGUI extends JPanel {
         btnDangNhap.setPreferredSize(new Dimension(200, 30));
         pnlService.add(btnDangNhap);
     }
+    
+         
+
 }
+

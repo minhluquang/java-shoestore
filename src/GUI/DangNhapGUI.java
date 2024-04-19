@@ -4,7 +4,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import javax.swing.border.LineBorder;
+
+import BUS.DangNhapBUS;
+import DAO.DangNhapDAO;
+
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.prefs.Preferences;
 import java.awt.event.ActionEvent;
 
 public class DangNhapGUI extends JPanel {
@@ -12,7 +18,7 @@ public class DangNhapGUI extends JPanel {
     private static final long serialVersionUID = 1L;
     private JTextField txtUsernameLogin;
     private JPasswordField txtMatKhauLogin;
-
+	private JCheckBox chckbxNewCheckBox;
     public DangNhapGUI() {
         int width = 380;
         int height = 400;
@@ -99,7 +105,7 @@ public class DangNhapGUI extends JPanel {
         pnlService.add(panelSubService);
         panelSubService.setLayout(new GridLayout(0, 2, 0, 0));
         
-        JCheckBox chckbxNewCheckBox = new JCheckBox("Giữ tôi đăng nhập lần sau");
+        chckbxNewCheckBox = new JCheckBox("Giữ tôi đăng nhập lần sau");
         chckbxNewCheckBox.setSelected(true);
         chckbxNewCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -114,6 +120,60 @@ public class DangNhapGUI extends JPanel {
         panelSubService.add(lblNewLabel_1_1);
         
         JButton btnDangNhap = new JButton("Đăng nhập");
+        
+        String[] savedLoginInfo = DangNhapBUS.getSavedLoginInfo();       
+        // Hiển thị thông tin đăng nhập đã lưu lên giao diện nếu có
+        if (savedLoginInfo != null && savedLoginInfo.length == 2) {
+            txtUsernameLogin.setText(savedLoginInfo[0]);
+            txtMatKhauLogin.setText(savedLoginInfo[1]);
+            System.out.println(Arrays.toString(savedLoginInfo));
+        }
+        btnDangNhap.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+//        		JOptionPane.showMessageDialog(null, "Bạn đã click");
+        		String username = txtUsernameLogin.getText();
+                String password = new String(txtMatKhauLogin.getPassword());
+                boolean remember = chckbxNewCheckBox.isSelected();
+                
+                
+               // Gọi phương thức đăng nhập từ BUS
+                String result = DangNhapBUS.login(username, password,remember);
+                
+                // Xử lý kết quả đăng nhập
+                if (username.equals("") || password.equals("")) {
+                	JOptionPane.showMessageDialog(null, "Tên đăng nhập và mật khẩu không được bỏ trống !");
+				}else {
+					switch (result) {
+                    case "success":
+                        JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
+                        SwingUtilities.getWindowAncestor(DangNhapGUI.this).dispose();
+                        main frame = new main();
+                        frame.setVisible(true);
+
+                        break;
+                    case "invalid_password":
+                        JOptionPane.showMessageDialog(null, "Sai mật khẩu!");
+
+                        break;
+                    case "invalid_username":
+                        JOptionPane.showMessageDialog(null, "Tài khoản không tồn tại!");
+
+                        break;  
+                    case "inactive_account":
+                        JOptionPane.showMessageDialog(null, "Tài khoản không còn hoạt động	!");
+                        break;
+                    case "Unused_account":
+                        JOptionPane.showMessageDialog(null, "Tài khoản chưa được sử dụng	!");
+                        break;
+                    case "sql_error":
+                        JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi SQL khi đăng nhập!");
+                        break;
+                    default:
+                        break;
+                } 
+				}             
+        	}
+        });
         btnDangNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnDangNhap.setBorder(null);
         btnDangNhap.setBackground(new Color(51, 51, 51));
@@ -121,5 +181,9 @@ public class DangNhapGUI extends JPanel {
         btnDangNhap.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnDangNhap.setPreferredSize(new Dimension(200, 30));
         pnlService.add(btnDangNhap);
+        
+        
     }
+    
 }
+

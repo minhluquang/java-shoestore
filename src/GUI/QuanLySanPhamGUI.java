@@ -41,7 +41,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     
-    private static ChiTienSanPhamGUI chiTienSanPhamGUI;
+//    private static ChiTienSanPhamGUI chiTienSanPhamGUI;
     
 	/**
 	 * Create the panel.
@@ -231,46 +231,6 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		btnXuatExcel.addActionListener(this);
 	}
 
-//	@Override
-//	public void actionPerformed(ActionEvent e) {
-//		if (e.getSource() == btnChiTiet) {
-//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-//            } else {
-//            	chiTietNhanVienGUI.toFront();
-//            }
-//            chiTietNhanVienGUI.setVisible(true);
-//            chiTietNhanVienGUI.requestFocus();} 
-//		
-//		if (e.getSource() == btnThem) {
-//            if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-//            } else {
-//            	chiTietNhanVienGUI.toFront();
-//            }
-//            chiTietNhanVienGUI.setVisible(true);
-//            chiTietNhanVienGUI.requestFocus();
-//        } else if (e.getSource() == btnSua) {
-//        	if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//            	chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-//            } else {
-//            	chiTietNhanVienGUI.toFront();
-//            }
-//            chiTietNhanVienGUI.setVisible(true);
-//            chiTietNhanVienGUI.requestFocus();
-//        } else if (e.getSource() == btnXoa) {
-//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
-//        	if (choice == JOptionPane.YES_OPTION) {
-//        		
-//        	} else {
-//        		
-//        	}
-//        } else if (e.getSource() == btnNhapExcel) {
-//            // Xử lý khi button "Nhập excel" được nhấn
-//        } else if (e.getSource() == btnXuatExcel) {
-//            // Xử lý khi button "Xuất excel" được nhấn
-//        }
-//	}
 
     @Override
     public void actionPerformed(ActionEvent e) {

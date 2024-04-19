@@ -1,49 +1,50 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package GUI;
 
-import java.awt.EventQueue;
-
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Cursor;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
-import DTO.Role;
-import BUS.RoleBUS;
-import GUI.PhanQuyenGUI;
-
-
-
-public class ChiTietPhanQuyenGUI extends JFrame {
+/**
+ *
+ * @author MSI
+ */
+public class ChiTietHoaDonGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField txtMaPhanQuyen;
-    private JTextField txtTenPhanQuyen;
-
-    private Role rl;
-    private PhanQuyenGUI parentGUI;
-
+    private JTextField txtBillID;
+    private JTextField txtAccountID;
+    private JTextField txtDate;
+    private JTextField txtToTalPrice;
+    private JTextField txtAddress;
+    private JTextField txtCustomerID;
+    private JComboBox cmbDiscountCode;
+    private final ButtonGroup buttonGroup = new ButtonGroup();
+   
     /**
      * Launch the application.
      */
@@ -52,7 +53,7 @@ public class ChiTietPhanQuyenGUI extends JFrame {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietPhanQuyenGUI frame = new ChiTietPhanQuyenGUI(new Role(), new PhanQuyenGUI());
+                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -64,27 +65,25 @@ public class ChiTietPhanQuyenGUI extends JFrame {
     /**
      * Create the frame.
      */
-    public ChiTietPhanQuyenGUI(Role rl, PhanQuyenGUI parentGUI) {
-        this.rl = rl;
-        this.parentGUI = parentGUI;
+    public ChiTietHoaDonGUI() {
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết phân quyền không?", "Xác nhận đóng chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?", "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
             }
         });
 
-        int width = 600;
-        int height = 500;
+        int width = 380;
+        int height = 600;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
-        setTitle("Thông tin phân quyền");
+        setTitle("Chi tiết hóa đơn");
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -106,15 +105,12 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         JLabel lblNewLabel_5 = new JLabel("");
         panel.add(lblNewLabel_5);
 
-        JLabel lblNewLabel_4 = new JLabel("Thông tin phân quyền");
+        JLabel lblNewLabel_4 = new JLabel("Chi tiết hóa đơn");
         lblNewLabel_4.setForeground(new Color(255, 255, 255));
         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel.setBackground(new Color(36, 136, 203));
         panel.add(lblNewLabel_4);
-
-        JLabel lblNewLabel_5_1 = new JLabel("");
-        panel.add(lblNewLabel_5_1);
 
         JPanel panel_3 = new JPanel();
         pnlRight.add(panel_3, BorderLayout.CENTER);
@@ -130,24 +126,75 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         panel_4.add(panel_5);
         panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 
-        JLabel lblNewLabel_6_2 = new JLabel("Mã nhóm quyền");
+        JLabel lblNewLabel_6_2 = new JLabel("Mã Hóa đơn");
         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_2);
 
-        txtMaPhanQuyen = new JTextField();
-        txtMaPhanQuyen.setEnabled(false);
-        txtMaPhanQuyen.setEditable(false);
-        txtMaPhanQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtMaPhanQuyen.setColumns(10);
-        panel_5.add(txtMaPhanQuyen);
+        txtBillID = new JTextField();
+        txtBillID.setEnabled(false);
+        txtBillID.setEditable(false);
+        txtBillID.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtBillID.setColumns(10);
+        panel_5.add(txtBillID);
 
-        JLabel lblNewLabel_6 = new JLabel("Tên nhóm quyền");
+        JLabel lblNewLabel_6 = new JLabel("Tài khoản");
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
-        txtTenPhanQuyen = new JTextField();
-        txtTenPhanQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        panel_5.add(txtTenPhanQuyen);
+        txtCustomerID = new JTextField();
+        txtCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtCustomerID.setColumns(10);
+        panel_5.add(txtCustomerID);
+        
+        JLabel lblNewLabel_6_3 = new JLabel("Nhân viên lập");
+        lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3);
+
+        txtAccountID = new JTextField();
+        txtAccountID.setPreferredSize(new Dimension(100, 19));
+        txtAccountID.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtAccountID.setColumns(10);
+        panel_5.add(txtAccountID);
+
+        JLabel lblNewLabel_6_3_1 = new JLabel("Ngày lập");
+        lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1);
+
+        txtDate = new JTextField();
+        txtDate.setPreferredSize(new Dimension(100, 19));
+        txtDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtDate.setColumns(10);
+        panel_5.add(txtDate);
+
+        JLabel lblNewLabel_6_3_1_1 = new JLabel("Tổng tiền");
+        lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1_1);
+
+        txtToTalPrice = new JTextField();
+        txtToTalPrice.setPreferredSize(new Dimension(100, 19));
+        txtToTalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtToTalPrice.setColumns(10);
+        panel_5.add(txtToTalPrice);
+
+        JLabel lblNewLabel_6_3_1_2 = new JLabel("Địa chỉ");
+        lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1_2);
+
+        txtAddress = new JTextField();
+        txtAddress.setPreferredSize(new Dimension(100, 19));
+        txtAddress.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtAddress.setColumns(10);
+        panel_5.add(txtAddress);
+        
+        JLabel lblNewLabel_6_3_1_3 = new JLabel("Mã giảm giá");
+        lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1_3);
+
+        cmbDiscountCode = new JComboBox();
+        cmbDiscountCode.setModel(new DefaultComboBoxModel(new String[] {"10", "20"}));
+        cmbDiscountCode.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        cmbDiscountCode.setFocusable(false);
+        panel_5.add(cmbDiscountCode);
 
         JLabel lblNewLabel_7_1_1 = new JLabel("");
         panel_5.add(lblNewLabel_7_1_1);
@@ -157,16 +204,13 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         panel_5.add(panel_2);
         panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 
-
-
-        // ========= Xử lý lưu thông tin phân quyền =========
         JButton btnNewButton = new JButton("Lưu");
         btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				xuLyLuuThongTinPhanQuyen();
-			}
-		});
-        // ========= Xử lý lưu thông tin phân quyền =========
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
 
         btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnNewButton.setPreferredSize(new Dimension(100, 30));
@@ -179,8 +223,9 @@ public class ChiTietPhanQuyenGUI extends JFrame {
 
         JButton btnNewButton_1 = new JButton("Huỷ bỏ");
         btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết phân quyền không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết hóa đơn không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết hóa đơn", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -211,58 +256,5 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         JLabel lblNewLabel = new JLabel("");
         panel_1.add(lblNewLabel);
 
-        // ========== Gắn giá trị tự động ==========
-        if (rl != null) {
-            xuLyTuDongGanGiaTri();
-        }
     }
-
-    public void xuLyTuDongGanGiaTri() {
-        int phanQuyenId = rl.getRole_id();
-        if (phanQuyenId == 0) {
-            txtMaPhanQuyen.setText(Integer.toString(RoleBUS.generateIdRole()));
-        } else {
-            txtMaPhanQuyen.setText(Integer.toString(rl.getRole_id()));
-        }
-        
-        txtTenPhanQuyen.setText(rl.getRole_name());
-        txtTenPhanQuyen.setEditable(true);
-    }
-    
-    //
-    public void xuLyLuuThongTinPhanQuyen() {
-        int role_id = rl.getRole_id();
-        String role_name = txtTenPhanQuyen.getText();
-        
-        // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
-        if (role_name.trim().isEmpty()) {
-            String message = "Vui lòng nhập tên nhóm quyền:";
-            message += "\n - Tên Nhóm Quyền";
-            JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Nếu không tồn tại role_id (tức: không có mã nhóm quyền đó rồi thì insert)
-            boolean isExistRoleId = RoleBUS.isExistRole(role_id);
-            if (!isExistRoleId) {
-                if (RoleBUS.insertRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhóm quyền", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                    parentGUI.loadDanhSachRole();
-                    parentGUI.revalidate();
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin nhóm quyền", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } else {
-                // Nếu tồn tại role_id (tức: có mã nhóm quyền đó rồi thì update)
-                if (RoleBUS.updateRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhóm quyền", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                    parentGUI.loadDanhSachRole();
-                    parentGUI.revalidate();
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhóm quyền", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        }
-    }
-
 }

@@ -17,11 +17,11 @@ public class RoleDAO {
 
         try {
             // Thực hiện kết nối cơ sở dữ liệu
-            connection = connectDB.getConnection();
+//            connection = connectDB.getConnection();
 
             // Chuẩn bị truy vấn SQL
             String sql = "SELECT role_id, role_name FROM `role`";
-            statement = connection.prepareStatement(sql);
+            statement = connectDB.prepareStatement(sql);
 
             // Thực thi truy vấn và nhận kết quả
             resultSet = statement.executeQuery();
@@ -139,8 +139,8 @@ public class RoleDAO {
     	        // Tạo câu lệnh SQL để xóa vai trò dựa trên role_id
     	        String sql = "DELETE FROM role WHERE role_id = ?";   	        
     	        // Kết nối cơ sở dữ liệu và chuẩn bị câu lệnh SQL
-    	        Connection connection = connectDB.getConnection();
-    	        PreparedStatement statement = connection.prepareStatement(sql);   	        
+//    	        Connection connection = connectDB.getConnection();
+    	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        
     	        // Thiết lập tham số cho câu lệnh SQL
     	        statement.setInt(1, role_id);    	        
     	        // Thực thi câu lệnh SQL
@@ -153,7 +153,7 @@ public class RoleDAO {
     	        }
     	        // Đóng kết nối và tài nguyên
     	        statement.close();
-    	        connection.close();
+    	        connectDB.closeConnection();
     	    } catch (SQLException e) {
     	        e.printStackTrace();
     	    }
@@ -164,8 +164,8 @@ public class RoleDAO {
     	    try {
     	        // Tìm role_id lớn nhất mà nhỏ hơn deletedRoleId
     	        String sql = "SELECT MAX(role_id) AS max_id FROM role WHERE role_id < ?";
-    	        Connection connection = connectDB.getConnection();
-    	        PreparedStatement statement = connection.prepareStatement(sql);
+//    	        Connection connection = connectDB.getConnection();
+    	        PreparedStatement statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, deletedRoleId);
     	        ResultSet resultSet = statement.executeQuery();
     	        int nextRoleId = 1; // Giá trị mặc định nếu không tìm thấy role_id nào nhỏ hơn
@@ -174,13 +174,13 @@ public class RoleDAO {
     	        }
     	        // Thiết lập role_id tiếp theo
     	        sql = "ALTER TABLE role AUTO_INCREMENT = ?";
-    	        statement = connection.prepareStatement(sql);
+    	        statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, nextRoleId);
     	        statement.executeUpdate();
     	        // Đóng kết nối và tài nguyên
     	        resultSet.close();
     	        statement.close();
-    	        connection.close();
+    	        connectDB.closeConnection();
     	    } catch (SQLException e) {
     	        e.printStackTrace();
     	    }
@@ -193,9 +193,9 @@ public class RoleDAO {
     	    PreparedStatement statement = null;
     	    ResultSet resultSet = null;   	    
     	    try {
-    	        connection = connectDB.getConnection();
+//    	        connection = connectDB.getConnection();
     	        String sql = "SELECT * FROM role WHERE role_id = ?";
-    	        statement = connection.prepareStatement(sql);
+    	        statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, role_id);
     	        resultSet = statement.executeQuery();
     	        

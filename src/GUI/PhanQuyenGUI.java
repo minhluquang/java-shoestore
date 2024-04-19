@@ -226,25 +226,6 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		btnXuatExcel.addActionListener(this);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) { 
-		if (e.getSource() == btnThem) {
-        	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
-        		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);
-            } else {
-            	chiTietPhanQuyenGUI.toFront();
-            }
-        	chiTietPhanQuyenGUI.setVisible(true);
-        	chiTietPhanQuyenGUI.requestFocus();
-        } else if (e.getSource() == btnSua) {
-        	 hienThiGiaoDienSua();
-        } 
-        else if (e.getSource() == btnNhapExcel) {
-            // Xử lý khi button "Nhập excel" được nhấn
-        } else if (e.getSource() == btnXuatExcel) {
-            // Xử lý khi button "Xuất excel" được nhấn
-        }
-	}
 
 	// Load danh sách nhân viên
 	public void loadDanhSachRole() {
@@ -309,5 +290,25 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		        JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhóm quyền để sửa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		    }
 		}
+		@Override
+		public void actionPerformed(ActionEvent e) { 
+			if (e.getSource() == btnThem) {
+	        	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
+	        		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);
+	            } else {
+	            	chiTietPhanQuyenGUI.toFront();
+	            }
+	        	chiTietPhanQuyenGUI.setVisible(true);
+	        	chiTietPhanQuyenGUI.requestFocus();
+	        } else if (e.getSource() == btnSua) {
+	        	 hienThiGiaoDienSua();
+	        } 
+	        else if (e.getSource() == btnNhapExcel) {
+	            // Xử lý khi button "Nhập excel" được nhấn
+	        } else if (e.getSource() == btnXuatExcel) {
+	            // Xử lý khi button "Xuất excel" được nhấn
+	        }
+		}
+
 }
 

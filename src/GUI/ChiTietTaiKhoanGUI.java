@@ -305,6 +305,23 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 			message += "\n - Username";
 			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} else {
+			// Kiểm tra lỗi ràng buộc
+			String messageError = "Vui lòng nhập đúng định dạng: ";
+			Boolean isError = false;
+			
+			String regexUsername = "^[a-zA-Z][a-zA-Z0-9]{7,}$";
+			
+			if (!username.matches(regexUsername)) {
+				messageError += "\n - Username phải có ít nhất 8 ký tự";
+				messageError += "\n - Username bắt đầu phải là ký tự chữ";
+				isError = true;	
+			}
+			
+			if (isError) {
+				JOptionPane.showMessageDialog(null, messageError, "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
 			if (TaiKhoanBUS.isExistUsername(username, accountId)) {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {

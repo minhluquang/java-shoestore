@@ -257,6 +257,29 @@ public class ChiTietKhachHangGUI extends JFrame {
 			message += "\n - Số điện thoại";
 			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} else {
+			// Kiểm tra lỗi ràng buộc
+			String messageError = "Vui lòng nhập đúng định dạng: ";
+			Boolean isError = false;
+			
+			String regexPhoneNumber = "^0\\d{9}$";
+			String regexFullname = "^[a-zA-Z]+(\\s[a-zA-Z]+)+$";
+			
+			
+			if (!customerName.matches(regexFullname)) {
+				messageError += "\n - Họ và tên không dấu (ví dụ: Lu Quang Minh)";
+				isError = true;
+			}
+			if (!phoneNumber.matches(regexPhoneNumber)) {
+				messageError += "\n - Số điện thoại (ví dụ: 0931814480)";
+				isError = true;
+			} 
+			
+			if (isError) {
+				JOptionPane.showMessageDialog(null, messageError, "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			
 			if (KhachHangBUS.isExistPhoneNumber(phoneNumber, customerId)) {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã có khách hàng sử dụng số điện thoại này", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {

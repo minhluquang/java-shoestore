@@ -15,10 +15,10 @@ public class KhuyenmaiDAO {
 	     ResultSet resultSet = null;
 		try {
             // Thực hiện kết nối cơ sở dữ liệu
-            connection = connectDB.getConnection();
+			connectDB.getConnection();
             // Chuẩn bị truy vấn SQL
             String sql = "SELECT * FROM `discount`";
-            statement = connection.prepareStatement(sql);
+            statement = connectDB.prepareStatement(sql);
             // Thực thi truy vấn và nhận kết quả
             resultSet = statement.executeQuery();
             // Duyệt qua kết quả và thêm vào danh sách
@@ -87,7 +87,7 @@ public class KhuyenmaiDAO {
 		    ResultSet resultSet = null;
 		    try {
 		        // Thực hiện kết nối cơ sở dữ liệu
-		        connection = connectDB.getConnection();
+//		        connection = connectDB.getConnection();
 		        // Chuẩn bị truy vấn SQL
 		        String sql = "SELECT * FROM discount WHERE discount_code = ?";
 		        statement = connection.prepareStatement(sql);
@@ -124,7 +124,7 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    try {
 		        // Thực hiện kết nối cơ sở dữ liệu
-		        connection = connectDB.getConnection();
+//		        connection = connectDB.getConnection();
 		        // Chuẩn bị truy vấn SQL
 		        String sql = "UPDATE discount "
 		                   + "SET condition_value = ?, discount = ?, start_date = ?, end_date = ?, active = ? "
@@ -165,7 +165,7 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    try {
 		        // Thực hiện kết nối cơ sở dữ liệu
-		        connection = connectDB.getConnection();
+//		        connection = connectDB.getConnection();
 		        // Chuẩn bị truy vấn SQL
 		        String sql = "INSERT INTO discount (discount_code, condition_value, discount, start_date, end_date, active) VALUES (?, ?, ?, ?, ?, ?)";
 		        statement = connection.prepareStatement(sql);
@@ -204,7 +204,7 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    try {
 		        // Thực hiện kết nối cơ sở dữ liệu
-		        connection = connectDB.getConnection();
+//		        connection = connectDB.getConnection();
 		        // Chuẩn bị truy vấn SQL để xóa dữ liệu dựa trên discount_code
 		        String sql = "DELETE FROM discount WHERE discount_code = ?";
 		        statement = connection.prepareStatement(sql);
@@ -240,7 +240,7 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    ResultSet rs = null;
 		    try {
-		        connection = connectDB.getConnection();
+//		        connection = connectDB.getConnection();
 		        String sql = "SELECT * FROM discount WHERE discount_code = ?";
 		        statement = connection.prepareStatement(sql);
 		        statement.setString(1, discount_code);

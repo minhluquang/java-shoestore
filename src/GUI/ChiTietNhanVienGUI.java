@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -313,12 +314,34 @@ public class ChiTietNhanVienGUI extends JFrame {
 			message += "\n - Username";
 			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} else {
-//			TaiKhoan tk = new TaiKhoan();
-//			tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username);
-//			if (TaiKhoanBUS.isExistUsername(username, tk.getAccountId())) {
-//				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-//			} else {
+			// Kiểm tra lỗi ràng buộc
+			String messageError = "Vui lòng nhập đúng định dạng: ";
+			Boolean isError = false;
 			
+			String regexPhoneNumber = "^0\\d{9}$";
+			String regexEmail = "^[a-zA-Z0-9.-_]+@[a-zA-Z0.9.-_]+\\.[a-zA-Z]{2,}$";
+			String regexFullname = "^[a-zA-Z]+(\\s[a-zA-Z]+)+$";
+			
+			
+			if (!fullname.matches(regexFullname)) {
+				messageError += "\n - Họ và tên không dấu (ví dụ: Lu Quang Minh)";
+				isError = true;
+			}
+			if (!phoneNumber.matches(regexPhoneNumber)) {
+				messageError += "\n - Số điện thoại (ví dụ: 0931814480)";
+				isError = true;
+			} 
+			if (!email.matches(regexEmail)) {
+				messageError += "\n - Email (ví dụ: minhlq2911@sgu.edu.vn)";
+				isError = true;
+			}
+			
+			if (isError) {
+				JOptionPane.showMessageDialog(null, messageError, "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+				
 			// Nếu tồn tại staff_id (tức: có nhân viên thì update)
 			if (NhanVienBUS.isExistNhanVien(staffId)) {
 				if (NhanVienBUS.updateNhanVien(staffId, fullname, email, phoneNumber, status, username)) {
