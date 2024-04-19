@@ -11,7 +11,7 @@ public class DangKyDAO {
 		 Connection conn = null;
 	     PreparedStatement ps = null;	        
 	     try {
-			conn = connectDB.getConnection();
+			connectDB.getConnection();
 			String sql = "INSERT INTO account (account_id, username, password, account_status, position) VALUE (?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, tk.getAccountId());
