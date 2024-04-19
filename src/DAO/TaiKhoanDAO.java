@@ -9,6 +9,7 @@ import DTO.TaiKhoan;
 
 public class TaiKhoanDAO {
 	public static ArrayList<TaiKhoan> getDanhSachTaiKhoan() {
+		connectDB.getConnection();
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
@@ -27,10 +28,12 @@ public class TaiKhoanDAO {
 			 e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dstk;
 	}
 	
 	public static boolean isExistUsername(String username, int accountId) {
+		connectDB.getConnection();
 		boolean isExist = false;
 		
 		try {
@@ -47,10 +50,12 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return isExist;
 	}
 	
 	public static boolean isExistIdTaiKhoan(int accountId) {
+		connectDB.getConnection();
 		boolean isExist = false;
 		
 		try {
@@ -65,10 +70,12 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return isExist;
 	}
 	
 	public static int generateIdTaiKhoan() {
+		connectDB.getConnection();
 		int idTaiKhoan = 0;
 		
 		try {
@@ -85,11 +92,13 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return idTaiKhoan;
 	}
 	
 	
 	public static boolean updateTaiKhoan(int accountId, String username, int accountStatus, String position) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
@@ -97,6 +106,7 @@ public class TaiKhoanDAO {
 					+ "SET username = '" + username + "', account_status = " + accountStatus + ", position = '" + position + "' "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
+			System.out.println(i);
 			if (i > 0) {
 				success = true;
 			}
@@ -104,10 +114,12 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 	
 	public static boolean insertTaiKhoan(int accountId, String username, int accountStatus, String position) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
@@ -121,11 +133,14 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 	
 	public static ArrayList<TaiKhoan> searchTaiKhoan(String keyword, int searchStatus, String searchRole) {
+		connectDB.getConnection();
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
+
 		try {
 			String sql = "SELECT * "
 					+ "FROM account "
@@ -152,10 +167,12 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dstk;
 	}
 	
-	public static TaiKhoan getDetailTaiKhoanByUsername(String username) {
+	public static TaiKhoan getDetailTaiKhoanByUsername(String username, boolean closeDatabase) {
+		connectDB.getConnection();
 		TaiKhoan tk = null;
 		
 		try {
@@ -174,6 +191,9 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		if (closeDatabase) {
+			connectDB.closeConnection();			
+		}
 		return tk;
 	}
 }

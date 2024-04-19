@@ -12,6 +12,7 @@ public class PhieuNhapDAO {
 	}
 
 	public static ArrayList<PhieuNhap> getDanhSachPhieuNhap() {
+		connectDB.getConnection();
 		ArrayList<PhieuNhap> dspn = new ArrayList<>();
 		try {
 			String sql = "Select * from goodsreceipt";
@@ -30,12 +31,15 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
+		connectDB.closeConnection();
 		return dspn;
 	}
 
 	public static String getTenNhanVienById(int id) {
+		connectDB.getConnection();
 		String tenNhanVien = "";
+
 		try {
 			String sql = "SELECT fullname FROM staff WHERE staff_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
@@ -45,11 +49,15 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		connectDB.closeConnection();
 		return tenNhanVien;
 	}
 
 	public static PhieuNhap getPhieuNhapById(int id) {
+		connectDB.getConnection();
 		PhieuNhap pn = null;
+		
 		try {
 			String sql = "SELECT * FROM goodsreceipt WHERE receipt_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
@@ -65,6 +73,8 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		connectDB.closeConnection();
 		return pn;
 	}
 

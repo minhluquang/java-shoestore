@@ -272,7 +272,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 	public void xuLyTuDongGanGiaTri() {
 		int staffId = nv.getStaffId();
 		if (staffId == 0) {
-			txtMaNhanVien.setText(Integer.toString(NhanVienBUS.generateIdNhanVien()));
+			txtMaNhanVien.setText(Integer.toString(NhanVienBUS.generateIdNhanVien(true)));
 			txtTaiKhoan.setEnabled(true);
 			txtTaiKhoan.setEditable(true);
 		} else {
@@ -352,7 +352,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 					JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhân viên", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
-				TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username);
+				TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username, true);
 				if (tk == null) {
 					JOptionPane.showMessageDialog(null, "Hệ thống không tồn tại username: " + username, "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 				} else if (NhanVienBUS.isUsedAccountId(tk.getAccountId())) {

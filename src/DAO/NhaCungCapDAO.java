@@ -28,7 +28,9 @@ public class NhaCungCapDAO {
 	}
 
 	public static String getTenNhaCungCapById(int id) {
+		connectDB.getConnection();
 		String tenNhaCungCap = "";
+		
 		try {
 			String sql = "SELECT supplier_name FROM supplier WHERE supplier_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
@@ -38,6 +40,8 @@ public class NhaCungCapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		connectDB.closeConnection();
 		return tenNhaCungCap;
 	}
 }

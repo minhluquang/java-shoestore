@@ -11,6 +11,7 @@ import DTO.TaiKhoan;
 
 public class NhanVienDAO {
 	public static ArrayList<NhanVien> getDanhSachNhanVien() {
+		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
@@ -32,10 +33,12 @@ public class NhanVienDAO {
 			 e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dsnv;
 	}
 	
-	public static int generateIdNhanVien() {
+	public static int generateIdNhanVien(boolean closeDatabase) {
+		connectDB.getConnection();
 		int idNhanVien = 0;
 		
 		try {
@@ -52,10 +55,14 @@ public class NhanVienDAO {
 			e.printStackTrace();
 		}
 		
+		if (closeDatabase) {
+			connectDB.closeConnection();			
+		}
 		return idNhanVien;
 	}
 	
 	public static boolean isExistNhanVien(int id) {
+		connectDB.getConnection();
 		boolean isExist = false;
 		
 		try {
@@ -69,40 +76,44 @@ public class NhanVienDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return isExist;
 	}
 	
 	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status, String username) {
-		boolean success = false;
-		
-		try {
-			TaiKhoan tk = new TaiKhoan();
-			tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
-			
-			String sql = "UPDATE staff "
-			           + "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = '" + status + "', account_id = " + tk.getAccountId();
-			sql += " WHERE staff_id = " + id;
-			
-			int i = connectDB.runUpdate(sql);
-			if (i > 0) {
-				success = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return success;
+	    connectDB.getConnection();
+	    boolean success = false;
+	    
+	    try {
+	        TaiKhoan tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username, false);
+	        
+	        String sql = "UPDATE staff "
+	                    + "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = '" + status + "', account_id = " + tk.getAccountId()
+	                    + " WHERE staff_id = " + id;
+	        
+	        int i = connectDB.runUpdate(sql);
+	        if (i > 0) {
+	            success = true;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    
+	    connectDB.closeConnection();
+	    return success;
 	}
+
 	
 	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String username) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
 			TaiKhoan tk = new TaiKhoan();
-			tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
+			tk = TaiKhoanDAO.getDetailTaiKhoanByUsername(username, false);
 			
 			String sql = "INSERT INTO staff (staff_id, fullname, email, phone_number, status, account_id) "
-					     + "VALUES (" + generateIdNhanVien() + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ", " + tk.getAccountId() + ")";
+					     + "VALUES (" + generateIdNhanVien(false) + ", '" + fullname + "', '" + email + "', '" + phoneNumber + "', " + status + ", " + tk.getAccountId() + ")";
 			
 			
 			int i = connectDB.runUpdate(sql);
@@ -113,10 +124,12 @@ public class NhanVienDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 	
 	public static ArrayList<NhanVien> searchNhanVien(String keyword, int status) {
+		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
@@ -142,10 +155,13 @@ public class NhanVienDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+		
+		connectDB.closeConnection();
 		return dsnv;
 	}
 	
 	public static boolean isUsedAccountId(int accountId) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
@@ -161,6 +177,7 @@ public class NhanVienDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 }

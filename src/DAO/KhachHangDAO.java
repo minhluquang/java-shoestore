@@ -11,6 +11,7 @@ import DTO.KhachHang;
 
 public class KhachHangDAO {
 	public static ArrayList<KhachHang> getDanhSachKhachHang() {
+		connectDB.getConnection();
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 		
 		try {
@@ -27,10 +28,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dskh;
 	}
 	
 	public static int generateIdKhachHang() {
+		connectDB.getConnection();
 		int idKhachHang = 0;
 		
 		try {
@@ -47,10 +50,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return idKhachHang;
 	}
 	
 	public static boolean isExistKhachHang(int id) {
+		connectDB.getConnection();
 		boolean isExist = false;
 		
 		try {
@@ -64,10 +69,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return isExist;
 	}
 	
 	public static boolean updateKhachHang(int customerId, String customerName, String phoneNumber) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
@@ -90,10 +97,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 	
 	public static boolean isExistPhoneNumber(String phoneNumber, int customerId) {
+		connectDB.getConnection();
 		boolean isExist = false;
 		
 		try {
@@ -111,10 +120,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return isExist;
 	}
 	
 	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber) {
+		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
@@ -136,10 +147,12 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return success;
 	}
 	
 	public static ArrayList<KhachHang> searchKhachHang(String keyword) {
+		connectDB.getConnection();
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 
 		try {
@@ -168,6 +181,7 @@ public class KhachHangDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dskh;
 	}
 }

@@ -13,8 +13,8 @@ public class NhanVienBUS {
 		return dsnv;
 	}
 	
-	public static int generateIdNhanVien() {
-		int id = NhanVienDAO.generateIdNhanVien();
+	public static int generateIdNhanVien(boolean closeDatabase) {
+		int id = NhanVienDAO.generateIdNhanVien(closeDatabase);
 		return id;
 	}
 	

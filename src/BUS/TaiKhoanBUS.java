@@ -44,7 +44,7 @@ public class TaiKhoanBUS {
 		return dstk;
 	}
 	
-	public static TaiKhoan getDetailTaiKhoanByUsername(String username) {
-		return 	TaiKhoanDAO.getDetailTaiKhoanByUsername(username);
+	public static TaiKhoan getDetailTaiKhoanByUsername(String username, boolean closeDatabase) {
+		return 	TaiKhoanDAO.getDetailTaiKhoanByUsername(username, closeDatabase);
 	}
 }
