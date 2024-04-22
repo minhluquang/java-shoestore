@@ -108,7 +108,7 @@ public class BanHangGUI extends JPanel {
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
-        lblDSSP.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblDSSP.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel1.setBackground(new Color(36, 136, 203));
         panel1.add(lblDSSP);
         tblSanPham = new JTable();
@@ -138,7 +138,7 @@ public class BanHangGUI extends JPanel {
         lblGH = new JLabel("Giỏ hàng");
         lblGH.setForeground(new Color(255, 255, 255));
         lblGH.setHorizontalAlignment(SwingConstants.CENTER);
-        lblGH.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblGH.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel2.setBackground(new Color(36, 136, 203));
         panel2.add(lblGH);
         
@@ -252,26 +252,68 @@ public class BanHangGUI extends JPanel {
 
         pnlDanhSachHD = new JPanel(new BorderLayout());
         pnlThongTinHD = new JPanel(new GridLayout(7, 1));
+        
         lblThongTinHD = new JLabel("Thông Tin Hóa Đơn");
+        lblThongTinHD.setFont(new Font("Tahoma", Font.BOLD, 18));
+        
         lblMaHD = new JLabel("Mã Hóa Đơn:");
+        lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblMaKH = new JLabel("Mã Khách Hàng:");
+        lblMaKH.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNVLap = new JLabel("Nhân Viên Lập:");
+        lblNVLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNgayLap = new JLabel("Ngày Lập:");
+        lblNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblTongTien = new JLabel("Tổng Tiền:");
+        lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblGhiChu = new JLabel("Ghi Chú:");
+        lblGhiChu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaTu = new JTextField(10);
+        txtGiaTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaDen = new JTextField(10);
+        txtGiaDen.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtNgayLapTu = new JTextField(10);
+        txtNgayLapTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtNgayLapDen = new JTextField(10);
+        txtNgayLapDen.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblDSHD = new JTable();
+        tblDSHD.setBorder(null);
+        tblDSHD.setSelectionBackground(new Color(232, 57, 95));
+        tblDSHD.setRowHeight(25);
+        tblDSHD.setIntercellSpacing(new Dimension(0, 0));
+        tblDSHD.setFocusable(false);
+        tblDSHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tblDSHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+        tblDSHD.getTableHeader().setOpaque(false);
+        tblDSHD.getTableHeader().setBackground(new Color(36,136,203));
+        tblDSHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblDSHD.setRowHeight(25);
         spnDSHD = new JScrollPane(tblDSHD);
+        spnDSHD.setBorder(null);
+        spnDSHD.setBackground(new Color(255, 255, 255));
 
         pnlChiTietHD = new JPanel(new BorderLayout());
         pnlThongTinCTHD = new JPanel();
         tblCTHD = new JTable();
+        tblCTHD.setBorder(null);
+        tblCTHD.setSelectionBackground(new Color(232, 57, 95));
+        tblCTHD.setRowHeight(25);
+        tblCTHD.setIntercellSpacing(new Dimension(0, 0));
+        tblCTHD.setFocusable(false);
+        tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tblCTHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+        tblCTHD.getTableHeader().setOpaque(false);
+        tblCTHD.getTableHeader().setBackground(new Color(36,136,203));
+        tblCTHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblCTHD.setRowHeight(25);
         spnCTHD = new JScrollPane(tblCTHD);
+        spnCTHD.setBorder(null);
+        spnCTHD.setBackground(new Color(255, 255, 255));
         txtMaHD = new JTextField(10);
-
+        txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        JLabel jLabeltk = new JLabel("Tìm kiếm");
+        jLabeltk.setFont(new Font("Tahoma", Font.BOLD, 14));
         pnlThongTinHD.add(lblThongTinHD);
         pnlThongTinHD.add(lblMaHD);
         pnlThongTinHD.add(lblMaKH);
@@ -279,7 +321,7 @@ public class BanHangGUI extends JPanel {
         pnlThongTinHD.add(lblNgayLap);
         pnlThongTinHD.add(lblTongTien);
         pnlThongTinHD.add(lblGhiChu);
-        pnlThongTinHD.add(new JLabel("Tìm kiếm"));
+        pnlThongTinHD.add(jLabeltk);
         pnlThongTinHD.add(txtGiaTu);
         pnlThongTinHD.add(txtGiaDen);
         pnlThongTinHD.add(txtNgayLapTu);
@@ -287,7 +329,9 @@ public class BanHangGUI extends JPanel {
         pnlDanhSachHD.add(pnlThongTinHD, BorderLayout.NORTH);
         pnlDanhSachHD.add(spnDSHD, BorderLayout.CENTER);
 
-        pnlThongTinCTHD.add(new JLabel("Thông tin chi tiết hóa đơn"));
+        JLabel jLabelttct = new JLabel("Thông tin chi tiết hóa đơn");
+        jLabelttct.setFont(new Font("Tahoma", Font.BOLD, 18));
+        pnlThongTinCTHD.add(jLabelttct);
         pnlThongTinCTHD.add(txtMaHD);
 
         pnlChiTietHD.add(pnlThongTinCTHD, BorderLayout.NORTH);
