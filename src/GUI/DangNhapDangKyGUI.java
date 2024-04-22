@@ -37,6 +37,8 @@ public class DangNhapDangKyGUI extends JFrame {
 	private JButton btnDangKyNgay;
 	private JLabel lblSwitchToLogin;
 	private JButton btnDangNhapNgay;
+	private JPanel panel;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -148,7 +150,21 @@ public class DangNhapDangKyGUI extends JFrame {
 		
 		JPanel pnlDangKy = new JPanel();
 		pnlCards.add(pnlDangKy, "pnlDangKy");
+		DangKyGUI dangKyGUI = new DangKyGUI();
 		pnlDangKy.setLayout(new BorderLayout());
-		pnlDangKy.add(new DangKyGUI(), BorderLayout.CENTER);
+		pnlDangKy.add(dangKyGUI, BorderLayout.CENTER);
+		dangKyGUI.setCardLayout(cardLayout); 
+		dangKyGUI.setPnlCards(pnlCards); 
+
+
+		JPanel pnlChiTietDangKy = new JPanel();
+		pnlCards.add(pnlChiTietDangKy, "pnlChiTietDangKy");
+		ChiTietDangKyGUI chiTietDangKyGUI = new ChiTietDangKyGUI();
+		pnlChiTietDangKy.setLayout(new BorderLayout());
+		pnlChiTietDangKy.add(chiTietDangKyGUI, BorderLayout.CENTER);
+		chiTietDangKyGUI.setCardLayout(cardLayout);
+		chiTietDangKyGUI.setPnlCards(pnlCards);
+		
+		
 	}
 }

@@ -19,9 +19,26 @@ public class DangKyGUI extends JPanel {
     private JTextField txtUsernameRegister;
     private JPasswordField txtMatKhauRegister;
     private JPasswordField txtNhapLaiMatKhauRegister;
-	
+    private CardLayout cardLayout;
+	private JPanel pnlCards;
+
+    public void setCardLayout(CardLayout cardLayout) {
+        this.cardLayout = cardLayout;
+    }
+
+    public void setPnlCards(JPanel pnlCards) {
+        this.pnlCards = pnlCards;
+    }
+
+    public int getAccountId() {
+       
+        int accountId = TaiKhoanBUS.generateIdTaiKhoan(); // Lấy accountId từ nguồn dữ liệu tương ứng
+        return accountId;
+    }
+
 
     public DangKyGUI() {
+    	
         int width = 380;
         int height = 500;
         setPreferredSize(new Dimension(380, 600));
@@ -138,9 +155,19 @@ public class DangKyGUI extends JPanel {
             		if(dk != JOptionPane.YES_OPTION) {
             			return;
             		}
+        			
+        			String regexUsername = "^[a-zA-Z][a-zA-Z0-9]{7,}$";
+        			
+        			
         			TaiKhoan tk = new TaiKhoan();
-					tk.setUsername(username);
-					tk.setAccountId(TaiKhoanBUS.generateIdTaiKhoan());
+        			if (!username.matches(regexUsername)){
+						JOptionPane.showMessageDialog(null, "- Username phải có ít nhất 8 ký tự \n- Username bắt đầu phải là ký tự chữ \\n- Username không được có dấu");
+						return;
+        			} else {
+						tk.setUsername(username);
+					}
+					
+					tk.setAccountId(getAccountId());	   
 					tk.setAccountStatus(1);
 					tk.setPosition("staff");
 					if (password.equals(rePassword)) {
@@ -151,21 +178,17 @@ public class DangKyGUI extends JPanel {
 					}
         			if (!TaiKhoanBUS.isExistUsername(username,tk.getAccountId())) {
         				DangKyBUS.register(tk);
-    					JOptionPane.showMessageDialog(null, "Đăng Ký Thành Công");
-//    					 JFrame frame = new JFrame("Đăng nhập");
-//    				        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    				        
-//    				        DangNhapGUI dangNhapGUI = new DangNhapGUI();
-//    				        frame.getContentPane().add(dangNhapGUI);
-//    				        
-//    				        frame.pack();
-//    				        frame.setVisible(true);
+    					JOptionPane.showMessageDialog(null, "Vui lòng thêm thông tin tài khoản");
+    					cardLayout.show(pnlCards,"pnlChiTietDangKy");
+//    					
 						
 					} else {
 						JOptionPane.showMessageDialog(null, "Tài khoản đã tồn tại");
+						return;
 					}				
 				} else {
 					JOptionPane.showMessageDialog(null, "Thông tin không được bỏ trống");
+					return;
 				}
         		
         	}
@@ -178,6 +201,9 @@ public class DangKyGUI extends JPanel {
         btnDangNhap.setPreferredSize(new Dimension(200, 30));
         pnlService.add(btnDangNhap);
     }
+
+
+
     
          
 
