@@ -274,7 +274,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	        // Kiểm tra xem discount_code đã tồn tại chưa
 	        boolean isExistDiscount = KhuyenMaiBUS.isExistKM(discountCode);
 	        if (!isExistDiscount) {
-	        	   if (KhuyenmaiDAO.insertKhuyenMai(discountCode, conditionValue, discount, startDate, endDate, active)) {
+	        	   if (KhuyenMaiBUS.insertKhuyenMai(discountCode, conditionValue, discount, startDate, endDate, active)) {
 		                JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 		                parentGUI.loadDanhSachKhuyenMai();
 		                dispose();

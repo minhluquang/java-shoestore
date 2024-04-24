@@ -20,8 +20,8 @@ public class RoleBUS {
 		    return dsrl;
 		}
 		// write id
-		public static int generateIdRole() {
-			int idrole = RoleDAO.generateIdRole();
+		public static int generateIdRole(boolean closeDatabase) {
+			int idrole = RoleDAO.generateIdRole(closeDatabase);
 		    return idrole;
 		}
 		// check

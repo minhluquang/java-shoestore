@@ -50,22 +50,26 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JButton btnDangXuat;
     // phân quyền
     private JButton btnPhanQuyen;
+    // warranty
+    private JButton btnWarranty;
     public String absolutePath = new File("").getAbsolutePath();
     private JPanel pnlCards;
     
     private CardLayout cardLayout;
     private JPanel pnlQLNV;
-    private JButton btnBaoHanh;
+    private JButton btnReturn;
     private JPanel pnlBanHang;
     private JPanel pnlSanPham;
     private JPanel pnlKhuyenMai;
     private JPanel pnlNhanVien;
     private JPanel pnlKhachHang;
     private JPanel pnlNhapHang;
-    private JPanel pnlBaoHanh;
+    private JPanel pnlReturn;
     private JPanel pnlTrangChu;
     private JPanel pnlTaiKhoan;
     private JPanel pnlPhanQuyen;
+    // warranty
+    private JPanel pnlWarranty;
     /**
      * Launch the application.
      */
@@ -220,16 +224,26 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnNhapHang.setBorder(null);
         pnlSidebarCenter.add(btnNhapHang);
         
-        btnBaoHanh = new JButton(" Bảo hành");
-        btnBaoHanh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBaoHanh.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
-        btnBaoHanh.setForeground(Color.WHITE);
-        btnBaoHanh.setFont(new Font("Tahoma", Font.BOLD, 18));
-        btnBaoHanh.setFocusable(false);
-        btnBaoHanh.setBorder(null);
-        btnBaoHanh.setBackground(new Color(51, 51, 51));
-        pnlSidebarCenter.add(btnBaoHanh);
+        btnReturn = new JButton(" Return ");
+        btnReturn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnReturn.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
+        btnReturn.setForeground(Color.WHITE);
+        btnReturn.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnReturn.setFocusable(false);
+        btnReturn.setBorder(null);
+        btnReturn.setBackground(new Color(51, 51, 51));
+        pnlSidebarCenter.add(btnReturn);
         
+        // warranty
+        btnWarranty = new JButton(" Warranty ");
+        btnWarranty.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnWarranty.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
+        btnWarranty.setForeground(Color.WHITE);
+        btnWarranty.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnWarranty.setFocusable(false);
+        btnWarranty.setBorder(null);
+        btnWarranty.setBackground(new Color(51, 51, 51));
+        pnlSidebarCenter.add(btnWarranty);
         // phân quyền
         btnPhanQuyen = new JButton(" Phân Quyền");
         btnPhanQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -306,10 +320,16 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlNhapHang.setLayout(new BorderLayout(0, 0));
         pnlNhapHang.add(new PhieuNhapGUI(), BorderLayout.CENTER);
         
-        pnlBaoHanh = new JPanel();
-        pnlCards.add(pnlBaoHanh, "pnlBaoHanh");
-        pnlBaoHanh.setLayout(new BorderLayout(0, 0));
-        pnlBaoHanh.add(new ReturnGUI(), BorderLayout.CENTER);
+        pnlReturn = new JPanel();
+        pnlCards.add(pnlReturn, "pnlReturn");
+        pnlReturn.setLayout(new BorderLayout(0, 0));
+        pnlReturn.add(new ReturnGUI(), BorderLayout.CENTER);
+        
+        // warranty
+        pnlWarranty = new JPanel();
+        pnlCards.add(pnlWarranty, "pnlWarranty");
+        pnlWarranty.setLayout(new BorderLayout(0, 0));
+        pnlWarranty.add(new WarrantyGUI(), BorderLayout.CENTER);
         
         // phân quyền
         pnlPhanQuyen = new JPanel();
@@ -341,7 +361,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnNhapHang.addActionListener(this);
         btnSanPham.addActionListener(this);
         btnTrangChu.addActionListener(this);
-        btnBaoHanh.addActionListener(this);
+        btnReturn.addActionListener(this);
+        btnWarranty.addActionListener(this);
         btnTaiKhoan.addActionListener(this);
         btnPhanQuyen.addActionListener(this);
         
@@ -354,7 +375,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnKhachHang.addMouseListener(this);
         btnNhapHang.addMouseListener(this);
         btnDangXuat.addMouseListener(this);
-        btnBaoHanh.addMouseListener(this);
+        btnReturn.addMouseListener(this);
+        btnWarranty.addMouseListener(this);
         btnTaiKhoan.addMouseListener(this);
         btnPhanQuyen.addMouseListener(this);
     }
@@ -390,20 +412,24 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	        cardLayout.show(pnlCards, "pnlNhapHang");
 	        btnNhapHang.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnNhapHang); 
-	    } else if (e.getSource() == btnBaoHanh) {
-	        cardLayout.show(pnlCards, "pnlBaoHanh");
-	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
-	        resetButtonColors(btnBaoHanh); 
+	    } else if (e.getSource() == btnReturn) {
+	        cardLayout.show(pnlCards, "pnlReturn");
+	        btnReturn.setBackground(new Color(100, 100, 100)); 
+	        resetButtonColors(btnReturn); 
+	    } else if (e.getSource() == btnWarranty) {
+	        cardLayout.show(pnlCards, "pnlWarranty");
+	        btnWarranty.setBackground(new Color(100, 100, 100)); 
+	        resetButtonColors(btnWarranty); 
 	    } else if (e.getSource() == btnPhanQuyen) {
 	        cardLayout.show(pnlCards, "pnlPhanQuyen");
-	        btnBaoHanh.setBackground(new Color(100, 100, 100)); 
+	        btnPhanQuyen.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnPhanQuyen);  
 	    } else if (e.getSource() == btnTaiKhoan) {
 	        cardLayout.show(pnlCards, "pnlTaiKhoan");
 	        btnTaiKhoan.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnTaiKhoan); 
 	    } else if (e.getSource() == btnDangXuat) {
-	        resetButtonColors(btnBaoHanh); 
+	        resetButtonColors(btnDangXuat); 
 	        btnDangXuat.setBackground(new Color(100, 100, 100)); 
 	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?", "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
 	        if (choice == JOptionPane.YES_OPTION) {
@@ -433,7 +459,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	
 	// ========== Start: Reset màu btns ==========
 	private void resetButtonColors(JButton selectedButton) {
-	    JButton[] buttons = {btnTrangChu, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang, btnNhapHang, btnDangXuat, btnBaoHanh, btnTaiKhoan};
+	    JButton[] buttons = {btnTrangChu, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang, btnNhapHang, btnDangXuat, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty};
 	    for (JButton button : buttons) {
 	        if (button != selectedButton) {
 	            button.setBackground(new Color(51, 51, 51));

@@ -19,8 +19,8 @@ private static ArrayList<Return> dsbh ;
 	    return dsbh;
 	}
 	// write id
-	public static int generateIdReturn() {
-		int idreturn = ReturnDAO.generateIdReturn();
+	public static int generateIdReturn(boolean closeDatabase) {
+		int idreturn = ReturnDAO.generateIdReturn(closeDatabase);
 	    return idreturn;
 	}
 	// check

@@ -87,7 +87,6 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         setTitle("Thông tin phân quyền");
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
 
@@ -103,18 +102,12 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         pnlRight.add(panel, BorderLayout.NORTH);
         panel.setLayout(new GridLayout(0, 1, 0, 0));
 
-        JLabel lblNewLabel_5 = new JLabel("");
-        panel.add(lblNewLabel_5);
-
         JLabel lblNewLabel_4 = new JLabel("Thông tin phân quyền");
         lblNewLabel_4.setForeground(new Color(255, 255, 255));
         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel.setBackground(new Color(36, 136, 203));
         panel.add(lblNewLabel_4);
-
-        JLabel lblNewLabel_5_1 = new JLabel("");
-        panel.add(lblNewLabel_5_1);
 
         JPanel panel_3 = new JPanel();
         pnlRight.add(panel_3, BorderLayout.CENTER);
@@ -148,9 +141,6 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         txtTenPhanQuyen = new JTextField();
         txtTenPhanQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_5.add(txtTenPhanQuyen);
-
-        JLabel lblNewLabel_7_1_1 = new JLabel("");
-        panel_5.add(lblNewLabel_7_1_1);
 
         JPanel panel_2 = new JPanel();
         panel_2.setBackground(Color.WHITE);
@@ -220,7 +210,7 @@ public class ChiTietPhanQuyenGUI extends JFrame {
     public void xuLyTuDongGanGiaTri() {
         int phanQuyenId = rl.getRole_id();
         if (phanQuyenId == 0) {
-            txtMaPhanQuyen.setText(Integer.toString(RoleBUS.generateIdRole()));
+            txtMaPhanQuyen.setText(Integer.toString(RoleBUS.generateIdRole(true)));
         } else {
             txtMaPhanQuyen.setText(Integer.toString(rl.getRole_id()));
         }
@@ -229,40 +219,47 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         txtTenPhanQuyen.setEditable(true);
     }
     
-    //
+    // btnLưu
     public void xuLyLuuThongTinPhanQuyen() {
         int role_id = rl.getRole_id();
-        String role_name = txtTenPhanQuyen.getText();
-        
+        String role_name = txtTenPhanQuyen.getText().trim();
         // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
-        if (role_name.trim().isEmpty()) {
-            String message = "Vui lòng nhập tên nhóm quyền:";
-            message += "\n - Tên Nhóm Quyền";
+        if (role_name.isEmpty()) {
+            String message = "Vui lòng nhập tên nhóm quyền.";
+            JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else if (!isAlpha(role_name)) { // Kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
+            String message = "Tên nhóm quyền chỉ được chứa kí tự chữ và khoảng trắng.";
             JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
         } else {
             // Nếu không tồn tại role_id (tức: không có mã nhóm quyền đó rồi thì insert)
             boolean isExistRoleId = RoleBUS.isExistRole(role_id);
             if (!isExistRoleId) {
                 if (RoleBUS.insertRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhóm quyền", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhóm quyền.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                     parentGUI.loadDanhSachRole();
                     parentGUI.revalidate();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin nhóm quyền", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin nhóm quyền.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
                 // Nếu tồn tại role_id (tức: có mã nhóm quyền đó rồi thì update)
                 if (RoleBUS.updateRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhóm quyền", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhóm quyền.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                     parentGUI.loadDanhSachRole();
                     parentGUI.revalidate();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhóm quyền", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhóm quyền.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
     }
+
+    // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
+    private boolean isAlpha(String str) {
+    	 return str.matches("[\\p{L}\\s]+");
+    }
+
 
 }

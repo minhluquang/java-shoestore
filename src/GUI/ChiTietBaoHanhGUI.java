@@ -63,7 +63,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	    	 addWindowListener(new WindowAdapter() {
 	             @Override
 	             public void windowClosing(WindowEvent e) {
-	                 int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết phân quyền không?", "Xác nhận đóng chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+	                 int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết đổi trả không?", "Xác nhận đóng chi tiết đổi trả", JOptionPane.YES_NO_OPTION);
 	                 if (choice == JOptionPane.YES_OPTION) {
 	                     dispose();
 	                 }
@@ -74,7 +74,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	         setBounds(100, 100, width, height);
 	         setLocationRelativeTo(null);
-	         setTitle("Thông tin phiếu bảo hành");
+	         setTitle("Thông tin phiếu đổi trả");
 	         contentPane = new JPanel();
 	         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 	         setContentPane(contentPane);
@@ -92,7 +92,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         pnlRight.add(panel, BorderLayout.NORTH);
 	         panel.setLayout(new GridLayout(0, 1, 0, 0));
 	         
-	         JLabel lblNewLabel_4 = new JLabel("Thông tin bảo hành");
+	         JLabel lblNewLabel_4 = new JLabel("Thông tin đổi trả");
 	         lblNewLabel_4.setForeground(new Color(255, 255, 255));
 	         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 	         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -178,7 +178,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         JButton btnNewButton_1 = new JButton("Huỷ bỏ");
 	         btnNewButton_1.addActionListener(new ActionListener() {
 	             public void actionPerformed(ActionEvent e) {
-	                 int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết phân quyền không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+	                 int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết đổi trả không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết đổi trả", JOptionPane.YES_NO_OPTION);
 	                 if (choice == JOptionPane.YES_OPTION) {
 	                     dispose();
 	                 }
@@ -216,7 +216,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
         public void xuLyTuDongGanGiaTri() {
        	 int return_id = rt.getReturn_id();
        	 if(return_id == 0) {
-       		 txtIdBaoHanh.setText(Integer.toString(ReturnBUS.generateIdReturn()));
+       		 txtIdBaoHanh.setText(Integer.toString(ReturnBUS.generateIdReturn(true)));
        	 } else {
        		 txtIdBaoHanh.setText(Integer.toString(rt.getReturn_id()));
        	 }
@@ -270,23 +270,24 @@ public class ChiTietBaoHanhGUI extends JFrame {
                 }
             } else {
                 boolean isExistReturnID = ReturnBUS.isExistReturn(return_id);
+                System.out.println(" id " + isExistReturnID);
                 if (!isExistReturnID) {
                     if (ReturnBUS.insertReturn(return_id,product_id,date_return,reason)) {
-                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin bảo hành", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin đổi trả", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                         parentGUI.loadDanhSachBaoHanh();
                         parentGUI.revalidate();
                         dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin bảo hành", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin đổi trả", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
                     if (ReturnBUS.updateReturn(return_id,product_id,date_return,reason)) {
-                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin bảo hành", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin đổi trả", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                         parentGUI.loadDanhSachBaoHanh();
                         parentGUI.revalidate();
                         dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin bảo hành", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin đổi trả", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }

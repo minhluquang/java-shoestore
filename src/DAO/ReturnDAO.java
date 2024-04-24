@@ -12,19 +12,15 @@ import DTO.Return;
 
 public class ReturnDAO {
     public static ArrayList<Return> getDanhSachReturn() {
+    	connectDB.getConnection();
         ArrayList<Return> dsReturn = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            // Thực hiện kết nối cơ sở dữ liệu
-            connectDB.getConnection();
-            // Chuẩn bị truy vấn SQL
             String sql = "SELECT return_id, product_id, date_return, reason FROM `return`";
             statement = connectDB.prepareStatement(sql);
-            // Thực thi truy vấn và nhận kết quả
             resultSet = statement.executeQuery();
-            // Duyệt qua kết quả và thêm vào danh sách
             while (resultSet.next()) {
                 Return rt = new Return();
                 rt.setReturn_id(resultSet.getInt("return_id"));
@@ -51,9 +47,11 @@ public class ReturnDAO {
                 e.printStackTrace();
             }
         }
+        connectDB.closeConnection();
         return dsReturn;
     }
-    public static int generateIdReturn() {
+    public static int generateIdReturn(boolean closeDatabase) {
+    	connectDB.getConnection();
         int idReturn = 0;
         try {
         	String sql = "SELECT return_id FROM `return` ORDER BY return_id DESC LIMIT 1";
@@ -65,9 +63,13 @@ public class ReturnDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (closeDatabase) {
+			connectDB.closeConnection();			
+		}
         return idReturn;
     }
     public static boolean isExistReturn(int id) {
+    	connectDB.getConnection();
         boolean isExist = false;        
         try {
             String sql = "SELECT * FROM `return` WHERE return_id = " + id;
@@ -78,11 +80,13 @@ public class ReturnDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }        
+        connectDB.closeConnection();
         return isExist;
     }
   
     
     public static ArrayList<Return> searchReturn(String keyword) {
+    	connectDB.getConnection();
         ArrayList<Return> dsReturn = new ArrayList<>();
         try {
         	 String sql = "SELECT * FROM `return` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_id LIKE '%" + keyword + "%'";
@@ -98,11 +102,13 @@ public class ReturnDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        connectDB.closeConnection();
         return dsReturn;
     }
     
     // insert
     public static boolean insertReturn(int return_id, int product_id, String date_return,String reason) {
+    	connectDB.getConnection();
     	boolean success = false;
     	try {
     		String sql = "INSERT INTO `return` (return_id,product_id,date_return,reason) VALUES (" + return_id + ",'" + product_id + "','" + date_return + "' ,'" + reason +"')";
@@ -113,17 +119,18 @@ public class ReturnDAO {
     	} catch(Exception e) {
     		e.printStackTrace();
     	}
+    	connectDB.closeConnection();
     	return success;
     }
     
 	// tìm id sau khi click
 	public static Return getReturnById(int return_id) {
+		connectDB.getConnection();
 	    Return rt = null;
 	    Connection connection = null;
 	    PreparedStatement statement = null;
 	    ResultSet resultSet = null;   	    
 	    try {
-	        connectDB.getConnection();
 	        String sql = "SELECT * FROM `return` WHERE return_id = ?";
 	        statement = connectDB.prepareStatement(sql);
 	        statement.setInt(1, return_id);
@@ -147,18 +154,17 @@ public class ReturnDAO {
 	            e.printStackTrace();
 	        }
 	    }    	    
+	    connectDB.closeConnection();
 	    return rt;
 	}
 	// delete
 	public static boolean deleteReturn(int return_id) {
+		connectDB.getConnection();
 	    boolean success = false;
-	    try {
-	        // Tạo câu lệnh SQL để xóa vai trò dựa trên role_id
+	    try {	       
 	        String sql = "DELETE FROM `return` WHERE return_id = ?";   	        
-	        // Kết nối cơ sở dữ liệu và chuẩn bị câu lệnh SQL
 	        connectDB.getConnection();
-	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        
-	        // Thiết lập tham số cho câu lệnh SQL
+	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        	       
 	        statement.setInt(1, return_id);    	        
 	        // Thực thi câu lệnh SQL
 	        int rowsDeleted = statement.executeUpdate();
@@ -174,14 +180,15 @@ public class ReturnDAO {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	    connectDB.closeConnection();
 	    return success;
 	}
 	// update role_id sau khi xóa data đi
 	public static void updateNextReturnId(int deletedReturnId) {
+		connectDB.getConnection();
 	    try {
 	        // Tìm role_id lớn nhất mà nhỏ hơn deletedRoleId
 	        String sql = "SELECT MAX(return_id) AS max_id FROM `return` WHERE return_id < ?";
-	        connectDB.getConnection();
 	        PreparedStatement statement = connectDB.prepareStatement(sql);
 	        statement.setInt(1, deletedReturnId);
 	        ResultSet resultSet = statement.executeQuery();
@@ -203,33 +210,29 @@ public class ReturnDAO {
 	    }
 	}
 	public static boolean updateReturn(int return_id, int product_id, String date_return, String reason) {
-	    boolean success = false;
+		connectDB.getConnection();
+		boolean success = false;
 	    try {
 	        String sql = "UPDATE `return` SET product_id = ?, date_return = ?, reason = ? WHERE return_id = ?";
-	        connectDB.getConnection();
 	        PreparedStatement statement = connectDB.prepareStatement(sql);
-	        
 	        // Set the parameters for the PreparedStatement
 	        statement.setInt(1, product_id);
 	        statement.setString(2, date_return);
 	        statement.setString(3, reason);
-	        statement.setInt(4, return_id);
-	        
+	        statement.setInt(4, return_id);	        
 	        // Execute the update query
-	        int rowsUpdated = statement.executeUpdate();
-	        
+	        int rowsUpdated = statement.executeUpdate();	        
 	        // Check if the update was successful
 	        if (rowsUpdated > 0) {
 	            success = true;
-	        }
-	        
+	        }	        
 	        // Close the PreparedStatement and connection
 	        statement.close();
 	        connectDB.closeConnection();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	    connectDB.closeConnection();
 	    return success;
 	}
-
 }
