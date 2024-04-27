@@ -134,7 +134,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6_2 = new JLabel("Mã nhân viên");
+		JLabel lblNewLabel_6_2 = new JLabel("Mã tài khoản");
 		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_2);
 		

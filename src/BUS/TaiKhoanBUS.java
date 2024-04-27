@@ -47,4 +47,12 @@ public class TaiKhoanBUS {
 	public static TaiKhoan getDetailTaiKhoanByUsername(String username, boolean closeDatabase) {
 		return 	TaiKhoanDAO.getDetailTaiKhoanByUsername(username, closeDatabase);
 	}
+	
+	public static boolean deleteTaiKhoanById(int accountId) {
+		return TaiKhoanDAO.deleteTaiKhoanById(accountId);
+	}
+	
+	public static boolean isUsedUsername(String username) {
+		return TaiKhoanDAO.isUsedUsername(username);
+	}
 }

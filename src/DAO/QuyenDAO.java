@@ -7,11 +7,12 @@ import DTO.Quyen;
 
 public class QuyenDAO {
 	public static ArrayList<Quyen> getDanhSachQuyen() {
+		connectDB.getConnection();
 		ArrayList<Quyen> dsq = new ArrayList<>();
 		
 		try {
 			String sql = "SELECT * "
-					+ "FROM role ";
+					+ "FROM roles ";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				Quyen q = new Quyen();
@@ -23,6 +24,7 @@ public class QuyenDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
 		return dsq;
 	}
 }

@@ -15,7 +15,7 @@ public class RoleDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {   
-            String sql = "SELECT role_id, role_name FROM `role`";
+            String sql = "SELECT role_id, role_name FROM `roles`";
             statement = connectDB.prepareStatement(sql);            
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -35,7 +35,7 @@ public class RoleDAO {
     	connectDB.getConnection();
         ArrayList<Role> dsrl = new ArrayList<>();        
         try {
-            String sql = "SELECT * FROM `role` WHERE role_id LIKE '%" + keyword + "%' OR role_name LIKE '%" + keyword + "%'";         
+            String sql = "SELECT * FROM `roles` WHERE role_id LIKE '%" + keyword + "%' OR role_name LIKE '%" + keyword + "%'";         
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 Role rl = new Role();            
@@ -54,7 +54,7 @@ public class RoleDAO {
     	connectDB.getConnection();
         int idRole = 0;
         try {
-            String sql = "SELECT role_id FROM `role` ORDER BY role_id DESC LIMIT 1";
+            String sql = "SELECT role_id FROM `roles` ORDER BY role_id DESC LIMIT 1";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int lastId = rs.getInt("role_id");
@@ -73,7 +73,7 @@ public class RoleDAO {
     	connectDB.getConnection();
         boolean isExist = false;        
         try {
-            String sql = "SELECT * FROM `role` WHERE role_id = " + id;
+            String sql = "SELECT * FROM `roles` WHERE role_id = " + id;
             ResultSet rs = connectDB.runQuery(sql);            
             if (rs.next()) {
                 isExist = true;
@@ -89,7 +89,7 @@ public class RoleDAO {
     		connectDB.getConnection();
     		boolean success = false;
     		try {
-    			String sql = "UPDATE `role` "
+    			String sql = "UPDATE `roles` "
                     + "SET role_name = '" + role_name + "' "
                     + "WHERE role_id = " + role_id;
     			int i = connectDB.runUpdate(sql);
@@ -108,7 +108,7 @@ public class RoleDAO {
     		connectDB.getConnection();
     	    boolean success = false;
     	    try {
-    	        String sql = "INSERT INTO `role` (role_id, role_name) VALUES (" + role_id + ", '" + role_name + "')";
+    	        String sql = "INSERT INTO `roles` (role_id, role_name) VALUES (" + role_id + ", '" + role_name + "')";
     	        int i = connectDB.runUpdate(sql);
     	        if (i > 0) {
     	            success = true;
@@ -125,7 +125,7 @@ public class RoleDAO {
     	    boolean success = false;
     	    try {
     	        // Tạo câu lệnh SQL để xóa vai trò dựa trên role_id
-    	        String sql = "DELETE FROM `role` WHERE role_id = ?";   	        
+    	        String sql = "DELETE FROM `roles` WHERE role_id = ?";   	        
     	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        
     	        // Thiết lập tham số cho câu lệnh SQL
     	        statement.setInt(1, role_id);    	        
@@ -151,7 +151,7 @@ public class RoleDAO {
     		connectDB.getConnection();
     	    try {
     	        // Tìm role_id lớn nhất mà nhỏ hơn deletedRoleId
-    	        String sql = "SELECT MAX(role_id) AS max_id FROM `role` WHERE role_id < ?";
+    	        String sql = "SELECT MAX(role_id) AS max_id FROM `roles` WHERE role_id < ?";
     	        PreparedStatement statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, deletedRoleId);
     	        ResultSet resultSet = statement.executeQuery();
@@ -160,7 +160,7 @@ public class RoleDAO {
     	            nextRoleId = resultSet.getInt("max_id") + 1;
     	        }
     	        // Thiết lập role_id tiếp theo
-    	        sql = "ALTER TABLE `role` AUTO_INCREMENT = ?";
+    	        sql = "ALTER TABLE `roles` AUTO_INCREMENT = ?";
     	        statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, nextRoleId);
     	        statement.executeUpdate();
@@ -181,7 +181,7 @@ public class RoleDAO {
     	    PreparedStatement statement = null;
     	    ResultSet resultSet = null;   	    
     	    try {
-    	        String sql = "SELECT * FROM `role` WHERE role_id = ?";
+    	        String sql = "SELECT * FROM `roles` WHERE role_id = ?";
     	        statement = connectDB.prepareStatement(sql);
     	        statement.setInt(1, role_id);
     	        resultSet = statement.executeQuery();

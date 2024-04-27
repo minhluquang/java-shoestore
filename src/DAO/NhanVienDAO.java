@@ -10,7 +10,7 @@ import DTO.NhanVien;
 import DTO.TaiKhoan;
 
 public class NhanVienDAO {
-	public static ArrayList<NhanVien> getDanhSachNhanVien() {
+	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount) {
 		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		try {
@@ -18,6 +18,9 @@ public class NhanVienDAO {
 					+ "FROM staffs s "
 					+ "LEFT JOIN accounts a ON a.account_id = s.account_id"
 					+ " WHERE status = 1";
+			if (nonAccount) {
+				sql += " AND s.account_id IS NULL";
+			}
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
@@ -205,6 +208,27 @@ public class NhanVienDAO {
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return success;
+	}
+	
+	public static boolean updateAccountIdForStaff(int staffId, int accountId) {
+		connectDB.getConnection();
+		boolean success = false;
+		
+		try {
+			String sql = "UPDATE staffs"
+					+ " SET account_id = " + accountId + 
+					" WHERE staff_id = " + staffId;
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 		

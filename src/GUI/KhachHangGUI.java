@@ -271,21 +271,21 @@ public class KhachHangGUI extends JPanel implements ActionListener {
             	chiTietKhachHangGUI.setVisible(true);
             	chiTietKhachHangGUI.requestFocus();
             } else {
-            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn khách hàng cần sửa", "Thông báo lỗi sửa thông tin khách hàng", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần sửa", "Thông báo lỗi sửa thông tin khách hàng", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == btnXoa) {
         	if (kh.getCustomerId() > 0) {
-        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá khách hàng có id: " + kh.getCustomerId(), "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
+        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá khách hàng có id: " + kh.getCustomerId() + " không?", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
             	if (choice == JOptionPane.YES_OPTION) {
             		if (KhachHangBUS.deleteKhachHangById(kh.getCustomerId())) {
             			loadDanhSachKhachHang();
-    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công khách hàng có id: " + kh.getCustomerId(), "Thông boá xoá thành công khách hàng", JOptionPane.INFORMATION_MESSAGE);
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công khách hàng có id: " + kh.getCustomerId(), "Thông báo xoá thành công khách hàng", JOptionPane.INFORMATION_MESSAGE);
             		} else {
-    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại khách hàng có id: " + kh.getCustomerId(), "Thông boá xoá thất khách hàng", JOptionPane.ERROR_MESSAGE);
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại khách hàng có id: " + kh.getCustomerId(), "Thông báo xoá thất khách hàng", JOptionPane.ERROR_MESSAGE);
                 	}
             	} 
         	} else {
-            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn khách hàng cần xoá", "Thông báo lỗi xoá khách hàng", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần xoá", "Thông báo lỗi xoá khách hàng", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         else if (e.getSource() == btnNhapExcel) {
@@ -418,7 +418,7 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 	public void exportExcel() throws IOException {
 		ArrayList<KhachHang> dskh = KhachHangBUS.getDanhSachKhachHang();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("dskh.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("export/dskh.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
 		    XSSFSheet sheet = wb.createSheet("Danh sách khách hàng");
 		    

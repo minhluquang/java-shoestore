@@ -89,6 +89,25 @@ public class TaiKhoanDAO {
 			e.printStackTrace();
 		}
 		
+		connectDB.closeConnection();
+		return isUsed;
+	}
+	
+	public static boolean isUsedUsername(String username) {
+		connectDB.getConnection();
+		boolean isUsed = false;
+		
+		try {
+			String sql = "select * from accounts where username = '" + username + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				isUsed = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
 		return isUsed;
 	}
 	
@@ -213,5 +232,26 @@ public class TaiKhoanDAO {
 			connectDB.closeConnection();			
 		}
 		return tk;
+	}
+	
+	public static boolean deleteTaiKhoanById(int accountId) {
+		connectDB.getConnection();
+		boolean success = false;
+		
+		try {
+			String sql = "UPDATE accounts "
+					+ "SET account_status = 0 "
+					+ "WHERE account_id = " + accountId;
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return success;
 	}
 }

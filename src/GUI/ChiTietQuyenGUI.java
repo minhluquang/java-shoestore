@@ -221,18 +221,6 @@ public class ChiTietQuyenGUI extends JFrame {
 	        pnlCenter.add(panel);
 		}
 	}
-	
-	public void printCheckboxSelectedList() {
-	    System.out.print("listCheckboxSelected: [");
-	    for (int i = 0; i < listCheckboxSelected.size(); i++) {
-	        System.out.print(listCheckboxSelected.get(i));
-	        if (i < listCheckboxSelected.size() - 1) {
-	            System.out.print(", ");
-	        }
-	    }
-	    System.out.println("]");
-	}
-
 }
 
 

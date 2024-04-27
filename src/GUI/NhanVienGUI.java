@@ -296,21 +296,21 @@ public class NhanVienGUI extends JPanel implements ActionListener {
                 chiTietNhanVienGUI.setVisible(true);
                 chiTietNhanVienGUI.requestFocus();
             } else {
-            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn nhân viên cần sửa", "Thông báo lỗi sửa thông tin nhân viên", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần sửa", "Thông báo lỗi sửa thông tin nhân viên", JOptionPane.INFORMATION_MESSAGE);
             }
         }  else if (e.getSource() == btnXoa) {
         		if (nv.getStaffId() > 0) {
-        			int i = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá nhân viên với id: " + nv.getStaffId(),"Thông báo xác nhận xoá nhân viên", JOptionPane.YES_NO_OPTION);
+        			int i = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá nhân viên với id: " + nv.getStaffId() + " không?","Thông báo xác nhận xoá nhân viên", JOptionPane.YES_NO_OPTION);
         			if (i == JOptionPane.YES_OPTION) {
         				if (NhanVienBUS.deleteNhanVienById(nv.getStaffId())) {
         					loadDanhSachNhanVien();
-        					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công nhân viên có id: " + nv.getStaffId(), "Thông boá xoá thành công nhân viên", JOptionPane.INFORMATION_MESSAGE);
+        					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công nhân viên có id: " + nv.getStaffId(), "Thông báo xoá thành công nhân viên", JOptionPane.INFORMATION_MESSAGE);
         				} else {
-        					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại nhân viên có id: " + nv.getStaffId(), "Thông boá xoá thất công nhân viên", JOptionPane.ERROR_MESSAGE);
+        					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại nhân viên có id: " + nv.getStaffId(), "Thông báo xoá thất công nhân viên", JOptionPane.ERROR_MESSAGE);
         				}
         			}
         		} else {
-                	JOptionPane.showConfirmDialog(null, "Vui lòng chọn nhân viên cần xoá", "Thông báo lỗi xoá thông tin nhân viên", JOptionPane.ERROR_MESSAGE);
+                	JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần xoá", "Thông báo lỗi xoá thông tin nhân viên", JOptionPane.INFORMATION_MESSAGE);
                 }
         } 
         else if (e.getSource() == btnNhapExcel) {
@@ -330,22 +330,9 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	// Load danh sách nhân viên
 	public void loadDanhSachNhanVien() {		
 		dtmNhanVien.setRowCount(0);
-		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien();
+		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false);
 		for (NhanVien nv : dsnv) {
-			int staffStatus = nv.getStaffStatus();
-			String status;
-			if (staffStatus == 1) {
-				status = "Hoạt động";
-			} else {
-				status = "Ngưng hoạt động";
-			}
-			
-			String accountId = nv.getTaiKhoan().getUsername();
-			if (accountId == null) {
-				accountId = "no-account";
-			}
-			
-			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status, accountId};
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
 			dtmNhanVien.addRow(row);
 		}
 		
@@ -368,20 +355,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword);
 		
 		for (NhanVien nv : dsnv) {
-			int staffStatus = nv.getStaffStatus();
-			String status;
-			if (staffStatus == 1) {
-				status = "Hoạt động";
-			} else {
-				status = "Ngưng hoạt động";
-			}
-			
-			String username = nv.getTaiKhoan().getUsername();
-			if (username == null) {
-				username = "Chưa có";
-			}
-			
-			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getEmail(), nv.getPhone_number(), status, username};
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
 			dtmNhanVien.addRow(row);
 		}
 	}
@@ -468,9 +442,9 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	
 	
 	public void exportExcel() throws IOException {
-		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien();
+		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false);
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("dsnv.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("export/dsnv.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
 		    XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
 		    

@@ -58,6 +58,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
     
     private static ChiTietQuyenGUI chiTietQuyenGUI;
     private static ChiTietTaiKhoanGUI chiTietTaiKhoanGUI;
+    private static ChonTaiKhoanGUI chonTaiKhoanGUI;
     
     private TaiKhoan tk = new TaiKhoan();
     private int searchStatus = -1;
@@ -239,14 +240,14 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
-//		btnXoa = new JButton("Xoá");
-//		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-//		btnXoa.setPreferredSize(new Dimension(0, 40));
-//		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-//		btnXoa.setFocusable(false);
-//		btnXoa.setBackground(Color.WHITE);
-//		pnlTopBottom.add(btnXoa);
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
 		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -325,7 +326,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		btnChiTietQuyen.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-//		btnXoa.addActionListener(this);
+		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
@@ -333,21 +334,25 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnChiTietQuyen) {
-			if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
-            	chiTietQuyenGUI = new ChiTietQuyenGUI(tk.getAccountId());
-            } else {
-            	chiTietQuyenGUI.toFront();
-            }
-			chiTietQuyenGUI.setVisible(true);
-			chiTietQuyenGUI.requestFocus();
+			if (tk.getAccountId() > 0) {
+				if (chiTietQuyenGUI == null || !chiTietQuyenGUI.isVisible()) {
+	            	chiTietQuyenGUI = new ChiTietQuyenGUI(tk.getAccountId());
+	            } else {
+	            	chiTietQuyenGUI.toFront();
+	            }
+				chiTietQuyenGUI.setVisible(true);
+				chiTietQuyenGUI.requestFocus();
+			} else {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
+			}
         } else if (e.getSource() == btnThem) {
-        	if (chiTietTaiKhoanGUI == null || !chiTietTaiKhoanGUI.isVisible()) {
-        		chiTietTaiKhoanGUI = new ChiTietTaiKhoanGUI(new TaiKhoan(), this);
-            } else {
-            	chiTietTaiKhoanGUI.toFront();
-            }
-        	chiTietTaiKhoanGUI.setVisible(true);
-        	chiTietTaiKhoanGUI.requestFocus();
+        	if (chonTaiKhoanGUI == null || !chonTaiKhoanGUI.isVisible()) {
+        		chonTaiKhoanGUI = new ChonTaiKhoanGUI();
+        	} else {
+        		chonTaiKhoanGUI.toFront();
+        	}
+        	chonTaiKhoanGUI.setVisible(true);
+        	chonTaiKhoanGUI.requestFocus();
         } else if (e.getSource() == btnSua) {
         	if (tk.getAccountId() > 0) {
         		if (chiTietTaiKhoanGUI == null || !chiTietTaiKhoanGUI.isVisible()) {
@@ -358,17 +363,23 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
             	chiTietTaiKhoanGUI.setVisible(true);
             	chiTietTaiKhoanGUI.requestFocus();
         	} else {
-        		JOptionPane.showConfirmDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.CLOSED_OPTION);
+        		JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
         	}
+        } else if (e.getSource() == btnXoa) {
+        	if (tk.getAccountId() > 0) {
+        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá thông tin tài khoản có id: " + tk.getAccountId() + " không?", "Xác nhận xoá tài khoản", JOptionPane.YES_NO_OPTION);
+            	if (choice == JOptionPane.YES_OPTION) {
+            		if (TaiKhoanBUS.deleteTaiKhoanById(tk.getAccountId())) {
+            			loadDanhSachTaiKhoan();
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công tài khoản viên có id: " + tk.getAccountId(), "Thông báo xoá thành công tài khoản", JOptionPane.INFORMATION_MESSAGE);
+            		} else {
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại nhân viên có id: " + tk.getAccountId(), "Thông báo xoá thất công tài khoản", JOptionPane.ERROR_MESSAGE);
+            		}
+            	} 
+        	} else {
+        		JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
+			}
         } 
-//        else if (e.getSource() == btnXoa) {
-//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin tài khoản có mã tài khoản là NV001", "Xác nhận xoá thông tin tài khoản", JOptionPane.YES_NO_OPTION);
-//        	if (choice == JOptionPane.YES_OPTION) {
-//        		
-//        	} else {
-//        		
-//        	}
-//        } 
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {

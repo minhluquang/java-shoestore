@@ -8,8 +8,8 @@ import DTO.NhanVien;
 public class NhanVienBUS {
 	private static ArrayList<NhanVien> dsnv;
 	
-	public static ArrayList<NhanVien> getDanhSachNhanVien() {
-		dsnv = NhanVienDAO.getDanhSachNhanVien();
+	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount) {
+		dsnv = NhanVienDAO.getDanhSachNhanVien(nonAccount);
 		return dsnv;
 	}
 	
@@ -49,5 +49,9 @@ public class NhanVienBUS {
 	
 	public static boolean deleteNhanVienById(int staffId) {
 		return NhanVienDAO.deleteNhanVienById(staffId);
+	}
+	
+	public static boolean updateAccountIdForStaff(int staffId, int accountId) {
+		return NhanVienDAO.updateAccountIdForStaff(staffId, accountId);
 	}
 }

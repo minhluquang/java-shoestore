@@ -48,9 +48,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JButton btnNhapHang;
     private JButton btnTaiKhoan;
     private JButton btnDangXuat;
-    // phân quyền
     private JButton btnPhanQuyen;
-    // warranty
     private JButton btnWarranty;
     public String absolutePath = new File("").getAbsolutePath();
     private JPanel pnlCards;
@@ -68,7 +66,6 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JPanel pnlTrangChu;
     private JPanel pnlTaiKhoan;
     private JPanel pnlPhanQuyen;
-    // warranty
     private JPanel pnlWarranty;
     /**
      * Launch the application.
