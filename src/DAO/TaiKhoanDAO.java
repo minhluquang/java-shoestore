@@ -13,7 +13,7 @@ public class TaiKhoanDAO {
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM account";
+			String sql = "SELECT * FROM accounts";
 			ResultSet rs = connectDB.runQuery(sql);
 			while(rs.next()) {
 				TaiKhoan tk = new TaiKhoan();
@@ -37,7 +37,7 @@ public class TaiKhoanDAO {
 		boolean isExist = false;
 		
 		try {
-			String sql = "SELECT * FROM account WHERE username = '" + username + "'";
+			String sql = "SELECT * FROM accounts WHERE username = '" + username + "'";
 			ResultSet rs = connectDB.runQuery(sql);
 			
 			if (rs.next()) {
@@ -59,7 +59,7 @@ public class TaiKhoanDAO {
 		boolean isExist = false;
 		
 		try {
-			String sql = "SELECT * FROM account WHERE account_id = " + accountId;
+			String sql = "SELECT * FROM accounts WHERE account_id = " + accountId;
 			ResultSet rs = connectDB.runQuery(sql);
 			
 			if (rs.next()) {
@@ -74,13 +74,31 @@ public class TaiKhoanDAO {
 		return isExist;
 	}
 	
+	public static boolean isUsedAccountId(int accountId) {
+		connectDB.getConnection();
+		boolean isUsed = false;
+		
+		try {
+			String sql = "select * from staffs "
+					+ "where account_id = " + accountId;
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				isUsed = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return isUsed;
+	}
+	
 	public static int generateIdTaiKhoan() {
 		connectDB.getConnection();
 		int idTaiKhoan = 0;
 		
 		try {
 			String sql = "SELECT account_id "
-					+ "FROM account "
+					+ "FROM accounts "
 					+ "ORDER BY account_id DESC "
 					+ "LIMIT 1";
 			ResultSet rs = connectDB.runQuery(sql);
@@ -102,7 +120,7 @@ public class TaiKhoanDAO {
 		boolean success = false;
 		
 		try {
-			String sql = "UPDATE account "
+			String sql = "UPDATE accounts "
 					+ "SET username = '" + username + "', account_status = " + accountStatus + ", position = '" + position + "' "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
@@ -123,7 +141,7 @@ public class TaiKhoanDAO {
 		boolean success = false;
 		
 		try {
-			String sql = "INSERT INTO account (account_id, username, password, account_status, position) "
+			String sql = "INSERT INTO accounts (account_id, username, password, account_status, position) "
 					+ "VALUES ("+ accountId +", '" + username + "', 'shopgiay88', " + accountStatus + ", '" + position + "')";
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
@@ -143,7 +161,7 @@ public class TaiKhoanDAO {
 
 		try {
 			String sql = "SELECT * "
-					+ "FROM account "
+					+ "FROM accounts "
 					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')";
 			
 			if (searchStatus != -1) {
@@ -176,7 +194,7 @@ public class TaiKhoanDAO {
 		TaiKhoan tk = null;
 		
 		try {
-			String sql = "SELECT * FROM account WHERE username = '" + username + "'";
+			String sql = "SELECT * FROM accounts WHERE username = '" + username + "'";
 			ResultSet rs = connectDB.runQuery(sql);
 			
 			if (rs.next()) {

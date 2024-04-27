@@ -172,7 +172,7 @@
 		            		NhanVien nv = new NhanVien();
 		            		DangKyGUI dangKyGUI = new DangKyGUI();
 		            		int accountId = dangKyGUI.getAccountId()-1;
-		            		nv.setAccount_id(accountId);
+		            		nv.getTaiKhoan().setAccountId(accountId);
 		            		
 		            		if (!sdt.matches(regexPhoneNumber)) {
 								JOptionPane.showMessageDialog(null, "- Số điện thoại bao gồm 10 số và bắt đầu bằng '0' \n- Ví dụ : (033125639)");

@@ -7,22 +7,22 @@ public class NhanVien {
 	private String phone_number;
 	private String password;
 	private int staff_status;
-	private String username;
-	private TaiKhoan taiKhoan;
-	private int account_id;
+
+	private TaiKhoan taiKhoan = new TaiKhoan();
+	
 	
 	public NhanVien() {}
 
 
 	public NhanVien(int staff_id, String full_name, String email, String phone_number, String password,
-			int staff_status, String username) {
+			int staff_status, TaiKhoan taiKhoan) {
 		this.staff_id = staff_id;
 		this.full_name = full_name;
 		this.email = email;
 		this.phone_number = phone_number;
 		this.password = password;
 		this.staff_status = staff_status;
-		this.username = username;
+		this.taiKhoan = taiKhoan;
 	}
 	
 
@@ -34,20 +34,8 @@ public class NhanVien {
         this.phone_number = phone_number;
         this.password = password;
         this.staff_status = staff_status;
-        this.username = username;
-        this.taiKhoan = taiKhoan; // Khởi tạo trường TaiKhoan
-        this.account_id = taiKhoan.getAccountId(); // Lấy accountId từ đối tượng TaiKhoan
+        this.taiKhoan = taiKhoan;
     }
-	public int getAccount_id() {
-		return account_id;
-	}
-
-
-	public void setAccount_id(int account_id) {
-		this.account_id = account_id;
-	}
-
-
 	public int getStaffId() {
 		return staff_id;
 	}
@@ -84,10 +72,16 @@ public class NhanVien {
 	public void setStaffStatus(int staff_status) {
 		this.staff_status = staff_status;
 	}
-	public String getUsername() {
-		return username;
+	public int getStaff_status() {
+		return staff_status;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setStaff_status(int staff_status) {
+		this.staff_status = staff_status;
+	}
+	public TaiKhoan getTaiKhoan() {
+		return taiKhoan;
+	}
+	public void setTaiKhoan(TaiKhoan taiKhoan) {
+		this.taiKhoan = taiKhoan;
 	}
 }

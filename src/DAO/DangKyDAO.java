@@ -44,7 +44,7 @@ public class DangKyDAO {
 			ps.setString(3, nv.getEmail());
 			ps.setString(4, nv.getPhone_number());
 			ps.setInt(5, nv.getStaffStatus());
-			ps.setInt(6,nv.getAccount_id());
+			ps.setInt(6,nv.getTaiKhoan().getAccountId());
 			
 			int rs = ps.executeUpdate();
 			if (rs!=0) {

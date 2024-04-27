@@ -15,7 +15,7 @@ public class KhachHangDAO {
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM customer";
+			String sql = "SELECT * FROM customers";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				KhachHang kh = new KhachHang();
@@ -38,7 +38,7 @@ public class KhachHangDAO {
 		
 		try {
 			String sql = "SELECT * "
-					+ "FROM customer "
+					+ "FROM customers "
 					+ "ORDER BY customer_id DESC "
 					+ "LIMIT 1";
 			ResultSet rs = connectDB.runQuery(sql);
@@ -59,7 +59,7 @@ public class KhachHangDAO {
 		boolean isExist = false;
 		
 		try {
-			String sql = "SELECT * FROM customer WHERE customer_id = " + id;
+			String sql = "SELECT * FROM customers WHERE customer_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
 			
 			if (rs.next()) {
@@ -78,7 +78,7 @@ public class KhachHangDAO {
 		boolean success = false;
 		
 		try {
-			String sql = "UPDATE customer "
+			String sql = "UPDATE customers "
 					+ "SET customer_name = ?, phone_number = ?"
 					+ "WHERE customer_id = ?";
 			PreparedStatement prest = connectDB.prepareStatement(sql);
@@ -107,7 +107,7 @@ public class KhachHangDAO {
 		
 		try {
 			String sql = "SELECT * "
-					+ "FROM customer "
+					+ "FROM customers "
 					+ "WHERE phone_number = '" + phoneNumber + "'";
 			ResultSet rs = connectDB.runQuery(sql);
 			
@@ -129,7 +129,7 @@ public class KhachHangDAO {
 		boolean success = false;
 		
 		try {
-			String sql = "INSERT INTO customer (customer_id, customer_name, phone_number) "
+			String sql = "INSERT INTO customers (customer_id, customer_name, phone_number) "
 					+ " VALUES (?, ?, ?)";
 			
 			PreparedStatement prest = connectDB.prepareStatement(sql);
@@ -156,7 +156,7 @@ public class KhachHangDAO {
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 
 		try {
-			String sql = "SELECT * FROM customer "
+			String sql = "SELECT * FROM customers "
 	                + "WHERE customer_id LIKE ? OR customer_name LIKE ? OR phone_number LIKE ?";
 	        
 	        PreparedStatement prest = connectDB.prepareStatement(sql);

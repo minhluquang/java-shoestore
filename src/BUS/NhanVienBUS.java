@@ -23,22 +23,31 @@ public class NhanVienBUS {
 		return isExist;
 	}
 	
-	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status, String accountId) {
-		boolean success = NhanVienDAO.updateNhanVien(id, fullname, email, phoneNumber, status, accountId);
+	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber) {
+		boolean success = NhanVienDAO.updateNhanVien(id, fullname, email, phoneNumber);
 		return success;
 	}
 	
-	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status, String accountId) {
-		boolean success = NhanVienDAO.insertNhanVien(fullname, email, phoneNumber, status, accountId);
+	public static boolean insertNhanVien(String fullname, String email, String phoneNumber, int status) {
+		boolean success = NhanVienDAO.insertNhanVien(fullname, email, phoneNumber, status);
 		return success;
 	}
 	
-	public static ArrayList<NhanVien> searchNhanVien(String keyword, int status) {
-		dsnv = NhanVienDAO.searchNhanVien(keyword, status);
+	public static boolean insertDanhSachNhanVIen(ArrayList<NhanVien> dsnv) {
+		boolean success = NhanVienDAO.insertDanhSachNhanVien(dsnv);
+		return success;
+	}
+	
+	public static ArrayList<NhanVien> searchNhanVien(String keyword) {
+		dsnv = NhanVienDAO.searchNhanVien(keyword);
 		return dsnv;
 	}
 	
 	public static boolean isUsedAccountId(int accountId) {
 		return NhanVienDAO.isUsedAccountId(accountId);
+	}
+	
+	public static boolean deleteNhanVienById(int staffId) {
+		return NhanVienDAO.deleteNhanVienById(staffId);
 	}
 }
