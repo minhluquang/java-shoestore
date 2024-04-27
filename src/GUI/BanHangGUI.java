@@ -311,7 +311,7 @@ public class BanHangGUI extends JPanel {
         spnCTHD.setBackground(new Color(255, 255, 255));
         txtMaHD = new JTextField(10);
         txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
+
         JLabel jLabeltk = new JLabel("Tìm kiếm");
         jLabeltk.setFont(new Font("Tahoma", Font.BOLD, 14));
         pnlThongTinHD.add(lblThongTinHD);
