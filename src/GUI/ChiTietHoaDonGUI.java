@@ -102,8 +102,7 @@ public class ChiTietHoaDonGUI extends JFrame {
         pnlRight.add(panel, BorderLayout.NORTH);
         panel.setLayout(new GridLayout(0, 1, 0, 0));
 
-        JLabel lblNewLabel_5 = new JLabel("");
-        panel.add(lblNewLabel_5);
+        panel.add(new JLabel());
 
         JLabel lblNewLabel_4 = new JLabel("Chi tiết hóa đơn");
         lblNewLabel_4.setForeground(new Color(255, 255, 255));
@@ -111,6 +110,8 @@ public class ChiTietHoaDonGUI extends JFrame {
         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel.setBackground(new Color(36, 136, 203));
         panel.add(lblNewLabel_4);
+        
+        panel.add(new JLabel());
 
         JPanel panel_3 = new JPanel();
         pnlRight.add(panel_3, BorderLayout.CENTER);

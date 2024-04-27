@@ -26,8 +26,8 @@ public class KhachHangBUS {
 		return KhachHangDAO.updateKhachHang(customerId, customerName, phoneNumber);
 	}
 	
-	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber) {
-		return KhachHangDAO.insertKhachHang(customerId, customerName, phoneNumber);
+	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber, int status) {
+		return KhachHangDAO.insertKhachHang(customerId, customerName, phoneNumber, status);
 	}
 	
 	public static boolean isExistPhoneNumber(String phoneNumber, int customerId) {
@@ -38,4 +38,11 @@ public class KhachHangBUS {
 		return KhachHangDAO.isExistKhachHang(id);
 	}
 	
+	public static boolean deleteKhachHangById(int customerId) {
+		return KhachHangDAO.deleteKhachHangById(customerId);
+	}
+	
+	public static boolean insertDanhSachKhachHang(ArrayList<KhachHang> dskh) {
+		return KhachHangDAO.insertDanhSachKhachHang(dskh);
+	}
 }

@@ -5,8 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +22,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,13 +30,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import DTO.KhachHang;
+import DTO.NhanVien;
 import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
@@ -144,6 +161,15 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -220,7 +246,7 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 //		btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-//		btnXoa.addActionListener(this);
+		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
@@ -245,21 +271,34 @@ public class KhachHangGUI extends JPanel implements ActionListener {
             	chiTietKhachHangGUI.setVisible(true);
             	chiTietKhachHangGUI.requestFocus();
             } else {
-            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn khách hàng cần sửa", "Thông báo lỗi sửa thông tin khách hàng", JOptionPane.CLOSED_OPTION);
+            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn khách hàng cần sửa", "Thông báo lỗi sửa thông tin khách hàng", JOptionPane.ERROR_MESSAGE);
             }
-        } 
-//        else if (e.getSource() == btnXoa) {
-//        	int choice = JOptionPane.showConfirmDialog(null, "Xoá thông tin nhân viên có mã nhân viên là NV001", "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
-//        	if (choice == JOptionPane.YES_OPTION) {
-//        		
-//        	} else {
-//        		
-//        	}
-//        }
+        } else if (e.getSource() == btnXoa) {
+        	if (kh.getCustomerId() > 0) {
+        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá khách hàng có id: " + kh.getCustomerId(), "Xác nhận xoá thông tin nhân viên", JOptionPane.YES_NO_OPTION);
+            	if (choice == JOptionPane.YES_OPTION) {
+            		if (KhachHangBUS.deleteKhachHangById(kh.getCustomerId())) {
+            			loadDanhSachKhachHang();
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công khách hàng có id: " + kh.getCustomerId(), "Thông boá xoá thành công khách hàng", JOptionPane.INFORMATION_MESSAGE);
+            		} else {
+    					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thất bại khách hàng có id: " + kh.getCustomerId(), "Thông boá xoá thất khách hàng", JOptionPane.ERROR_MESSAGE);
+                	}
+            	} 
+        	} else {
+            	JOptionPane.showConfirmDialog(null, "Vui lòng chọn khách hàng cần xoá", "Thông báo lỗi xoá khách hàng", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
+        	importExcel();
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
+        	try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 	}
 
@@ -295,4 +334,114 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 			dtmKhachHang.addRow(row);
 		}
 	}
+	
+	// Xử lý import excel
+	public void importExcel() {
+		try {
+			ArrayList<KhachHang> dskh = new ArrayList<>();
+			
+    		JFileChooser fileChooser = new JFileChooser();
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+    		fileChooser.setFileFilter(filter);
+
+    		int result = fileChooser.showOpenDialog(null);
+    		if (result == JFileChooser.APPROVE_OPTION) {
+    		    File selectedFile = fileChooser.getSelectedFile();
+    		    
+    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
+    		    
+    		    // Duyệt qua từng hàng trong sheet
+                for (Row row : sheet) {
+                	if (row.getRowNum()==0) {
+                		if (!checkHeaderImportExcel(row)) {
+                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+                			return;
+                		}
+                		continue;
+                	}
+                	
+                	// Duyệt qua từng ô trong 1 hàng
+                	KhachHang khachHang = new KhachHang();
+                    for (Cell cell : row) { 
+                    	int columnIndex = cell.getColumnIndex();
+                        try {
+                        	switch (columnIndex) {
+		                         case 0:
+		                        	 khachHang.setCustomerName(cell.getStringCellValue());
+		                        	 break;
+		                         case 1:
+		                             khachHang.setPhoneNumber(cell.getStringCellValue());
+		                             break;
+	                         
+                           }
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+						}
+                    }
+                    dskh.add(khachHang);
+                }
+                
+                // Ghi dữ liệu vào db
+                for (KhachHang kh : dskh) {
+					if (KhachHangBUS.insertDanhSachKhachHang(dskh)) {
+						loadDanhSachKhachHang();
+						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						return;
+					}
+				}
+    		}
+    	} catch (Exception e2) {
+    	    // Xử lý ngoại lệ ở đây nếu cần
+    	}
+	}
+	
+	public boolean checkHeaderImportExcel (Row row) {
+        String[] expectedHeaders = {"customer_name", "phone_number"};
+        boolean headerMatched = true;
+        
+        for (int i = 0; i < expectedHeaders.length; i++) {
+            Cell cell = row.getCell(i);
+            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+                headerMatched = false;
+                break;
+            }
+        }
+        
+        return headerMatched;
+	}
+	
+	// Xử lý xuất excel
+	public void exportExcel() throws IOException {
+		ArrayList<KhachHang> dskh = KhachHangBUS.getDanhSachKhachHang();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("dskh.xlsx");
+		    XSSFWorkbook wb = new XSSFWorkbook();
+		    XSSFSheet sheet = wb.createSheet("Danh sách khách hàng");
+		    
+		    // Ghi header
+		    XSSFRow headerRow = sheet.createRow(0);
+		    headerRow.createCell(0).setCellValue("customer_id");
+		    headerRow.createCell(1).setCellValue("customer_name");
+		    headerRow.createCell(2).setCellValue("phone_number");
+		    
+		    // Ghi thông tin nhân viên
+		    int rowNum = 1;
+		    for (KhachHang kh: dskh) {
+		    	XSSFRow row = sheet.createRow(rowNum++);
+		    	row.createCell(0).setCellValue(kh.getCustomerId());
+		    	row.createCell(1).setCellValue(kh.getCustomerName());
+		    	row.createCell(2).setCellValue(kh.getPhoneNumber());
+		    }
+		    
+		    wb.write(fileOutputStream);
+		    wb.close();
+		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 }

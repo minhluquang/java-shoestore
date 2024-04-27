@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.mysql.cj.xdevapi.PreparableStatement;
 
 import DTO.KhachHang;
+import DTO.NhanVien;
 
 public class KhachHangDAO {
 	public static ArrayList<KhachHang> getDanhSachKhachHang() {
@@ -15,7 +16,7 @@ public class KhachHangDAO {
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM customers";
+			String sql = "SELECT * FROM customers where status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				KhachHang kh = new KhachHang();
@@ -124,22 +125,35 @@ public class KhachHangDAO {
 		return isExist;
 	}
 	
-	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber) {
+	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber, int status) {
 		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
-			String sql = "INSERT INTO customers (customer_id, customer_name, phone_number) "
-					+ " VALUES (?, ?, ?)";
+			String sql;
+			if (customerId == 0) {
+				sql =  "INSERT INTO customers (customer_name, phone_number, status) "
+						+ " VALUES (?, ?, ?)";
+			} else {
+				sql = "INSERT INTO customers (customer_id, customer_name, phone_number, status) "
+						+ " VALUES (?, ?, ?, ?)";
+			}
+			 
 			
 			PreparedStatement prest = connectDB.prepareStatement(sql);
 			
-			prest.setInt(1, customerId);
-			prest.setString(2, customerName);
-			prest.setString(3, phoneNumber);
-			
-			int i = prest.executeUpdate();
+			if (customerId == 0) {
+	            prest.setString(1, customerName);
+	            prest.setString(2, phoneNumber);
+	            prest.setInt(3, status);
+	        } else {
+	            prest.setInt(1, customerId);
+	            prest.setString(2, customerName);
+	            prest.setString(3, phoneNumber);
+	            prest.setInt(4, status);
+	        }
 
+	        int i = prest.executeUpdate();
 			if (i > 0) {
 				success = true;
 			}
@@ -169,7 +183,6 @@ public class KhachHangDAO {
 	        ResultSet rs = prest.executeQuery();
 	        
 	        while (rs.next()) {
-	        	System.out.println(rs.getString("customer_name"));
 	        	KhachHang kh = new KhachHang();
 	        	kh.setCustomerId(rs.getInt("customer_id"));
 	        	kh.setCustomerName(rs.getString("customer_name"));
@@ -183,5 +196,41 @@ public class KhachHangDAO {
 		
 		connectDB.closeConnection();
 		return dskh;
+	}
+	
+	public static boolean deleteKhachHangById(int customerId) {
+		connectDB.getConnection();
+		boolean success = false;
+		
+		try {
+			String sql = "UPDATE customers "
+					+ "SET status = 0 "
+					+ "WHERE customer_id = " + customerId;
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return success;
+	}
+	
+	public static boolean insertDanhSachKhachHang(ArrayList<KhachHang> dskh) {
+		boolean success = true;
+		for (KhachHang kh : dskh) {
+			String fullname = kh.getCustomerName();
+			String phoneNumber = kh.getPhoneNumber();
+			int status = 1;
+			
+			success = insertKhachHang(0, fullname, phoneNumber, status);
+			if (!success) {
+				return success;
+			}
+		}
+		return success;
 	}
 }

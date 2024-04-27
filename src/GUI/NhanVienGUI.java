@@ -420,15 +420,12 @@ public class NhanVienGUI extends JPanel implements ActionListener {
                         try {
                         	switch (columnIndex) {
 	                         case 0:
-	                               nhanVien.setStaffId((int) cell.getNumericCellValue());
-	                               break;
-	                         case 1:
 	                           	nhanVien.setFull_name(cell.getStringCellValue());
 	                            break;
-	                         case 2:
+	                         case 1:
 	                             nhanVien.setEmail(cell.getStringCellValue());
 	                             break;
-	                         case 3:
+	                         case 2:
 	                             nhanVien.setPhone_number(cell.getStringCellValue());
 	                             break;
                            }
@@ -455,7 +452,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	}
 	
 	public boolean checkHeaderImportExcel (Row row) {
-        String[] expectedHeaders = {"staff_id", "fullname", "email", "phone_number"};
+        String[] expectedHeaders = {"fullname", "email", "phone_number"};
         boolean headerMatched = true;
         
         for (int i = 0; i < expectedHeaders.length; i++) {

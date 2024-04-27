@@ -292,7 +292,8 @@ public class ChiTietKhachHangGUI extends JFrame {
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khách hàng", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 					}
 				} else { 
-					if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber)) {
+					int status = 1;
+					if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber, status)) {
 						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khách hàng", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						parentGUI.loadDanhSachKhachHang();
 						dispose();
