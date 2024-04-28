@@ -20,7 +20,7 @@ public class DangNhapDAO {
 
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM account WHERE username = ?";           
+            String sql = "SELECT * FROM accounts WHERE username = ?";           
             ps = connectDB.prepareStatement(sql);
             ps.setString(1, username);
             

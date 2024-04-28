@@ -15,7 +15,7 @@ public class KhuyenmaiDAO {
 	     PreparedStatement statement = null;
 	     ResultSet resultSet = null;
 		try {
-            String sql = "SELECT * FROM `discount`";
+            String sql = "SELECT * FROM `discounts`";
             statement = connectDB.prepareStatement(sql);
             // Thực thi truy vấn và nhận kết quả
             resultSet = statement.executeQuery();

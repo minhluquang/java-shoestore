@@ -50,6 +50,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JButton btnDangXuat;
     private JButton btnPhanQuyen;
     private JButton btnWarranty;
+    private JButton btnThongKe;
     public String absolutePath = new File("").getAbsolutePath();
     private JPanel pnlCards;
     
@@ -67,6 +68,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
     private JPanel pnlTaiKhoan;
     private JPanel pnlPhanQuyen;
     private JPanel pnlWarranty;
+    private JPanel pnlThongKe;
+    
     /**
      * Launch the application.
      */
@@ -263,7 +266,19 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnTaiKhoan.setBorder(null);
         btnTaiKhoan.setBackground(new Color(51, 51, 51));
         pnlSidebarCenter.add(btnTaiKhoan);
-
+// Thong ke
+        
+        btnThongKe = new JButton(" Thống kê");
+        btnThongKe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnThongKe.setIcon(new ImageIcon(absolutePath + "/src/images/icons/tk.png"));
+        btnThongKe.setForeground(Color.WHITE);
+        btnThongKe.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnThongKe.setFocusable(false);
+        btnThongKe.setBorder(null);
+        btnThongKe.setBackground(new Color(51, 51, 51));
+        pnlSidebarCenter.add(btnThongKe);
+        
+        
         pnlSidebarBottom = new JPanel();
         pnlSidebarBottom.setBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(100, 100, 100), null));
         pnlSidebarBottom.setBackground(new Color(51, 51, 51));
@@ -335,6 +350,12 @@ public class main extends JFrame implements ActionListener, MouseListener {
         pnlPhanQuyen.setLayout(new BorderLayout(0, 0));
         pnlPhanQuyen.add(new PhanQuyenGUI(), BorderLayout.CENTER);
         
+        // Thong ke
+        
+        pnlThongKe = new JPanel();
+        pnlCards.add(pnlThongKe, "pnlThongKe");
+        pnlThongKe.setLayout(new BorderLayout(0, 0));
+        pnlThongKe.add(new ThongKeGUI(), BorderLayout.CENTER);
         
         pnlTrangChu = new JPanel();
         pnlCards.add(pnlTrangChu, "pnlTrangChu");
@@ -363,7 +384,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnWarranty.addActionListener(this);
         btnTaiKhoan.addActionListener(this);
         btnPhanQuyen.addActionListener(this);
-        
+        btnThongKe.addActionListener(this);
         // Add mouse listener to buttons
         btnTrangChu.addMouseListener(this);
         btnBanHang.addMouseListener(this);
@@ -377,6 +398,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
         btnWarranty.addMouseListener(this);
         btnTaiKhoan.addMouseListener(this);
         btnPhanQuyen.addMouseListener(this);
+        btnThongKe.addMouseListener(this);
     }
     
     // ========== Start: Xử lý click btn ==========
@@ -398,7 +420,11 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	        cardLayout.show(pnlCards, "pnlKhuyenMai");
 	        btnKhuyenMai.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnKhuyenMai); 
-	    } else if (e.getSource() == btnNhanVien) {
+	    }else if (e.getSource()== btnThongKe) {
+			cardLayout.show(pnlCards, "pnlThongKe");
+			btnThongKe.setBackground(new Color(100, 100, 100)); 
+	        resetButtonColors(btnThongKe); 
+		} else if (e.getSource() == btnNhanVien) {
 	        cardLayout.show(pnlCards, "pnlNhanVien");
 	        btnNhanVien.setBackground(new Color(100, 100, 100)); 
 	        resetButtonColors(btnNhanVien); 
@@ -457,7 +483,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	
 	// ========== Start: Reset màu btns ==========
 	private void resetButtonColors(JButton selectedButton) {
-	    JButton[] buttons = {btnTrangChu, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang, btnNhapHang, btnDangXuat, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty};
+	    JButton[] buttons = {btnTrangChu,btnThongKe, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang, btnNhapHang, btnDangXuat, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty};
 	    for (JButton button : buttons) {
 	        if (button != selectedButton) {
 	            button.setBackground(new Color(51, 51, 51));
