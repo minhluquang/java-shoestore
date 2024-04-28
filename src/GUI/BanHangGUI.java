@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +26,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
 
@@ -37,6 +42,7 @@ public class BanHangGUI extends JPanel {
 
     // Khai báo các thành phần của giao diện
     private JTabbedPane tabbedPane;
+
     private JPanel pnlBanHang;
     private JPanel pnlBHPhai;
     private JScrollPane spnSanPham;
@@ -63,8 +69,8 @@ public class BanHangGUI extends JPanel {
     private JButton btnXoa;
     private JButton btnXuatHoaDon;
 
-    private JPanel jPanel1;
-    private JPanel jPanel2;
+    private JPanel jPanelSanPham;
+    private JPanel jPanelGioHang;
 
     private JPanel pnlHoaDon;
     private JPanel pnlDanhSachHD;
@@ -101,7 +107,7 @@ public class BanHangGUI extends JPanel {
         pnlBHTrai = new JPanel(new GridLayout(2, 1));
 
         // Phần danh sách sản phẩm
-        jPanel1 = new JPanel(new BorderLayout());
+        jPanelSanPham = new JPanel(new BorderLayout());
         spnSanPham = new JScrollPane();
         
         JPanel panel1 = new JPanel(new GridLayout(1,0));
@@ -126,12 +132,12 @@ public class BanHangGUI extends JPanel {
         spnSanPham.setBorder(null);
         spnSanPham.setBackground(new Color(255, 255, 255));
         spnSanPham.setViewportView(tblSanPham);
-        jPanel1.add(panel1, BorderLayout.NORTH);
-        jPanel1.add(spnSanPham, BorderLayout.CENTER);
-        pnlBHTrai.add(jPanel1);
+        jPanelSanPham.add(panel1, BorderLayout.NORTH);
+        jPanelSanPham.add(spnSanPham, BorderLayout.CENTER);
+        pnlBHTrai.add(jPanelSanPham);
 
         // Phần giỏ hàng
-        jPanel2 = new JPanel(new BorderLayout());
+        jPanelGioHang = new JPanel(new BorderLayout());
         spnGioHang = new JScrollPane();
         
         JPanel panel2 = new JPanel(new GridLayout(1,0));
@@ -156,10 +162,10 @@ public class BanHangGUI extends JPanel {
         tblGioHang.setRowHeight(25);
         spnGioHang.setBorder(null);
         spnGioHang.setBackground(new Color(255, 255, 255));
-        spnGioHang.setViewportView(tblSanPham);
-        jPanel2.add(panel2, BorderLayout.NORTH);
-        jPanel2.add(spnGioHang, BorderLayout.CENTER);
-        pnlBHTrai.add(jPanel2);
+        spnGioHang.setViewportView(tblGioHang);
+        jPanelGioHang.add(panel2, BorderLayout.NORTH);
+        jPanelGioHang.add(spnGioHang, BorderLayout.CENTER);
+        pnlBHTrai.add(jPanelGioHang);
 
         pnlBanHang.add(pnlBHTrai, BorderLayout.CENTER);
 
@@ -251,11 +257,12 @@ public class BanHangGUI extends JPanel {
         pnlHoaDon = new JPanel(new BorderLayout());
 
         pnlDanhSachHD = new JPanel(new BorderLayout());
-        pnlThongTinHD = new JPanel(new GridLayout(7, 1));
+        pnlThongTinHD = new JPanel(new BorderLayout());
         
         lblThongTinHD = new JLabel("Thông Tin Hóa Đơn");
         lblThongTinHD.setFont(new Font("Tahoma", Font.BOLD, 18));
-        
+        lblThongTinHD.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThongTinHD.setForeground(new Color(255, 255, 255));
         lblMaHD = new JLabel("Mã Hóa Đơn:");
         lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblMaKH = new JLabel("Mã Khách Hàng:");
@@ -314,18 +321,50 @@ public class BanHangGUI extends JPanel {
 
         JLabel jLabeltk = new JLabel("Tìm kiếm");
         jLabeltk.setFont(new Font("Tahoma", Font.BOLD, 14));
-        pnlThongTinHD.add(lblThongTinHD);
-        pnlThongTinHD.add(lblMaHD);
-        pnlThongTinHD.add(lblMaKH);
-        pnlThongTinHD.add(lblNVLap);
-        pnlThongTinHD.add(lblNgayLap);
-        pnlThongTinHD.add(lblTongTien);
-        pnlThongTinHD.add(lblGhiChu);
-        pnlThongTinHD.add(jLabeltk);
-        pnlThongTinHD.add(txtGiaTu);
-        pnlThongTinHD.add(txtGiaDen);
-        pnlThongTinHD.add(txtNgayLapTu);
-        pnlThongTinHD.add(txtNgayLapDen);
+        JLabel jLabelgia1 = new JLabel("Giá từ");
+        jLabelgia1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        JLabel jLabelgia2 = new JLabel("đến");
+        jLabelgia2.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabelgia2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        JLabel jLabelngay1 = new JLabel("Ngày từ");
+        jLabelngay1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        JLabel jLabelngay2 = new JLabel("đến");
+        jLabelngay2.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabelngay2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        JPanel panelHD1 = new JPanel(new GridLayout(0,1));
+        panelHD1.setBackground(new Color(36, 136, 203));
+        panelHD1.add(lblThongTinHD);
+        pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
+
+        JPanel panelHD2 = new JPanel(new GridLayout(0,1, 0, 5));
+        panelHD2.setBackground(Color.WHITE);
+        panelHD2.add(lblMaHD);
+        panelHD2.add(lblMaKH);
+        panelHD2.add(lblNVLap);
+        panelHD2.add(lblNgayLap);
+        panelHD2.add(lblTongTien);
+        panelHD2.add(lblGhiChu);
+
+        JPanel panelHD3 = new JPanel(new GridLayout(0,4, 0, 5));
+        panelHD3.setBackground(Color.WHITE);
+        panelHD3.add(jLabeltk);
+        panelHD3.add(new JLabel(""));
+        panelHD3.add(new JLabel(""));
+        panelHD3.add(new JLabel(""));
+        panelHD3.add(jLabelgia1);
+        panelHD3.add(txtGiaTu);
+        panelHD3.add(jLabelgia2);
+        panelHD3.add(txtGiaDen);
+        panelHD3.add(jLabelngay1);
+        panelHD3.add(txtNgayLapTu);
+        panelHD3.add(jLabelngay2);
+        panelHD3.add(txtNgayLapDen);
+
+        pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
+        pnlThongTinHD.add(panelHD2, BorderLayout.CENTER);
+        pnlThongTinHD.add(panelHD3, BorderLayout.SOUTH);
+
         pnlDanhSachHD.add(pnlThongTinHD, BorderLayout.NORTH);
         pnlDanhSachHD.add(spnDSHD, BorderLayout.CENTER);
 
@@ -342,6 +381,22 @@ public class BanHangGUI extends JPanel {
 
         tabbedPane.addTab("Bán Hàng", pnlBanHang);
         tabbedPane.addTab("Hóa Đơn", pnlHoaDon);
+        tabbedPane.setFont(new Font("Tahoma", Font.BOLD, 14));
+        tabbedPane.setForeground(Color.BLACK);
+        tabbedPane.setBackground(Color.LIGHT_GRAY);
+        tabbedPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        tabbedPane.setForegroundAt(0, new Color(36, 136, 203));
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                // Tùy chỉnh giao diện của tab được chọn
+                for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                    tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
+                }
+                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn thành màu đỏ
+            }
+        });
 
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
