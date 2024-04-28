@@ -6,6 +6,7 @@ public class TaiKhoan {
 	private String password;
 	private int accountStatus;
 	private String position;
+	private int staffId;
 	
 	public TaiKhoan() {}
 
@@ -15,6 +16,17 @@ public class TaiKhoan {
 		this.password = password;
 		this.accountStatus = accountStatus;
 		this.position = position;
+	}
+	
+	
+
+
+	public int getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(int staffId) {
+		this.staffId = staffId;
 	}
 
 	public int getAccountId() {

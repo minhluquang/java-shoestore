@@ -5,8 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +22,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +31,13 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 //import org.jcp.xml.dsig.internal.dom.DOMTransform;
 
 import javax.swing.JRadioButton;
@@ -32,6 +45,7 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import DTO.NhanVien;
 import DTO.TaiKhoan;
 import BUS.NhanVienBUS;
 import BUS.TaiKhoanBUS;
@@ -367,9 +381,9 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
         	}
         } else if (e.getSource() == btnXoa) {
         	if (tk.getAccountId() > 0) {
-        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá thông tin tài khoản có id: " + tk.getAccountId() + " không?", "Xác nhận xoá tài khoản", JOptionPane.YES_NO_OPTION);
+        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá tài khoản có id: " + tk.getAccountId() + " không?", "Xác nhận xoá tài khoản", JOptionPane.YES_NO_OPTION);
             	if (choice == JOptionPane.YES_OPTION) {
-            		if (TaiKhoanBUS.deleteTaiKhoanById(tk.getAccountId())) {
+            		if (TaiKhoanBUS.deleteTaiKhoanById(tk.getAccountId()) && NhanVienBUS.deleteNhanVienByAccountId(tk.getAccountId())) {
             			loadDanhSachTaiKhoan();
     					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công tài khoản viên có id: " + tk.getAccountId(), "Thông báo xoá thành công tài khoản", JOptionPane.INFORMATION_MESSAGE);
             		} else {
@@ -377,13 +391,20 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
             		}
             	} 
         	} else {
-        		JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
+        		JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần xoá", "Thông báo lỗi xoá tài khoản", JOptionPane.INFORMATION_MESSAGE);
 			}
         } 
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
+        	importExcel();
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
+        	try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 	}
 	
@@ -455,6 +476,137 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 			Object[] row = {tk.getAccountId(), tk.getUsername(), status, position};
 			dtmTaiKhoan.addRow(row);
 		}
-		
 	}
+	
+	public void importExcel() {
+		try {
+			ArrayList<TaiKhoan> dstk = new ArrayList<>();
+			
+    		JFileChooser fileChooser = new JFileChooser();
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+    		fileChooser.setFileFilter(filter);
+
+    		int result = fileChooser.showOpenDialog(null);
+    		if (result == JFileChooser.APPROVE_OPTION) {
+    		    File selectedFile = fileChooser.getSelectedFile();
+    		    
+    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
+    		    
+    		    // Duyệt qua từng hàng trong sheet
+                for (Row row : sheet) {
+                	if (row.getRowNum()==0) {
+                		if (!checkHeaderImportExcel(row)) {
+                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+                			return;
+                		}
+                		continue;
+                	}
+                	
+                	// Duyệt qua từng ô trong 1 hàng
+                	TaiKhoan taiKhoan = new TaiKhoan();
+                    for (Cell cell : row) { 
+                    	int columnIndex = cell.getColumnIndex();
+                        try {
+                        	switch (columnIndex) {
+	                         case 0:
+	                           	taiKhoan.setUsername(cell.getStringCellValue());
+	                            break;
+	                         case 1:
+	                        	 taiKhoan.setPassword(cell.getStringCellValue());
+	                             break;
+	                         case 2:
+	                        	 taiKhoan.setAccountStatus((int) cell.getNumericCellValue());
+	                             break;
+	                         case 3:
+	                        	 String position = cell.getStringCellValue();
+	                             if (position.equalsIgnoreCase("admin") || position.equalsIgnoreCase("staff")) {
+	                                 taiKhoan.setPosition(position);
+	                             } else {
+	                            	 taiKhoan.setPosition("staff");
+	                             }
+	                             break;
+	                         case 4:
+	                        	 taiKhoan.setStaffId((int) cell.getNumericCellValue());
+	                        	 break;
+                           }
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+						}
+                    }
+                    dstk.add(taiKhoan);
+                }
+                
+                // Ghi dữ liệu vào db
+					if (TaiKhoanBUS.insertDanhSachTaiKhoan(dstk)) {
+						loadDanhSachTaiKhoan();
+						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+						message += "\nNgoại trừ: ";
+						message += "\n - Dữ liệu trùng username";
+						message += "\n - Nhân viên đã sở hữu tài khoản";
+						message += "\n - Dữ liệu chứa mã nhân viên đã bị xoá";
+						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						return;
+					} 
+					 else {
+							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+				
+    		}
+    	} catch (Exception e2) {
+    	    // Xử lý ngoại lệ ở đây nếu cần
+    	}
+	}
+	
+	public boolean checkHeaderImportExcel (Row row) {
+        String[] expectedHeaders = {"username", "password", "account_status", "position", "staff_id"};
+        boolean headerMatched = true;
+        
+        for (int i = 0; i < expectedHeaders.length; i++) {
+            Cell cell = row.getCell(i);
+            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+                headerMatched = false;
+                break;
+            }
+        }
+        
+        return headerMatched;
+	}
+	
+	
+	public void exportExcel() throws IOException {
+		ArrayList<TaiKhoan> dstk= TaiKhoanBUS.getDanhSachTaiKhoan();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("export/dstk.xlsx");
+		    XSSFWorkbook wb = new XSSFWorkbook();
+		    XSSFSheet sheet = wb.createSheet("Danh sách tài khoản");
+		    
+		    // Ghi header
+		    XSSFRow headerRow = sheet.createRow(0);
+		    headerRow.createCell(0).setCellValue("account_id");
+		    headerRow.createCell(1).setCellValue("username");
+		    headerRow.createCell(2).setCellValue("account_status");
+		    headerRow.createCell(3).setCellValue("position");
+		    
+		    // Ghi thông tin nhân viên
+		    int rowNum = 1;
+		    for (TaiKhoan tk: dstk) {
+		    	XSSFRow row = sheet.createRow(rowNum++);
+		    	row.createCell(0).setCellValue(tk.getAccountId());
+		    	row.createCell(1).setCellValue(tk.getUsername());
+		    	row.createCell(2).setCellValue(tk.getAccountStatus());
+		    	row.createCell(3).setCellValue(tk.getPosition());
+		    }
+		    
+		    wb.write(fileOutputStream);
+		    wb.close();
+		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 }

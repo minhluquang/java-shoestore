@@ -2,7 +2,7 @@ package DAO;
 
 import java.security.AlgorithmParametersSpi;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.ArrayList;import org.apache.poi.hwpf.model.CHPBinTable;
 
 //import com.mysql.cj.xdevapi.Statement;
 
@@ -14,10 +14,10 @@ public class NhanVienDAO {
 		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		try {
-			String sql = "SELECT staff_id, fullname, email, phone_number, status, s.account_id, username, password, account_status, position  "
+			String sql = "SELECT staff_id, fullname, email, phone_number, s.status, s.account_id, username, password, account_status, position  "
 					+ "FROM staffs s "
 					+ "LEFT JOIN accounts a ON a.account_id = s.account_id"
-					+ " WHERE status = 1";
+					+ " WHERE s.status = 1";
 			if (nonAccount) {
 				sql += " AND s.account_id IS NULL";
 			}
@@ -151,8 +151,8 @@ public class NhanVienDAO {
 		try {
 			String sql = "SELECT * "
 					+ "FROM staffs "
-					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')";
-			
+					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')"
+					+ " AND status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
@@ -215,7 +215,36 @@ public class NhanVienDAO {
 		return success;
 	}
 	
-	public static boolean updateAccountIdForStaff(int staffId, int accountId) {
+	public static boolean deleteNhanVienByAccountId(int accountId) {
+		connectDB.getConnection();
+		boolean success = false;
+		
+		try {
+			String sqlExistAccountId = "SELECT * "
+					+ "FROM staffs "
+					+ "WHERE account_id = " + accountId;
+			ResultSet rs = connectDB.runQuery(sqlExistAccountId);
+			if (rs.next()) {
+				String sql = "UPDATE staffs "
+						+ "SET status = 0 "
+						+ "WHERE account_id = " + accountId;
+				int i = connectDB.runUpdate(sql);
+				if (i > 0) {
+					success = true;
+				}
+			} else {
+				success = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return success;
+	}
+	
+	public static boolean updateAccountIdForStaff(int staffId, int accountId, boolean noAccount) {
 		connectDB.getConnection();
 		boolean success = false;
 		
@@ -223,6 +252,10 @@ public class NhanVienDAO {
 			String sql = "UPDATE staffs"
 					+ " SET account_id = " + accountId + 
 					" WHERE staff_id = " + staffId;
+			if (noAccount) {
+				sql += " AND account_id IS NULL AND status = 1";
+			}
+			
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
 				success = true;
@@ -235,4 +268,25 @@ public class NhanVienDAO {
 		connectDB.closeConnection();
 		return success;
 	}
+	
+	public static int getAccountIdByStaffId(int staffId) {
+		connectDB.getConnection();
+		
+		try {
+			String sql = "SELECT * FROM `staffs` WHERE staff_id = " + staffId;
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				int accountId = rs.getInt("account_id");
+				connectDB.closeConnection();
+				return accountId;
+			}
+			connectDB.closeConnection();
+			return 0;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 }

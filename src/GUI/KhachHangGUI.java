@@ -386,14 +386,16 @@ public class KhachHangGUI extends JPanel implements ActionListener {
                 }
                 
                 // Ghi dữ liệu vào db
-                for (KhachHang kh : dskh) {
 					if (KhachHangBUS.insertDanhSachKhachHang(dskh)) {
 						loadDanhSachKhachHang();
 						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						return;
+					} else {
+						JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+						return;
 					}
 				}
-    		}
+    		
     	} catch (Exception e2) {
     	    // Xử lý ngoại lệ ở đây nếu cần
     	}

@@ -171,8 +171,8 @@ public class KhachHangDAO {
 
 		try {
 			String sql = "SELECT * FROM customers "
-	                + "WHERE customer_id LIKE ? OR customer_name LIKE ? OR phone_number LIKE ?";
-	        
+	                + "WHERE (customer_id LIKE ? OR customer_name LIKE ? OR phone_number LIKE ?)"
+					+ " AND status = 1";
 	        PreparedStatement prest = connectDB.prepareStatement(sql);
 
 	        String searchKeyword = "%" + keyword + "%";

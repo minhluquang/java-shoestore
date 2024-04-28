@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Locale.IsoCountryCode;
 
+import DTO.NhanVien;
 import DTO.TaiKhoan;
 
 public class TaiKhoanDAO {
@@ -13,7 +14,7 @@ public class TaiKhoanDAO {
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM accounts";
+			String sql = "SELECT * FROM accounts WHERE status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 			while(rs.next()) {
 				TaiKhoan tk = new TaiKhoan();
@@ -155,13 +156,14 @@ public class TaiKhoanDAO {
 		return success;
 	}
 	
-	public static boolean insertTaiKhoan(int accountId, String username, int accountStatus, String position) {
+	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position, int status) {
 		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
-			String sql = "INSERT INTO accounts (account_id, username, password, account_status, position) "
-					+ "VALUES ("+ accountId +", '" + username + "', 'shopgiay88', " + accountStatus + ", '" + position + "')";
+			String sql = "INSERT INTO accounts (username, password, account_status, position, status) "
+					    + "VALUES ('" + username + "', '" + password + "', " + accountStatus + ", '" + position + "', " + status + ")";
+			
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
 				success = true;
@@ -174,6 +176,36 @@ public class TaiKhoanDAO {
 		return success;
 	}
 	
+	public static boolean insertDanhSachTaiKhoan(ArrayList<TaiKhoan> dstk) {
+		boolean success = true;
+		for (TaiKhoan tk : dstk) {
+			String username = tk.getUsername();
+			String password = tk.getPassword();
+			int accountStatus = tk.getAccountStatus();
+			String position = tk.getPosition();
+			int status = 1;
+			int staffId = tk.getStaffId();
+			
+			if (isUsedUsername(username)) {
+				continue;
+			}
+			
+
+			
+			success = insertTaiKhoan(username, password, accountStatus, position, status);
+			if (!success) {
+				return success;
+			} else {
+				TaiKhoan tKhoan = getDetailTaiKhoanByUsername(username, true);
+				success = NhanVienDAO.updateAccountIdForStaff(staffId, tKhoan.getAccountId(), true);
+				if (!success) {
+					continue;
+				}
+			}
+		}
+		return success;
+	}
+	
 	public static ArrayList<TaiKhoan> searchTaiKhoan(String keyword, int searchStatus, String searchRole) {
 		connectDB.getConnection();
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
@@ -181,8 +213,8 @@ public class TaiKhoanDAO {
 		try {
 			String sql = "SELECT * "
 					+ "FROM accounts "
-					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')";
-			
+					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')"
+					+ " AND status = 1";
 			if (searchStatus != -1) {
 				sql += " AND account_status = " + searchStatus;
 			}
@@ -240,7 +272,7 @@ public class TaiKhoanDAO {
 		
 		try {
 			String sql = "UPDATE accounts "
-					+ "SET account_status = 0 "
+					+ "SET account_status = 0, status = 0 "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {

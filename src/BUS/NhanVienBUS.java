@@ -33,7 +33,7 @@ public class NhanVienBUS {
 		return success;
 	}
 	
-	public static boolean insertDanhSachNhanVIen(ArrayList<NhanVien> dsnv) {
+	public static boolean insertDanhSachNhanVien(ArrayList<NhanVien> dsnv) {
 		boolean success = NhanVienDAO.insertDanhSachNhanVien(dsnv);
 		return success;
 	}
@@ -51,7 +51,15 @@ public class NhanVienBUS {
 		return NhanVienDAO.deleteNhanVienById(staffId);
 	}
 	
-	public static boolean updateAccountIdForStaff(int staffId, int accountId) {
-		return NhanVienDAO.updateAccountIdForStaff(staffId, accountId);
+	public static boolean updateAccountIdForStaff(int staffId, int accountId, boolean noAccount) {
+		return NhanVienDAO.updateAccountIdForStaff(staffId, accountId, noAccount);
+	}
+	
+	public static boolean deleteNhanVienByAccountId(int accountId) {
+		return NhanVienDAO.deleteNhanVienByAccountId(accountId);
+	}
+	
+	public static int getAccountIdByStaffId(int staffId) {
+		return NhanVienDAO.getAccountIdByStaffId(staffId);
 	}
 }

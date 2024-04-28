@@ -305,17 +305,17 @@ public class ChonTaiKhoanGUI extends JFrame {
 			int accountId = Integer.parseInt(txtMaTaiKhoan.getText().trim());
 			String username = txtUsername.getText().trim();
 			
-			int status = 0;
+			int accountStatus = 0;
 			if (cmbTrangThai.getSelectedItem().equals("Hoạt động")) {
-				status = 1;
+				accountStatus = 1;
 			} else if (cmbTrangThai.getSelectedItem().equals("Ngưng hoạt động")) {
-				status = 0;
+				accountStatus = 0;
 			}
 			
 			String position = "";
-			if (cmbChucVu.getSelectedItem().equals("Nhân viên")) {
+			if (cmbChucVu.getSelectedIndex() == 0) {
 				position = "staff";
-			} else if (cmbChucVu.getSelectedItem().equals("Admin")) {
+			} else if (cmbChucVu.getSelectedIndex() == 1) {
 				position = "admin";
 			}
 			
@@ -362,9 +362,10 @@ public class ChonTaiKhoanGUI extends JFrame {
 			
 			// Nếu không có lỗi gì hết thì lưu
 			int staffId = Integer.parseInt(txtMaNhanVien.getText().trim());
+			int status = 1;
 			
-			boolean isSuccessCreateNewAccount = TaiKhoanBUS.insertTaiKhoan(accountId, username, accountId, position);
-			boolean isSuccessUpdateStaff = NhanVienBUS.updateAccountIdForStaff(accountId, staffId);
+			boolean isSuccessCreateNewAccount = TaiKhoanBUS.insertTaiKhoan(username, "shopgiay88", accountStatus, position, status);
+			boolean isSuccessUpdateStaff = NhanVienBUS.updateAccountIdForStaff(staffId, accountId, true);
 			
 			if (isSuccessCreateNewAccount && isSuccessUpdateStaff) {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã tạo tài khoản thành công!", "Thông báo tạo thành công tài khoản", JOptionPane.INFORMATION_MESSAGE);

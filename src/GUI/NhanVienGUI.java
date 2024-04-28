@@ -302,7 +302,8 @@ public class NhanVienGUI extends JPanel implements ActionListener {
         		if (nv.getStaffId() > 0) {
         			int i = JOptionPane.showConfirmDialog(null, "Bạn có chắc xoá nhân viên với id: " + nv.getStaffId() + " không?","Thông báo xác nhận xoá nhân viên", JOptionPane.YES_NO_OPTION);
         			if (i == JOptionPane.YES_OPTION) {
-        				if (NhanVienBUS.deleteNhanVienById(nv.getStaffId())) {
+        				int accountId = NhanVienBUS.getAccountIdByStaffId(nv.getStaffId());
+        				if (NhanVienBUS.deleteNhanVienById(nv.getStaffId()) && (accountId == 0 || TaiKhoanBUS.deleteTaiKhoanById(accountId))) {
         					loadDanhSachNhanVien();
         					JOptionPane.showMessageDialog(null, "Hệ thống đã xoá thành công nhân viên có id: " + nv.getStaffId(), "Thông báo xoá thành công nhân viên", JOptionPane.INFORMATION_MESSAGE);
         				} else {
@@ -412,13 +413,15 @@ public class NhanVienGUI extends JPanel implements ActionListener {
                 }
                 
                 // Ghi dữ liệu vào db
-                for (NhanVien nv : dsnv) {
-					if (NhanVienBUS.insertDanhSachNhanVIen(dsnv)) {
+					if (NhanVienBUS.insertDanhSachNhanVien(dsnv)) {
 						loadDanhSachNhanVien();
 						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						return;
-					}
-				}
+					} else {
+							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+				
     		}
     	} catch (Exception e2) {
     	    // Xử lý ngoại lệ ở đây nếu cần

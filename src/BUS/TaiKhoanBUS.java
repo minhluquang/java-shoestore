@@ -34,8 +34,8 @@ public class TaiKhoanBUS {
 		return success;
 	}
 	
-	public static boolean insertTaiKhoan(int accountId, String username, int accountStatus, String position) {
-		boolean success = TaiKhoanDAO.insertTaiKhoan(accountId, username, accountStatus, position);
+	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position, int status) {
+		boolean success = TaiKhoanDAO.insertTaiKhoan(username, password, accountStatus, position, status);
 		return success;
 	}
 	
@@ -54,5 +54,9 @@ public class TaiKhoanBUS {
 	
 	public static boolean isUsedUsername(String username) {
 		return TaiKhoanDAO.isUsedUsername(username);
+	}
+	
+	public static boolean insertDanhSachTaiKhoan(ArrayList<TaiKhoan> dstk) {
+		return TaiKhoanDAO.insertDanhSachTaiKhoan(dstk);
 	}
 }

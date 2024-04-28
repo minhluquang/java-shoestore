@@ -333,14 +333,6 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 					} else {
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 					}
-				} else {
-					if (TaiKhoanBUS.insertTaiKhoan(accountId, username, status, position)) {
-						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-						parentGUI.loadDanhSachTaiKhoan();
-						dispose();
-					} else {
-						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin tài khoản", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-					}
 				}
 			}
 		}

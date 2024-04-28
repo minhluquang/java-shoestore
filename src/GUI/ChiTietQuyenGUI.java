@@ -135,8 +135,6 @@ public class ChiTietQuyenGUI extends JFrame {
 				
 				boolean success = true;
 				for (int roleId : listCheckboxSelected) {
-					System.out.println(roleId);
-					System.out.println(accountId);
 					if (!ChiTietQuyenBUS.insertQuyenVaoTaiKhoan(roleId, accountId)) {
 						success = false;
 					}
