@@ -1,5 +1,6 @@
 package DAO;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -51,4 +52,51 @@ public class TheLoaiDAO {
         }
         return category;
     }
+
+    public static boolean xoaTheLoai(int category_id) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE category SET status = false WHERE category_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, category_id);
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static boolean themTheLoai(TheLoaiDTO theLoai) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "INSERT INTO category (category_id, category_name, status) VALUES (?, ?, ?)";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, theLoai.getCategory_id());
+            pstmt.setString(2, theLoai.getCategory_name());
+            pstmt.setBoolean(3, theLoai.isStatus());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
 }

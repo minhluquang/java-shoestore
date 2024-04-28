@@ -1,5 +1,6 @@
 package DAO;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -92,4 +93,62 @@ public class SanPhamDAO {
 		}
 		return tenSanPham;
 	}
+
+    public static boolean themSanPham(SanPhamDTO sanPham) {
+        boolean flag=true;
+        try {
+			connectDB.getConnection();
+            String sql = "INSERT INTO product (product_id, category_id, brand_id, product_name, output_price, country, year_of_product, discount_percent, image_path, quantity, status) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, sanPham.getProduct_id());
+            pstmt.setInt(2, sanPham.getCategory_id());
+            pstmt.setInt(3, sanPham.getBrand_id());
+            pstmt.setString(4, sanPham.getProduct_name());
+            pstmt.setInt(5, sanPham.getOutput_price());
+            pstmt.setString(6, sanPham.getCountry());
+            pstmt.setInt(7, sanPham.getYear_of_product());
+            pstmt.setInt(8, sanPham.getDiscount_percent());
+            pstmt.setString(9, sanPham.getImage_path());
+            pstmt.setInt(10, sanPham.getQuantity());
+            pstmt.setBoolean(11, sanPham.isStatus());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false; 
+            }
+        } catch (Exception e) {
+            flag=false;
+            e.printStackTrace();
+        } finally {
+			connectDB.closeConnection();
+		}
+        return flag;
+    }
+
+    public static boolean xoaSanPham(int product_id) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE product SET status = false WHERE product_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+    
+            // Set the product_id parameter in the PreparedStatement
+            pstmt.setInt(1, product_id);
+    
+            // Execute the update operation
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false; // No rows affected means deletion failed
+            }
+        } catch (Exception e) {
+            flag=false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
 }

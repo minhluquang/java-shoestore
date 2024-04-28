@@ -27,6 +27,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import DTO.SanPhamDTO;
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
@@ -38,7 +41,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
     private JTextField txtTmKim;
     private JTable table;
     private final ButtonGroup buttonGroup = new ButtonGroup();
-   private JButton btnChiTiet;
+//    private JButton btnChiTiet;
     private JButton btnThem;
     private JButton btnSua;
     private JButton btnXoa;
@@ -119,14 +122,14 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 		
-		btnChiTiet = new JButton("Chi tiết");
-		btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTiet.setPreferredSize(new Dimension(150, 40));
-		btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTiet.setFocusable(false);
-		btnChiTiet.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnChiTiet);
+		// btnChiTiet = new JButton("Chi tiết");
+		// btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		// btnChiTiet.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
+		// btnChiTiet.setPreferredSize(new Dimension(150, 40));
+		// btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
+		// btnChiTiet.setFocusable(false);
+		// btnChiTiet.setBackground(Color.WHITE);
+		// pnlTopBottom.add(btnChiTiet);
 		
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -227,7 +230,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		table.setRowHeight(25);
 		
 		// Sự kiện lắng nghe click
-		btnChiTiet.addActionListener(this);
+		// btnChiTiet.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnXoa.addActionListener(this);
@@ -238,19 +241,19 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnChiTiet) {
+		if (e.getSource() == btnSua) {
 			EventQueue.invokeLater(new Runnable() {
                         @Override
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI();
+					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(new SanPhamDTO());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		});
+			});
 		}
     }
 }
