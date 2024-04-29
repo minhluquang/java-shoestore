@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package GUI;
 
 import java.awt.BorderLayout;
@@ -9,219 +5,372 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.io.File;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Minh Tri
- */
-public class NhapHangGUI extends javax.swing.JPanel {
-	public String absolutePath = new File("").getAbsolutePath();
+import BUS.SanPhamBUS;
+import BUS.TheLoaiBUS;
+import DTO.SanPhamDTO;
+
+public class NhapHangGUI extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+	private JTextField textField;
+	private DefaultTableModel defaultTableModel;
+	private JTable table;
+	private JTextField txtSoLuong;
+	private DefaultTableModel defaultTableModelCT;
+	private JTable tableCT;
+	private JTextField txtGiaNhap;
+	private SanPhamDTO sp = new SanPhamDTO();
 
 	/**
-	 * Creates new form NewJPanel
+	 * Create the panel.
 	 */
 	public NhapHangGUI() {
-		initComponents();
+		setLayout(new GridLayout(0, 2, 0, 0));
+
+		JPanel panel = new JPanel();
+		add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JPanel pnlTop = new JPanel();
+		panel.add(pnlTop, BorderLayout.NORTH);
+
+		textField = new JTextField();
+		textField.setBorder(
+				new TitledBorder(null, "T\u00ECm ki\u1EBFm", TitledBorder.LEFT, TitledBorder.TOP, null, null));
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		pnlTop.add(textField);
+		textField.setColumns(12);
+
+		JButton btnNewButton = new JButton("Làm mới");
+		btnNewButton.setPreferredSize(new Dimension(130, 30));
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		pnlTop.add(btnNewButton);
+
+		JPanel pnlBot = new JPanel();
+		pnlBot.setPreferredSize(new Dimension(0, 200));
+		panel.add(pnlBot, BorderLayout.SOUTH);
+		GridBagLayout gbl_pnlBot = new GridBagLayout();
+		gbl_pnlBot.columnWidths = new int[] { 0, 0 };
+//		gbl_pnlBot.rowHeights = new int[] { 0 };
+		gbl_pnlBot.rowHeights = new int[] { 0, 0 };
+		gbl_pnlBot.rowWeights = new double[] { 1.0 };
+
+		pnlBot.setLayout(gbl_pnlBot);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setPreferredSize(new Dimension(150, 10));
+		panel_2.setBackground(Color.WHITE);
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.fill = GridBagConstraints.BOTH;
+		gbc_panel_2.insets = new Insets(5, 0, 0, 5);
+//		gbc_panel_2.gridheight = 2;
+		gbc_panel_2.gridheight = 1;
+		gbc_panel_2.gridx = 0;
+		gbc_panel_2.weightx = 0.5;
+		gbc_panel_2.gridy = 0;
+		pnlBot.add(panel_2, gbc_panel_2);
+		panel_2.setLayout(new GridLayout(1, 1, 0, 0));
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setPreferredSize(new Dimension(300, 100));
+		panel_3.setBackground(Color.WHITE);
+		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
+		gbc_panel_3.fill = GridBagConstraints.BOTH;
+		gbc_panel_3.weightx = 0.5;
+		gbc_panel_3.insets = new Insets(5, 11, 0, 5);
+//		gbc_panel_3.gridheight = 2;
+		gbc_panel_3.gridheight = 1;
+		gbc_panel_3.gridx = 1;
+		gbc_panel_3.gridy = 0;
+		pnlBot.add(panel_3, gbc_panel_3);
+		panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		JButton btnThem = new JButton("Thêm");
+		btnThem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String giaNhap = txtGiaNhap.getText();
+				String soL = txtSoLuong.getText();
+				int row = table.getSelectedRow();
+				if (row < 0) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (giaNhap.isEmpty() || soL.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Vui lòng nhập đủ thông tin !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (!giaNhap.matches("\\d+")) {
+					JOptionPane.showMessageDialog(null, "Giá nhập phải là số !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (!soL.matches("\\d+")) {
+					JOptionPane.showMessageDialog(null, "Số lượng phải là số !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+			}
+		});
+		btnThem.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnThem.setPreferredSize(new Dimension(85, 35));
+		GridBagConstraints gbc_btnThem = new GridBagConstraints();
+		gbc_btnThem.fill = GridBagConstraints.BOTH;
+		gbc_btnThem.insets = new Insets(5, 5, 5, 5);
+		gbc_btnThem.gridwidth = 2;
+		gbc_btnThem.gridx = 0;
+		gbc_btnThem.gridy = 1;
+		pnlBot.add(btnThem, gbc_btnThem);
+
+		JLabel lblMa = new JLabel("");
+		lblMa.setEnabled(false);
+		lblMa.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblMa.setBorder(new TitledBorder(null, "M\u00E3 s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
+		lblMa.setPreferredSize(new Dimension(100, 35));
+		panel_3.add(lblMa);
+
+		JLabel lblLoai = new JLabel("");
+		lblLoai.setEnabled(false);
+		lblLoai.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblLoai.setPreferredSize(new Dimension(120, 35));
+		lblLoai.setBorder(new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				"Lo\u1EA1i s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_3.add(lblLoai);
+
+		JLabel lblTenSp = new JLabel("");
+		lblTenSp.setEnabled(false);
+		lblTenSp.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTenSp.setPreferredSize(new Dimension(120, 35));
+		lblTenSp.setBorder(new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				"T\u00EAn s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_3.add(lblTenSp);
+
+		txtGiaNhap = new JTextField();
+		txtGiaNhap.setPreferredSize(new Dimension(100, 40));
+		txtGiaNhap.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtGiaNhap.setColumns(8);
+		txtGiaNhap.setBorder(new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				"Gi\u00E1 nh\u1EADp", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_3.add(txtGiaNhap);
+
+		txtSoLuong = new JTextField();
+		txtSoLuong.setBorder(
+				new TitledBorder(null, "S\u1ED1 l\u01B0\u1EE3ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtSoLuong.setPreferredSize(new Dimension(100, 40));
+		panel_3.add(txtSoLuong);
+		txtSoLuong.setColumns(8);
+
+		JPanel panel_1 = new JPanel();
+		add(panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_4 = new JPanel();
+		panel_1.add(panel_4, BorderLayout.NORTH);
+		panel_4.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_6 = new JPanel();
+		panel_6.setPreferredSize(new Dimension(30, 10));
+		FlowLayout flowLayout = (FlowLayout) panel_6.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		panel_4.add(panel_6, BorderLayout.WEST);
+
+		JPanel panel_7 = new JPanel();
+		panel_7.setPreferredSize(new Dimension(30, 10));
+		panel_4.add(panel_7, BorderLayout.EAST);
+
+		JPanel panel_8 = new JPanel();
+		panel_4.add(panel_8, BorderLayout.CENTER);
+		panel_8.setLayout(new GridLayout(4, 1, 0, 2));
+
+		JLabel lblMaPN = new JLabel("");
+		lblMaPN.setPreferredSize(new Dimension(100, 35));
+		lblMaPN.setBorder(new TitledBorder(null, "M\u00E3 phi\u1EBFu nh\u1EADp", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
+		lblMaPN.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_8.add(lblMaPN);
+
+		JLabel lblTongTien = new JLabel("10000");
+		lblTongTien.setBorder(new TitledBorder(null, "T\u1ED5ng ti\u1EC1n(VN\u0110)", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_8.add(lblTongTien);
+
+		JComboBox cboNCC = new JComboBox();
+		cboNCC.setBorder(
+				new TitledBorder(null, "Nh\u00E0 cung c\u1EA5p", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		cboNCC.setModel(new DefaultComboBoxModel(new String[] { "item 1" }));
+		cboNCC.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		cboNCC.setPreferredSize(new Dimension(29, 20));
+		panel_8.add(cboNCC);
+
+		JLabel lblNV = new JLabel("Lữ QUang Minh");
+		lblNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNV.setBorder(
+				new TitledBorder(null, "Nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_8.add(lblNV);
+
+		JPanel panel_10 = new JPanel();
+		panel_4.add(panel_10, BorderLayout.SOUTH);
+
+		JPanel panel_5 = new JPanel();
+		panel_1.add(panel_5, BorderLayout.SOUTH);
+		panel_5.setPreferredSize(new Dimension(0, 150));
+		panel_5.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_9 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_9.getLayout();
+		flowLayout_1.setVgap(20);
+		flowLayout_1.setHgap(10);
+		panel_5.add(panel_9, BorderLayout.NORTH);
+		panel_9.setPreferredSize(new Dimension(0, 75));
+
+		JButton btnXoa = new JButton("Xóa");
+		btnXoa.setPreferredSize(new Dimension(100, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_9.add(btnXoa);
+
+		JButton btnSua = new JButton("Sửa");
+		btnSua.setPreferredSize(new Dimension(100, 40));
+		btnSua.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_9.add(btnSua);
+
+		JButton btnLmMi = new JButton("Làm mới");
+		btnLmMi.setPreferredSize(new Dimension(100, 40));
+		btnLmMi.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_9.add(btnLmMi);
+		JPanel panel_11 = new JPanel();
+		panel_11.setBackground(new Color(0, 0, 0));
+		FlowLayout flowLayout_2 = (FlowLayout) panel_11.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.TRAILING);
+		flowLayout_2.setVgap(20);
+		panel_5.add(panel_11, BorderLayout.CENTER);
+
+		JButton btnHuy = new JButton("Hủy");
+		btnHuy.setPreferredSize(new Dimension(100, 40));
+		btnHuy.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_11.add(btnHuy);
+
+		JButton btnNhaphang = new JButton("Nhập Hàng");
+		btnNhaphang.setPreferredSize(new Dimension(140, 40));
+		btnNhaphang.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel_11.add(btnNhaphang);
+//		=========== Table Chi Tiết ==============
+		tableCT = new JTable();
+		tableCT.setFocusable(false);
+		tableCT.setSelectionForeground(Color.WHITE);
+		tableCT.setBorder(null);
+		tableCT.setSelectionBackground(new Color(232, 57, 95));
+		tableCT.setIntercellSpacing(new Dimension(0, 0));
+
+		defaultTableModelCT = new DefaultTableModel(
+				new Object[] { "Mã sản phẩm", "Tên sản phẩm", "Số lượng", "Đơn giá", "Thành Tiền" }, 0);
+
+		tableCT.setModel(defaultTableModelCT);
+		tableCT.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		tableCT.getTableHeader().setOpaque(false);
+		tableCT.getTableHeader().setBackground(new Color(36, 136, 203));
+		tableCT.getTableHeader().setForeground(new Color(255, 255, 255));
+		tableCT.setRowHeight(25);
+		Object[] row1 = { "1", "Chạy bộ", "Nike", "10000", "15" };
+		defaultTableModelCT.addRow(row1);
+
+		JScrollPane scrollPaneCT = new JScrollPane(tableCT);
+		scrollPaneCT.setBorder(null);
+		scrollPaneCT.setBackground(Color.WHITE);
+		scrollPaneCT.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneCT.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel_1.add(scrollPaneCT);
+
+//		===========Table Sản Phẩm==============
+		table = new JTable();
+		table.setFocusable(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setBorder(null);
+		table.setSelectionBackground(new Color(232, 57, 95));
+		table.setRowHeight(25);
+		table.setIntercellSpacing(new Dimension(0, 0));
+
+		defaultTableModel = new DefaultTableModel(
+				new Object[] { "Mã sản phẩm", "Loại", "Tên sản phẩm", "Giảm giá", "Tồn kho" }, 0);
+
+		table.setModel(defaultTableModel);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBorder(null);
+		scrollPane.setBackground(Color.WHITE);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPane, BorderLayout.CENTER);
+
+		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		table.getTableHeader().setOpaque(false);
+		table.getTableHeader().setBackground(new Color(36, 136, 203));
+		table.getTableHeader().setForeground(new Color(255, 255, 255));
+		table.setRowHeight(25);
+		Object[] row = { "1", "Chạy bộ", "Nike", "10000", "15" };
+		defaultTableModel.addRow(row);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedRow = table.rowAtPoint(e.getPoint());
+				if (selectedRow != -1) {
+					lblMa.setText(String.valueOf(table.getValueAt(selectedRow, 0)));
+					lblLoai.setText((String) table.getValueAt(selectedRow, 1));
+					lblTenSp.setText((String) table.getValueAt(selectedRow, 2));
+				}
+			}
+		});
+
+//		Goi Ham
+		loadDanhSachSanPham();
 
 	}
 
-	public static void main(String[] argv) {
-		JFrame f = new JFrame();
+	public static void main(String[] args) {
 		NhapHangGUI a = new NhapHangGUI();
-		f.getContentPane().setLayout(new BorderLayout());
-		f.getContentPane().add(a, BorderLayout.CENTER);
+		JFrame f = new JFrame();
+		f.getContentPane().add(a);
 		f.setVisible(true);
 	}
 
-	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
-	// <editor-fold defaultstate="collapsed" desc="Generated Code">
-	private void initComponents() {
-
-		jPanel4 = new javax.swing.JPanel();
-		jPanel5 = new javax.swing.JPanel();
-		jPanel5.setAutoscrolls(true);
-		jButton2 = new javax.swing.JButton();
-		jButton2.setPreferredSize(new Dimension(120, 50));
-		jButton1 = new javax.swing.JButton();
-		jButton1.setPreferredSize(new Dimension(120, 50));
-		jButton3 = new javax.swing.JButton();
-		jButton3.setPreferredSize(new Dimension(120, 50));
-		jButton4 = new javax.swing.JButton();
-		jButton4.setPreferredSize(new Dimension(120, 50));
-		jPanel1 = new javax.swing.JPanel();
-		jComboBox1 = new javax.swing.JComboBox<>();
-		jTextField1 = new javax.swing.JTextField();
-		jButton5 = new javax.swing.JButton();
-		jPanel2 = new javax.swing.JPanel();
-		jPanel3 = new javax.swing.JPanel();
-		jPanel3.setPreferredSize(new Dimension(270, 10));
-		jLabel1 = new javax.swing.JLabel();
-		jLabel1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		jComboBox2 = new javax.swing.JComboBox<>();
-		jLabel2 = new javax.swing.JLabel();
-		jLabel2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		jComboBox3 = new javax.swing.JComboBox<>();
-		jPanel6 = new javax.swing.JPanel();
-		FlowLayout flowLayout = (FlowLayout) jPanel6.getLayout();
-		jPanel6.setBackground(Color.WHITE);
-		jScrollPane2 = new javax.swing.JScrollPane();
-		jScrollPane2.setPreferredSize(new Dimension(800, 600));
-		jTable1 = new javax.swing.JTable();
-
-		setToolTipText("");
-		setLayout(new java.awt.BorderLayout());
-
-		jPanel4.setLayout(new java.awt.BorderLayout());
-
-		jPanel5.setForeground(new java.awt.Color(255, 255, 255));
-
-		jButton2.setIcon(new javax.swing.ImageIcon(absolutePath + "/src/images/icons/add.png")); // NOI18N
-		jButton2.setText("Thêm");
-		jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		jPanel5.add(jButton2);
-
-		jButton1.setIcon(new javax.swing.ImageIcon(absolutePath + "/src/images/icons/information.png")); // NOI18N
-		jButton1.setText("Chi Tiết");
-		jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		jPanel5.add(jButton1);
-
-		jButton3.setIcon(new javax.swing.ImageIcon(absolutePath + "/src/images/icons/delete.png")); // NOI18N
-		jButton3.setText("Hủy Phiếu");
-		jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		jPanel5.add(jButton3);
-
-		jButton4.setIcon(new javax.swing.ImageIcon(absolutePath + "/src/images/icons/excel.png")); // NOI18N
-		jButton4.setText("Xuất Excel");
-		jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		jPanel5.add(jButton4);
-
-		jPanel4.add(jPanel5, BorderLayout.WEST);
-
-		jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20));
-
-		jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Item 3", "Item 4" }));
-		jComboBox1.setPreferredSize(new java.awt.Dimension(72, 30));
-		jPanel1.add(jComboBox1);
-
-		jTextField1.setText("Tìm Kiếm");
-		jTextField1.setPreferredSize(new java.awt.Dimension(180, 30));
-		jPanel1.add(jTextField1);
-
-		jButton5.setIcon(new javax.swing.ImageIcon(absolutePath + "/src/images/icons/reload.png")); // NOI18N
-		jButton5.setText("Làm mới");
-		jPanel1.add(jButton5);
-
-		jPanel4.add(jPanel1, BorderLayout.EAST);
-
-		add(jPanel4, BorderLayout.NORTH);
-		jPanel2.setLayout(new BorderLayout(0, 0));
-
-		jPanel3.setLayout(new java.awt.FlowLayout(FlowLayout.CENTER, 5, 10));
-
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		jLabel1.setText("Nhà Cung Cấp");
-		jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jLabel1.setPreferredSize(new Dimension(250, 20));
-		jPanel3.add(jLabel1);
-
-		jComboBox2.setModel(
-				new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-		jComboBox2.setPreferredSize(new java.awt.Dimension(220, 30));
-		jPanel3.add(jComboBox2);
-
-		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		jLabel2.setText("Nhân Viên Nhập");
-		jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		jLabel2.setPreferredSize(new java.awt.Dimension(250, 20));
-		jPanel3.add(jLabel2);
-
-		jComboBox3.setModel(
-				new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-		jComboBox3.setPreferredSize(new java.awt.Dimension(220, 30));
-		jPanel3.add(jComboBox3);
-
-		jPanel2.add(jPanel3, BorderLayout.WEST);
-
-		lblTSTin = new JLabel();
-		lblTSTin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTSTin.setText("Từ Số Tiền(VNĐ)");
-		lblTSTin.setPreferredSize(new Dimension(250, 20));
-		lblTSTin.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblTSTin.setHorizontalAlignment(SwingConstants.LEFT);
-		jPanel3.add(lblTSTin);
-
-		textField = new JTextField();
-		textField.setPreferredSize(new Dimension(300, 30));
-		jPanel3.add(textField);
-		textField.setColumns(23);
-
-		lblnSTinvn = new JLabel();
-		lblnSTinvn.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblnSTinvn.setText("Đến Số Tiền(VNĐ)");
-		lblnSTinvn.setPreferredSize(new Dimension(250, 20));
-		lblnSTinvn.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblnSTinvn.setHorizontalAlignment(SwingConstants.LEFT);
-		jPanel3.add(lblnSTinvn);
-
-		textField_1 = new JTextField();
-		textField_1.setPreferredSize(new Dimension(300, 30));
-		textField_1.setColumns(23);
-		jPanel3.add(textField_1);
-
-		jTable1.setModel(new DefaultTableModel(
-				new Object[][] { { null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null }, },
-				new String[] { "STT", "M\u00E3 phi\u1EBFu", "Nh\u00E0 cung c\u1EA5p", "Nh\u00E2n vi\u00EAn",
-						"Th\u1EDDi gian", "T\u1ED5ng ti\u1EC1n" }));
-		jScrollPane2.setViewportView(jTable1);
-
-		jPanel6.add(jScrollPane2);
-
-		jPanel2.add(jPanel6, BorderLayout.CENTER);
-
-		add(jPanel2, BorderLayout.CENTER);
-	}// </editor-fold>
-
-	// Variables declaration - do not modify
-	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton2;
-	private javax.swing.JButton jButton3;
-	private javax.swing.JButton jButton4;
-	private javax.swing.JButton jButton5;
-	private javax.swing.JComboBox<String> jComboBox1;
-	private javax.swing.JComboBox<String> jComboBox2;
-	private javax.swing.JComboBox<String> jComboBox3;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel2;
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JPanel jPanel2;
-	private javax.swing.JPanel jPanel3;
-	private javax.swing.JPanel jPanel4;
-	private javax.swing.JPanel jPanel5;
-	private javax.swing.JPanel jPanel6;
-	private javax.swing.JScrollPane jScrollPane2;
-	private javax.swing.JTable jTable1;
-	private javax.swing.JTextField jTextField1;
-	private JLabel lblTSTin;
-	private JTextField textField;
-	private JLabel lblnSTinvn;
-	private JTextField textField_1;
-	// End of variables declaration
+	public void loadDanhSachSanPham() {
+		ArrayList<SanPhamDTO> arr = SanPhamBUS.getDanhSachSanPham();
+		defaultTableModel.setRowCount(0);
+		for (SanPhamDTO s : arr) {
+			String tenTheLoai = TheLoaiBUS.getTheLoaiByID(s.getCategory_id()).getCategory_name();
+			Object[] row = { s.getProduct_id(), tenTheLoai, s.getProduct_name(), s.getDiscount_percent() + "%",
+					s.getQuantity() };
+			defaultTableModel.addRow(row);
+		}
+	}
 
 }

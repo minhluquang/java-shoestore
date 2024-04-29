@@ -15,12 +15,11 @@ public class PhieuNhapDAO {
 		connectDB.getConnection();
 		ArrayList<PhieuNhap> dspn = new ArrayList<>();
 		try {
-			String sql = "Select * from goodsreceipt";
+			String sql = "Select * from goodsreceipts";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				PhieuNhap pn = new PhieuNhap();
 				pn.setReceipt_id(rs.getInt("receipt_id"));
-				pn.setGoodsreceipt_name(rs.getString("goodsreceipt_name"));
 				pn.setDate(rs.getString("date"));
 				pn.setTotal_price(rs.getInt("total_price"));
 				pn.setSupplier_id(rs.getInt("supplier_id"));
@@ -31,7 +30,6 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		connectDB.closeConnection();
 		return dspn;
 	}
@@ -39,9 +37,8 @@ public class PhieuNhapDAO {
 	public static String getTenNhanVienById(int id) {
 		connectDB.getConnection();
 		String tenNhanVien = "";
-
 		try {
-			String sql = "SELECT fullname FROM staff WHERE staff_id = " + id;
+			String sql = "SELECT fullname FROM staffs WHERE staff_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
 			if (rs.next()) {
 				tenNhanVien = rs.getString("fullname");
@@ -49,7 +46,6 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		connectDB.closeConnection();
 		return tenNhanVien;
 	}
@@ -57,14 +53,12 @@ public class PhieuNhapDAO {
 	public static PhieuNhap getPhieuNhapById(int id) {
 		connectDB.getConnection();
 		PhieuNhap pn = null;
-		
 		try {
-			String sql = "SELECT * FROM goodsreceipt WHERE receipt_id = " + id;
+			String sql = "SELECT * FROM goodsreceipts WHERE receipt_id = " + id;
 			ResultSet rs = connectDB.runQuery(sql);
 			if (rs.next()) {
 				pn = new PhieuNhap();
 				pn.setReceipt_id(rs.getInt("receipt_id"));
-				pn.setGoodsreceipt_name(rs.getString("goodsreceipt_name"));
 				pn.setDate(rs.getString("date"));
 				pn.setTotal_price(rs.getInt("total_price"));
 				pn.setSupplier_id(rs.getInt("supplier_id"));
@@ -73,7 +67,6 @@ public class PhieuNhapDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		connectDB.closeConnection();
 		return pn;
 	}
