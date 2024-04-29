@@ -12,7 +12,7 @@ public class TheLoaiDAO {
         ArrayList<TheLoaiDTO> danhSachCategory = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM category";
+            String sql = "SELECT * FROM categories";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int category_id = rs.getInt("category_id");
@@ -35,7 +35,7 @@ public class TheLoaiDAO {
         TheLoaiDTO category = new TheLoaiDTO();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM category WHERE category_id = " + category_id;
+            String sql = "SELECT * FROM categories WHERE category_id = " + category_id;
             ResultSet rs = connectDB.runQuery(sql);
             if (rs.next()) {
                 String category_name = rs.getString("category_name");
@@ -57,7 +57,7 @@ public class TheLoaiDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "UPDATE category SET status = false WHERE category_id = ?";
+            String sql = "UPDATE categories SET status = false WHERE category_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
             pstmt.setInt(1, category_id);
@@ -79,7 +79,7 @@ public class TheLoaiDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO category (category_id, category_name, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO categories (category_id, category_name, status) VALUES (?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
             pstmt.setInt(1, theLoai.getCategory_id());
@@ -97,6 +97,47 @@ public class TheLoaiDAO {
             connectDB.closeConnection();
         }
         return flag;
+    }
+
+    public static boolean suaTheLoai(TheLoaiDTO theLoai) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE categories SET category_name = ?, status = ? WHERE category_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setString(1, theLoai.getCategory_name());
+            pstmt.setBoolean(2, theLoai.isStatus());
+            pstmt.setInt(3, theLoai.getCategory_id());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static int getSoluongTheLoai(){
+        int count=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM categories";
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return count;
     }
 
 }

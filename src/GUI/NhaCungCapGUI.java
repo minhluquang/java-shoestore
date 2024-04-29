@@ -13,13 +13,13 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -27,30 +27,27 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import BUS.NhaCungCapBUS;
-import BUS.PhieuNhapBUS;
-import DTO.PhieuNhap;
+import DAO.NhaCungCapDAO;
+import DTO.NhaCungCap;
 
-public class PhieuNhapGUI extends JPanel implements ActionListener {
+public class NhaCungCapGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	public String absolutePath = new File("").getAbsolutePath();
 	private JTextField txtTmKim;
 	private JTable table;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JButton btnChiTietPhieuNhap;
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
 	private JButton btnNhapExcel;
 	private JButton btnXuatExcel;
 	private DefaultTableModel defaultTableModel;
-
-	private static ChiTietPhieuNhapGUI chiTietPhieuNhap;
-	private static ChiTietNhaCungCapGUI chiTietNhanVienGUI;
+	NhaCungCap ncc = new NhaCungCap();
+	private static ChiTietNhaCungCapGUI ChiTietNhaCungCap;
 
 	/**
 	 * Create the panel.
 	 */
-	public PhieuNhapGUI() {
+	public NhaCungCapGUI() {
 		setBackground(new Color(230, 230, 230));
 		setLayout(new BorderLayout(10, 10));
 
@@ -93,7 +90,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
 		pnlSearch.add(panel_2, BorderLayout.EAST);
-		panel_2.setLayout(new GridLayout(0, 2, 0, 0));
+		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 
 		JButton btnTim = new JButton("");
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -103,26 +100,10 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		btnTim.setBackground(new Color(255, 255, 255));
 		panel_2.add(btnTim);
 
-		JButton btnLamMoi = new JButton("Làm mới");
-		btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnLamMoi.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
-		btnLamMoi.setFocusable(false);
-		btnLamMoi.setBackground(Color.WHITE);
-		panel_2.add(btnLamMoi);
-
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
-
-		btnChiTietPhieuNhap = new JButton("Chi Tiết");
-		btnChiTietPhieuNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnChiTietPhieuNhap.setIcon(new ImageIcon(absolutePath + "/src/images/icons/information.png"));
-		btnChiTietPhieuNhap.setPreferredSize(new Dimension(150, 40));
-		btnChiTietPhieuNhap.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnChiTietPhieuNhap.setFocusable(false);
-		btnChiTietPhieuNhap.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnChiTietPhieuNhap);
 
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -190,7 +171,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 
 //		=================================TABLE================================
 		table = new JTable();
-		table.setFillsViewportHeight(true);
 		table.setSelectionForeground(Color.WHITE);
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
@@ -199,15 +179,21 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		table.setFocusable(false);
 
 		defaultTableModel = new DefaultTableModel(
-				new Object[] { "STT", "Mã Phiếu", "Nhà cung cấp", "Nhân Viên", "Thời gian", "Tổng số tiền" }, 0);
+				new Object[] { "STT", "Mã nhà cung cấp", "Tên nhà cung cấp", "Địa chỉ" }, 0);
 		table.setModel(defaultTableModel);
 		table.setDefaultEditor(Object.class, null);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				xuLyClickTable();
+			}
+		});
+		;
 
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
-		scrollPane.getVerticalScrollBar().setUnitIncrement(8);
 		pnlCenter.add(scrollPane, BorderLayout.NORTH);
 
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -215,21 +201,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		table.getTableHeader().setBackground(new Color(36, 136, 203));
 		table.getTableHeader().setForeground(new Color(255, 255, 255));
 		table.setRowHeight(25);
-		loadDanhSachPhieuNhap();
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					JTable target = (JTable) e.getSource();
-					int selectedRow = target.getSelectedRow();
-					if (selectedRow != -1) {
-						int maPhieu = (int) defaultTableModel.getValueAt(selectedRow, 1);
-						hienThiThongTinPhieuNhap(maPhieu);
-					}
-				}
-			}
-		});
-
-		btnChiTietPhieuNhap.addActionListener(this);
+		loadDanhSachNhaCungCap();
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnXoa.addActionListener(this);
@@ -239,72 +211,83 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnChiTietPhieuNhap) {
-			int selectedRow = table.getSelectedRow();
-			if (selectedRow != -1) {
-				int maPhieu = (int) defaultTableModel.getValueAt(selectedRow, 1);
-				hienThiThongTinPhieuNhap(maPhieu);
+		if (e.getSource() == btnThem) {
+			if (ChiTietNhaCungCap == null || !ChiTietNhaCungCap.isVisible()) {
+				ChiTietNhaCungCap = new ChiTietNhaCungCapGUI(new NhaCungCap(), this);
+			} else {
+				ChiTietNhaCungCap.toFront();
 			}
-//		} else if (e.getSource() == btnThem) {
-//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
-//			} else {
-//				chiTietNhanVienGUI.toFront();
-//			}
-//			chiTietNhanVienGUI.setVisible(true);
-//			chiTietNhanVienGUI.requestFocus();
-//		} else if (e.getSource() == btnSua) {
-//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
-//			} else {
-//				chiTietNhanVienGUI.toFront();
-//			}
-//			chiTietNhanVienGUI.setVisible(true);
-//			chiTietNhanVienGUI.requestFocus();
-//		} else if (e.getSource() == btnXoa) {
-//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
-//			} else {
-//				chiTietNhanVienGUI.toFront();
-//			}
-//			chiTietNhanVienGUI.setVisible(true);
-//			chiTietNhanVienGUI.requestFocus();
-		} else if (e.getSource() == btnNhapExcel) {
-			// Xử lý khi button "Nhập excel" được nhấn
-		} else if (e.getSource() == btnXuatExcel) {
-			// Xử lý khi button "Xuất excel" được nhấn
+			ChiTietNhaCungCap.setVisible(true);
+			ChiTietNhaCungCap.requestFocus();
+
+		} else if (e.getSource() == btnSua) {
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow == -1) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần sửa", "Thông báo",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int maNcc = (int) defaultTableModel.getValueAt(selectedRow, 1);
+			if (ChiTietNhaCungCap == null || !ChiTietNhaCungCap.isVisible()) {
+				ChiTietNhaCungCap = new ChiTietNhaCungCapGUI(ncc, this);
+			} else {
+				ChiTietNhaCungCap.toFront();
+			}
+			ChiTietNhaCungCap.setVisible(true);
+			ChiTietNhaCungCap.requestFocus();
+		} else if (e.getSource() == btnXoa) {
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow == -1) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần xóa", "Thông báo",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int selected = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa nhà cung cấp vừa chọn không!", "",
+					JOptionPane.YES_NO_OPTION);
+			if (selected != 0)
+				return;
+			boolean success = NhaCungCapDAO.deletePublisher(ncc.getSupplier_id());
+			if (!success) {
+				JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thất bại !", "Thông báo",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thành công !", "Thông báo",
+						JOptionPane.CLOSED_OPTION);
+				loadDanhSachNhaCungCap();
+			}
+
 		}
 	}
 
 	public static void main(String[] args) {
-		PhieuNhapGUI a = new PhieuNhapGUI();
+		NhaCungCapGUI a = new NhaCungCapGUI();
 		JFrame f = new JFrame();
 		f.getContentPane().add(a);
 		f.setVisible(true);
 	}
 
-	public void loadDanhSachPhieuNhap() {
+	public void loadDanhSachNhaCungCap() {
 		defaultTableModel.setRowCount(0);
-		ArrayList<PhieuNhap> dspn = PhieuNhapBUS.getDanhSachPhieuNhap();
+		ArrayList<NhaCungCap> dsncc = NhaCungCapBUS.getDanhSachNhaCungCap();
 
 		int rowNum = defaultTableModel.getRowCount();
-		for (PhieuNhap p : dspn) {
+		for (NhaCungCap n : dsncc) {
+			if (n.getStatus() == 0) {
+				continue;
+			}
 			int stt = ++rowNum;
-			String TenNhanVien = PhieuNhapBUS.getTenNhanVienById(p.getStaff_id());
-			String TenNhaCungCap = NhaCungCapBUS.getTenNhaCungCapById(p.getSupplier_id());
-			Object[] row = { stt, p.getReceipt_id(), TenNhaCungCap, TenNhanVien, p.getDate(), p.getTotal_price() };
+			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss() };
 			defaultTableModel.addRow(row);
 		}
 
 	}
 
-	public void hienThiThongTinPhieuNhap(int maPhieu) {
-		if (chiTietPhieuNhap == null || !chiTietPhieuNhap.isVisible()) {
-			chiTietPhieuNhap = new ChiTietPhieuNhapGUI(maPhieu);
-		} else {
-			chiTietPhieuNhap.toFront();
+	public void xuLyClickTable() {
+		int row = table.getSelectedRow();
+		if (row > -1) {
+			ncc.setSupplier_id(((int) table.getValueAt(row, 1)));
+			ncc.setSupplier_name((String) table.getValueAt(row, 2));
+			ncc.setSupplier_addresss((String) table.getValueAt(row, 3));
 		}
-		chiTietPhieuNhap.setVisible(true);
-		chiTietPhieuNhap.requestFocus();
 	}
 }
