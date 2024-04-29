@@ -72,7 +72,7 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
 		add(pnlTopBottom, BorderLayout.NORTH);
-		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
+		pnlTopBottom.setLayout(new GridLayout(0, 4, 20, 0));
 		
 		btnTongQuan = new JButton("Tổng quan");
 		btnTongQuan.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

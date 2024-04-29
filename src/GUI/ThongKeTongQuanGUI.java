@@ -6,7 +6,9 @@
 	import java.awt.Font;
 	import java.awt.GridLayout;
 	import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 	import javax.swing.ImageIcon;
@@ -31,6 +33,7 @@ import DTO.ThongKeDoanhThuDTO;
 
 import javax.swing.ListSelectionModel;
 	import javax.swing.ScrollPaneConstants;
+import javax.swing.BoxLayout;
 	
 	public class ThongKeTongQuanGUI extends JPanel {
 		public String absolutePath = new File("").getAbsolutePath();
@@ -59,7 +62,7 @@ import javax.swing.ListSelectionModel;
 			pnlSP.setLayout(new BorderLayout(10, 0));
 			
 			JLabel lblIconSP = new JLabel("");
-			lblIconSP.setIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Máy tính\\JAVA\\java-shoestore\\src\\images\\icons\\sp.png"));
+			lblIconSP.setIcon(new ImageIcon(absolutePath + "/src/images/icons/sp.png"));
 			pnlSP.add(lblIconSP, BorderLayout.WEST);
 			lblIconSP.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 			
@@ -70,6 +73,7 @@ import javax.swing.ListSelectionModel;
 			pnlSPContent.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 			
 			JLabel lblSp = new JLabel("100");
+			lblSp.setText(ThongKeDoanhThuBUS.getTotalProduct()+"");
 			lblSp.setHorizontalAlignment(SwingConstants.LEFT);
 			pnlSPContent.add(lblSp);
 			lblSp.setForeground(new Color(70, 130, 180));
@@ -86,7 +90,7 @@ import javax.swing.ListSelectionModel;
 			pnlKH.setLayout(new BorderLayout(10, 0));
 			
 			JLabel lblIconKH = new JLabel("");
-			lblIconKH.setIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Máy tính\\JAVA\\java-shoestore\\src\\images\\icons\\kh.png"));
+			lblIconKH.setIcon(new ImageIcon(absolutePath + "/src/images/icons/kh.png"));
 			pnlKH.add(lblIconKH, BorderLayout.WEST);
 			lblIconKH.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 			
@@ -97,6 +101,7 @@ import javax.swing.ListSelectionModel;
 			pnlKHContent.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 			
 			JLabel lblKH = new JLabel("100");
+			lblKH.setText(ThongKeDoanhThuBUS.getTotalCustomer()+"");
 			pnlKHContent.add(lblKH);
 			lblKH.setForeground(new Color(70, 130, 180));
 			lblKH.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -113,7 +118,7 @@ import javax.swing.ListSelectionModel;
 			pnlNV.setLayout(new BorderLayout(10, 0));
 			
 			JLabel lblIconNV = new JLabel("");
-			lblIconNV.setIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Máy tính\\JAVA\\java-shoestore\\src\\images\\icons\\nv.png"));
+			lblIconNV.setIcon(new ImageIcon(absolutePath + "/src/images/icons/nv.png"));
 			pnlNV.add(lblIconNV, BorderLayout.WEST);
 			lblIconNV.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 			
@@ -123,7 +128,8 @@ import javax.swing.ListSelectionModel;
 			pnlNVContent.setLayout(new GridLayout(0, 1, 0, 0));
 			pnlNVContent.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 			
-			JLabel lblNV = new JLabel("100");
+			JLabel lblNV = new JLabel("");
+			lblNV.setText(ThongKeDoanhThuBUS.getTotalStaff()+"");
 			pnlNVContent.add(lblNV);
 			lblNV.setForeground(new Color(70, 130, 180));
 			lblNV.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -149,17 +155,17 @@ import javax.swing.ListSelectionModel;
 			dtmTongQuan = new DefaultTableModel(new Object[] {"Ngày","Tổng đơn nhập", "Vốn","Tổng hóa đơn", "Doanh thu", "Lợi nhuận"}, 0);
 			tblTongQuan.setModel(dtmTongQuan);
 			tblTongQuan.setDefaultEditor(Object.class, null);
-			pnlCenter.setLayout(new BorderLayout(0, 0));
 			tblTongQuan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			
 			
 			List<ThongKeDoanhThuDTO> dataList = ThongKeDoanhThuBUS.getThongKeDoanhThu();
 			displayData();
+			pnlCenter.setLayout(new BorderLayout(0, 0));
 			
 			JScrollPane scrollPane = new JScrollPane(tblTongQuan);
 			scrollPane.setBorder(null);
 			scrollPane.setBackground(new Color(255, 255, 255));
-			pnlCenter.add(scrollPane);
+			pnlCenter.add(scrollPane, BorderLayout.CENTER);
 		
 			((DefaultTableCellRenderer)tblTongQuan.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -175,11 +181,105 @@ import javax.swing.ListSelectionModel;
 			JLabel lblNewLabel =new JLabel("Thống kê doanh thu 7 ngày gần nhất");
 			lblNewLabel.setForeground(new Color(102, 153, 204));
 			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-			pnlCenter.add(lblNewLabel, BorderLayout.NORTH);
+			pnlCenter.add(lblNewLabel, BorderLayout.SOUTH);
 			lblNewLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 30, 30));
 			
+			JPanel pnl_bottom = new JPanel();
+			add(pnl_bottom, BorderLayout.SOUTH);
+			pnl_bottom.setLayout(new GridLayout(2, 3, 20, 20));
+			pnl_bottom.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+			JPanel pnlNgay = new JPanel();
+			pnl_bottom.add(pnlNgay);
+			pnlNgay.setLayout(new BorderLayout(10, 10));
 			
-			tblTongQuan.clearSelection();			
+			JLabel lblNewLabel_2 = new JLabel("Tổng số ngày:");
+			pnlNgay.add(lblNewLabel_2, BorderLayout.WEST);
+			lblNewLabel_2.setForeground(new Color(102, 153, 204));
+			lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			
+			JLabel lbl_ngay = new JLabel("7");
+			lbl_ngay.setText(calculateColumnTotal()[0]+"");
+			lbl_ngay.setForeground(new Color(102, 153, 204));
+			lbl_ngay.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlNgay.add(lbl_ngay);
+			
+			JPanel pnlPhieuNhap = new JPanel();
+			pnl_bottom.add(pnlPhieuNhap);
+			pnlPhieuNhap.setLayout(new BorderLayout(10, 0));
+			
+			JLabel lblNewLabel_2_1 = new JLabel("Tổng phiếu nhập: ");
+			lblNewLabel_2_1.setForeground(new Color(102, 153, 204));
+			lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlPhieuNhap.add(lblNewLabel_2_1, BorderLayout.WEST);
+			
+			JLabel lbl_phieuNhap = new JLabel("7");
+			lbl_phieuNhap.setText(calculateColumnTotal()[1]+"");
+			lbl_phieuNhap.setForeground(new Color(102, 153, 204));
+			lbl_phieuNhap.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlPhieuNhap.add(lbl_phieuNhap);
+			
+			JPanel pnlVon = new JPanel();
+			pnl_bottom.add(pnlVon);
+			pnlVon.setLayout(new BorderLayout(10, 0));
+			
+			JLabel lblVonText = new JLabel("Tổng vốn: ");
+			lblVonText.setForeground(new Color(102, 153, 204));
+			lblVonText.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlVon.add(lblVonText, BorderLayout.WEST);
+			
+			JLabel lbl_von = new JLabel("7");
+			lbl_von.setText(calculateColumnTotal()[2]+"");
+			lbl_von.setForeground(new Color(102, 153, 204));
+			lbl_von.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlVon.add(lbl_von);
+			
+			JPanel pnlHoaDon = new JPanel();
+			pnl_bottom.add(pnlHoaDon);
+			pnlHoaDon.setLayout(new BorderLayout(10, 0));
+			
+			JLabel lblNewLabel_2_3 = new JLabel("Tổng hóa đơn: ");
+			lblNewLabel_2_3.setForeground(new Color(102, 153, 204));
+			lblNewLabel_2_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlHoaDon.add(lblNewLabel_2_3, BorderLayout.WEST);
+			
+			JLabel lbl_hoaDon = new JLabel("7");
+			lbl_hoaDon.setText(calculateColumnTotal()[3]+"");
+			lbl_hoaDon.setForeground(new Color(102, 153, 204));
+			lbl_hoaDon.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlHoaDon.add(lbl_hoaDon);
+			
+			JPanel pnlDoanhThu = new JPanel();
+			pnl_bottom.add(pnlDoanhThu);
+			pnlDoanhThu.setLayout(new BorderLayout(10, 0));
+			
+			JLabel lblNewLabel_2_4 = new JLabel("Tổng doanh thu: ");
+			lblNewLabel_2_4.setForeground(new Color(102, 153, 204));
+			lblNewLabel_2_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlDoanhThu.add(lblNewLabel_2_4, BorderLayout.WEST);
+			
+			JLabel lbl_doanhThu = new JLabel("7");
+			lbl_doanhThu.setText(calculateColumnTotal()[4]+"");
+			lbl_doanhThu.setForeground(new Color(102, 153, 204));
+			lbl_doanhThu.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlDoanhThu.add(lbl_doanhThu);
+			
+			JPanel pnlLoiNhuan = new JPanel();
+			pnl_bottom.add(pnlLoiNhuan);
+			pnlLoiNhuan.setLayout(new BorderLayout(10, 0));
+			
+			JLabel lbltext = new JLabel("Tổng lợi nhuận: ");
+			lbltext.setForeground(new Color(102, 153, 204));
+			lbltext.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			pnlLoiNhuan.add(lbltext, BorderLayout.WEST);
+			
+			JLabel lbl_loiNhuan = new JLabel("7");
+			lbl_loiNhuan.setForeground(new Color(102, 153, 204));
+			lbl_loiNhuan.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			lbl_loiNhuan.setText(calculateColumnTotal()[5]+"");
+			pnlLoiNhuan.add(lbl_loiNhuan);
+			
+			
+					
 			
 			
 			
@@ -194,15 +294,29 @@ import javax.swing.ListSelectionModel;
 	        }
 	    }
 		
-//		public void display() {
-//		    List<ThongKeDoanhThuDTO> dataList = ThongKeDoanhThuBUS.getThongKeDoanhThu();
-//		    System.out.println(dataList);
-//		    for (ThongKeDoanhThuDTO dto : dataList) {
-//		        System.out.println("Ngày: " + dto.getThoigian());
-//		        System.out.println("Vốn: " + dto.getVon());
-//		        System.out.println("Doanh thu: " + dto.getDoanhthu());
-//		        System.out.println("Lợi nhuận: " + dto.getLoinhuan());
-//		        System.out.println("---------------------");
-//		    }
-//		}
+		public long[] calculateColumnTotal() {
+		    int numRows = tblTongQuan.getRowCount();
+		    int numCols = tblTongQuan.getColumnCount();
+
+		    // Mảng để lưu trữ tổng của từng cột
+		    long[] columnTotals = new long[numCols];
+
+		    // Duyệt qua từng dòng trong bảng
+		    for (int row = 0; row < numRows; row++) {
+		        // Duyệt qua từng cột trong dòng và cộng dồn vào tổng của cột tương ứng
+		        for (int col = 0; col < numCols; col++) {
+		            // Lấy giá trị của ô hiện tại trong bảng
+		            Object cellValue = tblTongQuan.getValueAt(row, col);
+		            // Kiểm tra nếu giá trị là số (hoặc có thể chuyển đổi thành số)
+		            if (cellValue instanceof Number) {
+		                double value = ((Number) cellValue).doubleValue();
+		                // Cộng dồn vào tổng của cột
+		                columnTotals[col] += value;
+		            } else {
+		            	columnTotals[col] +=1;
+					}
+		        }
+		    }
+		    return columnTotals;
 	}
+}
