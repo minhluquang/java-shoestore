@@ -99,4 +99,45 @@ public class HangDAO {
         return flag;
     }
 
+    public static boolean suaHang(HangDTO hang) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE brand SET brand_name = ?, status = ? WHERE brand_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setString(1, hang.getBrand_name());
+            pstmt.setBoolean(2, hang.isStatus());
+            pstmt.setInt(3, hang.getBrand_id());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static int getSoluongHang(){
+        int count=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM brand";
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return count;
+    }
+
 }

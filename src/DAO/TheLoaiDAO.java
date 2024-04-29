@@ -99,4 +99,45 @@ public class TheLoaiDAO {
         return flag;
     }
 
+    public static boolean suaTheLoai(TheLoaiDTO theLoai) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE category SET category_name = ?, status = ? WHERE category_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setString(1, theLoai.getCategory_name());
+            pstmt.setBoolean(2, theLoai.isStatus());
+            pstmt.setInt(3, theLoai.getCategory_id());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static int getSoluongTheLoai(){
+        int count=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM category";
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return count;
+    }
+
 }
