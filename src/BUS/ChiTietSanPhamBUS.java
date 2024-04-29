@@ -1,5 +1,32 @@
 package BUS;
 
-public class ChiTietSanPhamBUS {
+import java.util.ArrayList;
 
+import DAO.ChiTietSanPhamDAO;
+import DTO.ChiTietSanPhamDTO;
+
+public class ChiTietSanPhamBUS {
+    public static ArrayList<ChiTietSanPhamDTO> getDanhSachChiTietSanPham() {
+        return ChiTietSanPhamDAO.getDanhSachChiTietSanPham();
+    }
+
+    public static ChiTietSanPhamDTO getChiTietSanPhamBySerial(int product_serial_id) {
+        return ChiTietSanPhamDAO.getProductDetailsBySerial(product_serial_id);
+    }
+
+    public static ArrayList<ChiTietSanPhamDTO> getChiTietSanPhamByID(int product_id) {
+        return ChiTietSanPhamDAO.getProductDetailsByID(product_id);
+    }
+
+    public static boolean xoaChiTietSanPham(int product_serial_id) {
+        return ChiTietSanPhamDAO.xoaProductDetails(product_serial_id);
+    }
+
+    public static boolean themChiTietSanPham(ChiTietSanPhamDTO productDetails) {
+        return ChiTietSanPhamDAO.themProductDetails(productDetails);
+    }
+
+    public static boolean suaChiTietSanPham(ChiTietSanPhamDTO productDetails) {
+        return ChiTietSanPhamDAO.suaProductDetails(productDetails);
+    }
 }

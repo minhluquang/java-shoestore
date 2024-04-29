@@ -139,4 +139,22 @@ public class HoaDonDAO {
         return flag;
     }
 
+    public static int getSoLuongBill(){
+        int count=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM bills";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return count;
+    }
+
 }

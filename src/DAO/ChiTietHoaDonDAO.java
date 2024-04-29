@@ -100,6 +100,32 @@ public class ChiTietHoaDonDAO {
         return flag;
     }
 
+    public static boolean themDSBillsDetails(ArrayList<ChiTietHoaDonDTO> billsDetails) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "INSERT INTO bills_details (product_serial_id, bill_id, quantity, price_single) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+            int rowsAffected = 0;
+            for (ChiTietHoaDonDTO chiTietHoaDonDTO : billsDetails) {
+                pstmt.setInt(1, chiTietHoaDonDTO.getProductSerialId());
+                pstmt.setInt(2, chiTietHoaDonDTO.getBillId());
+                pstmt.setInt(3, chiTietHoaDonDTO.getQuantity());
+                pstmt.setInt(4, chiTietHoaDonDTO.getPriceSingle());
+                rowsAffected += pstmt.executeUpdate();
+            }
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
     public static boolean suaBillsDetails(ChiTietHoaDonDTO billsDetails) {
         boolean flag = true;
         try {
