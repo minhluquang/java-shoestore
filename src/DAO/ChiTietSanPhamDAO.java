@@ -1,0 +1,140 @@
+package DAO;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import DTO.ChiTietSanPhamDTO;
+
+public class ChiTietSanPhamDAO {
+    public static ArrayList<ChiTietSanPhamDTO> getDanhSachChiTietSanPham() {
+        ArrayList<ChiTietSanPhamDTO> productDetails = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM product_details";
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int productSerialId = rs.getInt("product_serial_id");
+                int productId = rs.getInt("product_id");
+
+                ChiTietSanPhamDTO productDetail = new ChiTietSanPhamDTO(productSerialId, productId);
+                productDetails.add(productDetail);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return productDetails;
+    }
+
+    public static ChiTietSanPhamDTO getProductDetailsBySerial(int product_serial_id) {
+        ChiTietSanPhamDTO productDetails = new ChiTietSanPhamDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM product_details WHERE product_serial_id = " + product_serial_id;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int product_id = rs.getInt("product_id");
+
+                productDetails.setProductSerialId(product_serial_id);
+                productDetails.setProductId(product_id);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return productDetails;
+    }
+
+    public static ArrayList<ChiTietSanPhamDTO> getProductDetailsByID(int product_id) {
+        ArrayList<ChiTietSanPhamDTO> dsproductDetails = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM product_details WHERE product_id = " + product_id;
+            ResultSet rs = connectDB.runQuery(sql);
+            while(rs.next()) {
+                int product_serial_id = rs.getInt("product_id");
+
+                ChiTietSanPhamDTO productDetails = new ChiTietSanPhamDTO(product_serial_id, product_id);
+
+                dsproductDetails.add(productDetails);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return dsproductDetails;
+    }
+
+    public static boolean xoaProductDetails(int product_serial_id) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "DELETE FROM product_details WHERE product_serial_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, product_serial_id);
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static boolean themProductDetails(ChiTietSanPhamDTO productDetails) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "INSERT INTO product_details (product_serial_id, product_id) VALUES (?, ?)";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, productDetails.getProductSerialId());
+            pstmt.setInt(2, productDetails.getProductId());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+
+    public static boolean suaProductDetails(ChiTietSanPhamDTO productDetails) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE product_details SET product_id = ? WHERE product_serial_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setInt(1, productDetails.getProductId());
+            pstmt.setInt(2, productDetails.getProductSerialId());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
+}
