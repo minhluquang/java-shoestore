@@ -15,6 +15,11 @@ import java.awt.Label;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -34,11 +39,27 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
+import BUS.ChiTietHoaDonBUS;
+import BUS.ChiTietSanPhamBUS;
+import BUS.HangBUS;
+import BUS.HoaDonBUS;
+import BUS.SanPhamBUS;
+import BUS.TheLoaiBUS;
+import DAO.SanPhamDAO;
+import DTO.ChiTietSanPhamDTO;
+import DTO.HangDTO;
+import DTO.HoaDonDTO;
+import DTO.SanPhamDTO;
+import DTO.TheLoaiDTO;
+import DTO.ChiTietHoaDonDTO;
+
 /**
  *
  * @author MSI
  */
-public class BanHangGUI extends JPanel {
+public class BanHangGUI extends JPanel implements ActionListener {
 
     // Khai báo các thành phần của giao diện
     private JTabbedPane tabbedPane;
@@ -94,6 +115,11 @@ public class BanHangGUI extends JPanel {
     private JScrollPane spnCTHD;
     private JTable tblCTHD;
 
+    private DefaultTableModel sanPhamModel;
+    private DefaultTableModel gioHangModel;
+    private DefaultTableModel dsHDModel;
+    private DefaultTableModel dsCTModel;
+
     public BanHangGUI() {
         initComponents();
     }
@@ -109,8 +135,8 @@ public class BanHangGUI extends JPanel {
         // Phần danh sách sản phẩm
         jPanelSanPham = new JPanel(new BorderLayout());
         spnSanPham = new JScrollPane();
-        
-        JPanel panel1 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel1 = new JPanel(new GridLayout(1, 0));
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
@@ -126,9 +152,23 @@ public class BanHangGUI extends JPanel {
         tblSanPham.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblSanPham.getTableHeader().setOpaque(false);
-        tblSanPham.getTableHeader().setBackground(new Color(36,136,203));
-        tblSanPham.getTableHeader().setForeground(new Color(255,255,255));
+        tblSanPham.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
         tblSanPham.setRowHeight(25);
+        String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0);
+        tblSanPham.setModel(sanPhamModel);
+
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dssp) {
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+            TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+            Object[] sanPhamData = { chiTietSanPhamDTO.getProductSerialId(), sanPhamDTO.getProduct_name(),
+                    hangDTO.getBrand_name(), theLoaiDTO.getCategory_name(), sanPhamDTO.getOutput_price() };
+            sanPhamModel.addRow(sanPhamData);
+        }
         spnSanPham.setBorder(null);
         spnSanPham.setBackground(new Color(255, 255, 255));
         spnSanPham.setViewportView(tblSanPham);
@@ -139,15 +179,15 @@ public class BanHangGUI extends JPanel {
         // Phần giỏ hàng
         jPanelGioHang = new JPanel(new BorderLayout());
         spnGioHang = new JScrollPane();
-        
-        JPanel panel2 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel2 = new JPanel(new GridLayout(1, 0));
         lblGH = new JLabel("Giỏ hàng");
         lblGH.setForeground(new Color(255, 255, 255));
         lblGH.setHorizontalAlignment(SwingConstants.CENTER);
         lblGH.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel2.setBackground(new Color(36, 136, 203));
         panel2.add(lblGH);
-        
+
         tblGioHang = new JTable();
         tblGioHang.setBorder(null);
         tblGioHang.setSelectionBackground(new Color(232, 57, 95));
@@ -157,9 +197,12 @@ public class BanHangGUI extends JPanel {
         tblGioHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblGioHang.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblGioHang.getTableHeader().setOpaque(false);
-        tblGioHang.getTableHeader().setBackground(new Color(36,136,203));
-        tblGioHang.getTableHeader().setForeground(new Color(255,255,255));
+        tblGioHang.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblGioHang.getTableHeader().setForeground(new Color(255, 255, 255));
         tblGioHang.setRowHeight(25);
+        String[] gioHangColumns = { "ID", "Tên", "Số lượng", "Thành tiền" };
+        gioHangModel = new DefaultTableModel(gioHangColumns, 0);
+        tblGioHang.setModel(gioHangModel);
         spnGioHang.setBorder(null);
         spnGioHang.setBackground(new Color(255, 255, 255));
         spnGioHang.setViewportView(tblGioHang);
@@ -174,15 +217,15 @@ public class BanHangGUI extends JPanel {
 
         // Phần thông tin sản phẩm
         pnlThongTinSPGH = new JPanel(new GridLayout(8, 1));
-        
-        JPanel panel3 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel3 = new JPanel(new GridLayout(1, 0));
         lblThongTinSP = new JLabel("Thông tin sản phẩm");
         lblThongTinSP.setForeground(new Color(255, 255, 255));
         lblThongTinSP.setHorizontalAlignment(SwingConstants.CENTER);
         lblThongTinSP.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel3.setBackground(new Color(36, 136, 203));
         panel3.add(lblThongTinSP);
-        
+
         pnlThongTinSPGH.add(panel3);
         lblID = new JLabel("ID:");
         lblID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -258,7 +301,7 @@ public class BanHangGUI extends JPanel {
 
         pnlDanhSachHD = new JPanel(new BorderLayout());
         pnlThongTinHD = new JPanel(new BorderLayout());
-        
+
         lblThongTinHD = new JLabel("Thông Tin Hóa Đơn");
         lblThongTinHD.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblThongTinHD.setHorizontalAlignment(SwingConstants.CENTER);
@@ -292,9 +335,12 @@ public class BanHangGUI extends JPanel {
         tblDSHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblDSHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblDSHD.getTableHeader().setOpaque(false);
-        tblDSHD.getTableHeader().setBackground(new Color(36,136,203));
-        tblDSHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblDSHD.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblDSHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblDSHD.setRowHeight(25);
+        String[] dsHDColumns = { "Mã HD", "Ngày Lập", "Tổng tiền" };
+        dsHDModel = new DefaultTableModel(dsHDColumns, 0);
+        tblDSHD.setModel(dsHDModel);
         spnDSHD = new JScrollPane(tblDSHD);
         spnDSHD.setBorder(null);
         spnDSHD.setBackground(new Color(255, 255, 255));
@@ -310,9 +356,12 @@ public class BanHangGUI extends JPanel {
         tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblCTHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblCTHD.getTableHeader().setOpaque(false);
-        tblCTHD.getTableHeader().setBackground(new Color(36,136,203));
-        tblCTHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblCTHD.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblCTHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblCTHD.setRowHeight(25);
+        String[] cthdColumns = { "Mã Hóa Đơn", "Serial", "Tên sản phẩm", "Số lượng", "Đơn giá" };
+        dsCTModel = new DefaultTableModel(cthdColumns, 0);
+        tblCTHD.setModel(dsCTModel);
         spnCTHD = new JScrollPane(tblCTHD);
         spnCTHD.setBorder(null);
         spnCTHD.setBackground(new Color(255, 255, 255));
@@ -331,13 +380,13 @@ public class BanHangGUI extends JPanel {
         JLabel jLabelngay2 = new JLabel("đến");
         jLabelngay2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabelngay2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-        JPanel panelHD1 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelHD1 = new JPanel(new GridLayout(0, 1));
         panelHD1.setBackground(new Color(36, 136, 203));
         panelHD1.add(lblThongTinHD);
         pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
 
-        JPanel panelHD2 = new JPanel(new GridLayout(0,1, 0, 5));
+        JPanel panelHD2 = new JPanel(new GridLayout(0, 1, 0, 5));
         panelHD2.setBackground(Color.WHITE);
         panelHD2.add(lblMaHD);
         panelHD2.add(lblMaKH);
@@ -346,7 +395,7 @@ public class BanHangGUI extends JPanel {
         panelHD2.add(lblTongTien);
         panelHD2.add(lblGhiChu);
 
-        JPanel panelHD3 = new JPanel(new GridLayout(0,4, 0, 5));
+        JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 0, 5));
         panelHD3.setBackground(Color.WHITE);
         panelHD3.add(jLabeltk);
         panelHD3.add(new JLabel(""));
@@ -394,54 +443,90 @@ public class BanHangGUI extends JPanel {
                 for (int i = 0; i < tabbedPane.getTabCount(); i++) {
                     tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
                 }
-                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn thành màu đỏ
+                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn
+                                                                                    // thành màu đỏ
             }
         });
 
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
-
-        // Khởi tạo dữ liệu mẫu cho các bảng
         initData();
+
+        btnXoa.addActionListener(this);
+        btnHuy.addActionListener(this);
+        btnLuu.addActionListener(this);
+        btnXuatHoaDon.addActionListener(this);
+    }
+
+    private ArrayList<ChiTietSanPhamDTO> dssp;
+    private ArrayList<HoaDonDTO> dshd;
+    private ArrayList<ChiTietHoaDonDTO> cthd;
+
+    private void loadDanhSachSanPham() {
+
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dssp) {
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+            TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+            Object[] sanPhamData = { chiTietSanPhamDTO.getProductSerialId(), sanPhamDTO.getProduct_name(),
+                    hangDTO.getBrand_name(), theLoaiDTO.getCategory_name(), sanPhamDTO.getOutput_price() };
+            sanPhamModel.addRow(sanPhamData);
+        }
+    }
+
+    private void loadDanhSachHoaDon() {
+
+        dshd = HoaDonBUS.getDanhSachHoaDon();
+
+        for (HoaDonDTO hoaDonDTO : dshd) {
+            Object[] hoaDonData = { hoaDonDTO.getBillId(), hoaDonDTO.getDate(), hoaDonDTO.getTotalPrice() };
+            dsHDModel.addRow(hoaDonData);
+        }
+    }
+
+    private void loadChiTietHoaDon() {
+
+        cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+
+        for (ChiTietHoaDonDTO chiTietHoaDonDTO : cthd) {
+            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
+                    .getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            Object[] ctHoaDonData = { chiTietHoaDonDTO.getBillId(), chiTietHoaDonDTO.getProductSerialId(),
+                    sanPhamDTO.getProduct_name(), chiTietHoaDonDTO.getQuantity(), chiTietHoaDonDTO.getPriceSingle() };
+            dsCTModel.addRow(ctHoaDonData);
+        }
     }
 
     private void initData() {
-        // Tạo dữ liệu mẫu cho bảng Sản phẩm
-        Object[][] sanPhamData = {
-            {"SP001", "Sản phẩm 1", "Hãng A", "Xuất xứ A", "KM 10%", 100000},
-            {"SP002", "Sản phẩm 2", "Hãng B", "Xuất xứ B", "KM 20%", 200000},
-            {"SP003", "Sản phẩm 3", "Hãng C", "Xuất xứ C", "KM 30%", 300000}
-        };
-        String[] sanPhamColumns = {"ID", "Tên", "Hãng", "Xuất Xứ", "KM", "Đơn giá"};
-        DefaultTableModel sanPhamModel = new DefaultTableModel(sanPhamData, sanPhamColumns);
-        tblSanPham.setModel(sanPhamModel);
+        loadDanhSachSanPham();
+        loadDanhSachHoaDon();
+        loadChiTietHoaDon();
+    }
 
-        // Tạo dữ liệu mẫu cho bảng Giỏ hàng
-        Object[][] gioHangData = {
-            {"SP001", "Sản phẩm 1", 2, 200000},
-            {"SP002", "Sản phẩm 2", 3, 600000}
-        };
-        String[] gioHangColumns = {"ID", "Tên", "Số lượng", "Thành tiền"};
-        DefaultTableModel gioHangModel = new DefaultTableModel(gioHangData, gioHangColumns);
-        tblGioHang.setModel(gioHangModel);
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        // Tạo dữ liệu mẫu cho bảng Danh sách hóa đơn
-        Object[][] dsHDData = {
-            {"HD001", "01/01/2024", 800000},
-            {"HD002", "02/01/2024", 1500000}
-        };
-        String[] dsHDColumns = {"Mã HD", "Ngày Lập", "Tổng tiền"};
-        DefaultTableModel dsHDModel = new DefaultTableModel(dsHDData, dsHDColumns);
-        tblDSHD.setModel(dsHDModel);
+    }
 
-        // Tạo dữ liệu mẫu cho bảng Chi tiết hóa đơn
-        Object[][] cthdData = {
-            {"HD001", "SP001", "Sản phẩm 1", 2, 200000},
-            {"HD001", "SP002", "Sản phẩm 2", 3, 600000}
-        };
-        String[] cthdColumns = {"Mã Hóa Đơn", "Mã sản phẩm", "Tên", "Số lượng", "Thành tiền"};
-        DefaultTableModel cthdModel = new DefaultTableModel(cthdData, cthdColumns);
-        tblCTHD.setModel(cthdModel);
+    public void tableAddListener() {
+        tblSanPham.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+        });
+        tblDSHD.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+        });
+        tblGioHang.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+        });
     }
 
 }
