@@ -127,7 +127,6 @@ public class DangNhapGUI extends JPanel {
         if (savedLoginInfo != null && savedLoginInfo.length == 2) {
             txtUsernameLogin.setText(savedLoginInfo[0]);
             txtMatKhauLogin.setText(savedLoginInfo[1]);
-            System.out.println(Arrays.toString(savedLoginInfo));
         }
         btnDangNhap.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {

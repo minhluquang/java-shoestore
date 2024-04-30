@@ -57,9 +57,8 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private JButton btnNhaCungCap;
 	private JButton btnNhapHang;
 	private JButton btnReturn;	
-	public String absolutePath = new File("").getAbsolutePath();
+	
 	private JPanel pnlCards;
-
 	private CardLayout cardLayout;
 	private JPanel pnlNhaCungCap;
 	private JPanel pnlNhapHang;
@@ -76,6 +75,7 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private JPanel pnlWarranty;
 	private JPanel pnlThongKe;
 	
+	public String absolutePath = new File("").getAbsolutePath();
 	private static String username = "";
 
 	/**
@@ -101,7 +101,6 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	public MyApp(String username) {
 		this.username = username;
 		
-		System.out.println(username);
 		setBackground(new Color(230, 230, 230));
 		addWindowListener(new WindowAdapter() {
 			@Override
