@@ -13,7 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -29,8 +32,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import BUS.ChiTietPhieuNhapBUS;
+import BUS.NhaCungCapBUS;
+import BUS.PhieuNhapBUS;
 import BUS.SanPhamBUS;
 import BUS.TheLoaiBUS;
+import DTO.NhaCungCap;
 import DTO.SanPhamDTO;
 
 public class NhapHangGUI extends JPanel {
@@ -44,6 +51,12 @@ public class NhapHangGUI extends JPanel {
 	private JTable tableCT;
 	private JTextField txtGiaNhap;
 	private SanPhamDTO sp = new SanPhamDTO();
+	private JLabel lblLoai;
+	private JLabel lblTenSp;
+	private JLabel lblMa;
+	private HashMap<String, String> nccMap = new HashMap<>();
+	private JLabel lblTongTien;
+	private JLabel lblMaPN;
 
 	/**
 	 * Create the panel.
@@ -132,7 +145,26 @@ public class NhapHangGUI extends JPanel {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				int selectedRow = table.getSelectedRow();
+				if (selectedRow == -1)
+					return;
 
+				Object[] values = new Object[5];
+				values[0] = table.getValueAt(selectedRow, 0);
+				values[1] = table.getValueAt(selectedRow, 2);
+				values[2] = txtSoLuong.getText();
+				values[3] = txtGiaNhap.getText();
+				values[4] = PhieuNhapBUS.getThanhTien(Integer.parseInt((String) values[2]),
+						Integer.parseInt((String) values[3]));
+
+				defaultTableModelCT.addRow(values);
+				table.clearSelection();
+				lblLoai.setText("");
+				lblMa.setText("");
+				lblTenSp.setText("");
+				txtGiaNhap.setText("");
+				txtSoLuong.setText("");
+				lblTongTien.setText(PhieuNhapBUS.renderTongSoTien(tableCT));
 			}
 		});
 		btnThem.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -145,7 +177,7 @@ public class NhapHangGUI extends JPanel {
 		gbc_btnThem.gridy = 1;
 		pnlBot.add(btnThem, gbc_btnThem);
 
-		JLabel lblMa = new JLabel("");
+		lblMa = new JLabel("");
 		lblMa.setEnabled(false);
 		lblMa.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblMa.setBorder(new TitledBorder(null, "M\u00E3 s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP,
@@ -153,7 +185,7 @@ public class NhapHangGUI extends JPanel {
 		lblMa.setPreferredSize(new Dimension(100, 35));
 		panel_3.add(lblMa);
 
-		JLabel lblLoai = new JLabel("");
+		lblLoai = new JLabel("");
 		lblLoai.setEnabled(false);
 		lblLoai.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblLoai.setPreferredSize(new Dimension(120, 35));
@@ -162,7 +194,7 @@ public class NhapHangGUI extends JPanel {
 				"Lo\u1EA1i s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_3.add(lblLoai);
 
-		JLabel lblTenSp = new JLabel("");
+		lblTenSp = new JLabel("");
 		lblTenSp.setEnabled(false);
 		lblTenSp.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblTenSp.setPreferredSize(new Dimension(120, 35));
@@ -210,14 +242,15 @@ public class NhapHangGUI extends JPanel {
 		panel_4.add(panel_8, BorderLayout.CENTER);
 		panel_8.setLayout(new GridLayout(4, 1, 0, 2));
 
-		JLabel lblMaPN = new JLabel("");
+		lblMaPN = new JLabel("");
 		lblMaPN.setPreferredSize(new Dimension(100, 35));
 		lblMaPN.setBorder(new TitledBorder(null, "M\u00E3 phi\u1EBFu nh\u1EADp", TitledBorder.LEADING, TitledBorder.TOP,
 				null, null));
 		lblMaPN.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblMaPN.setText(PhieuNhapBUS.generate_Id() + "");
 		panel_8.add(lblMaPN);
 
-		JLabel lblTongTien = new JLabel("10000");
+		lblTongTien = new JLabel("0.0");
 		lblTongTien.setBorder(new TitledBorder(null, "T\u1ED5ng ti\u1EC1n(VN\u0110)", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -226,12 +259,17 @@ public class NhapHangGUI extends JPanel {
 		JComboBox cboNCC = new JComboBox();
 		cboNCC.setBorder(
 				new TitledBorder(null, "Nh\u00E0 cung c\u1EA5p", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		cboNCC.setModel(new DefaultComboBoxModel(new String[] { "item 1" }));
+		cboNCC.setModel(new DefaultComboBoxModel());
 		cboNCC.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cboNCC.setPreferredSize(new Dimension(29, 20));
+		ArrayList<NhaCungCap> n = NhaCungCapBUS.getDanhSachNhaCungCap();
+		for (NhaCungCap a : n) {
+			cboNCC.addItem(a.getSupplier_name());
+			nccMap.put(a.getSupplier_name(), "" + a.getSupplier_id());
+		}
 		panel_8.add(cboNCC);
 
-		JLabel lblNV = new JLabel("Lữ QUang Minh");
+		JLabel lblNV = new JLabel("null");
 		lblNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNV.setBorder(
 				new TitledBorder(null, "Nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -253,19 +291,42 @@ public class NhapHangGUI extends JPanel {
 		panel_9.setPreferredSize(new Dimension(0, 75));
 
 		JButton btnXoa = new JButton("Xóa");
+		btnXoa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				xoaDong();
+			}
+		});
 		btnXoa.setPreferredSize(new Dimension(100, 40));
 		btnXoa.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_9.add(btnXoa);
 
 		JButton btnSua = new JButton("Sửa");
+		btnSua.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int rowSelected = tableCT.getSelectedRow();
+				if (tableCT.getRowCount() == 0) {
+					JOptionPane.showMessageDialog(null, "Không có sản phẩm nào !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if (rowSelected < 0) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần sửa !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				int index = findRowByValue(table, 0, tableCT.getValueAt(rowSelected, 0));
+				table.setRowSelectionInterval(index, index);
+				int selectedRow = table.getSelectedRow();
+				lblMa.setText(String.valueOf(table.getValueAt(selectedRow, 0)));
+				lblLoai.setText((String) table.getValueAt(selectedRow, 1));
+				lblTenSp.setText((String) table.getValueAt(selectedRow, 2));
+				txtSoLuong.setText((String) tableCT.getValueAt(rowSelected, 2));
+				txtGiaNhap.setText((String) tableCT.getValueAt(rowSelected, 3));
+				xoaDong();
+			}
+		});
 		btnSua.setPreferredSize(new Dimension(100, 40));
 		btnSua.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_9.add(btnSua);
-
-		JButton btnLmMi = new JButton("Làm mới");
-		btnLmMi.setPreferredSize(new Dimension(100, 40));
-		btnLmMi.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		panel_9.add(btnLmMi);
 		JPanel panel_11 = new JPanel();
 		panel_11.setBackground(new Color(0, 0, 0));
 		FlowLayout flowLayout_2 = (FlowLayout) panel_11.getLayout();
@@ -274,11 +335,65 @@ public class NhapHangGUI extends JPanel {
 		panel_5.add(panel_11, BorderLayout.CENTER);
 
 		JButton btnHuy = new JButton("Hủy");
+		btnHuy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel model = (DefaultTableModel) tableCT.getModel();
+				model.setRowCount(0);
+			}
+		});
 		btnHuy.setPreferredSize(new Dimension(100, 40));
 		btnHuy.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_11.add(btnHuy);
 
 		JButton btnNhaphang = new JButton("Nhập Hàng");
+		btnNhaphang.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tableCT.getRowCount() == 0) {
+					JOptionPane.showMessageDialog(null, "Không có sản phẩm nào !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				LocalDate currentDate = LocalDate.now();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+				String formattedDate = currentDate.format(formatter);
+				System.out.println(formattedDate);
+				int receipt_id = PhieuNhapBUS.generate_Id();
+				int idNCC = Integer.parseInt(nccMap.get(cboNCC.getSelectedItem()));
+				int staff_id = 1;
+//		============ TẠO PHIẾU NHẬP ===============
+				boolean success_GoodsReceipt = PhieuNhapBUS.create_GoodsReceipts(receipt_id, formattedDate, idNCC,
+						staff_id);
+				if (!success_GoodsReceipt) {
+					JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thất bại !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+//		============ TẠO CÁC CHI TIẾT ===============		
+				int rowNum = tableCT.getRowCount();
+				int colNum = tableCT.getColumnCount();
+				for (int dong = 0; dong < rowNum; dong++) {
+
+					int product_id = Integer.parseInt(String.valueOf(tableCT.getValueAt(dong, 0)));
+					int quantity = Integer.parseInt(String.valueOf(tableCT.getValueAt(dong, 2)));
+					int input_price = Integer.parseInt(String.valueOf(tableCT.getValueAt(dong, 3)));
+
+					boolean success = ChiTietPhieuNhapBUS.create_GoodsReceipts_Details(product_id, quantity, receipt_id,
+							input_price);
+
+					if (!success) {
+						JOptionPane.showMessageDialog(null, "Thêm chi tiết phiếu nhập thất bại !", "Thông báo",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+				if (PhieuNhapBUS.update_Total_Price(receipt_id)) {
+					JOptionPane.showMessageDialog(null, "Thành công !", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+				}
+				loadDanhSachSanPham();
+				reset();
+			}
+		});
 		btnNhaphang.setPreferredSize(new Dimension(140, 40));
 		btnNhaphang.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_11.add(btnNhaphang);
@@ -292,15 +407,13 @@ public class NhapHangGUI extends JPanel {
 
 		defaultTableModelCT = new DefaultTableModel(
 				new Object[] { "Mã sản phẩm", "Tên sản phẩm", "Số lượng", "Đơn giá", "Thành Tiền" }, 0);
-
+		defaultTableModelCT.setRowCount(0);
 		tableCT.setModel(defaultTableModelCT);
 		tableCT.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
 		tableCT.getTableHeader().setOpaque(false);
 		tableCT.getTableHeader().setBackground(new Color(36, 136, 203));
 		tableCT.getTableHeader().setForeground(new Color(255, 255, 255));
 		tableCT.setRowHeight(25);
-		Object[] row1 = { "1", "Chạy bộ", "Nike", "10000", "15" };
-		defaultTableModelCT.addRow(row1);
 
 		JScrollPane scrollPaneCT = new JScrollPane(tableCT);
 		scrollPaneCT.setBorder(null);
@@ -319,7 +432,7 @@ public class NhapHangGUI extends JPanel {
 		table.setIntercellSpacing(new Dimension(0, 0));
 
 		defaultTableModel = new DefaultTableModel(
-				new Object[] { "Mã sản phẩm", "Loại", "Tên sản phẩm", "Giảm giá", "Tồn kho" }, 0);
+				new Object[] { "Mã sản phẩm", "Loại", "Tên sản phẩm", "Xuất xứ", "Tồn kho" }, 0);
 
 		table.setModel(defaultTableModel);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -346,6 +459,8 @@ public class NhapHangGUI extends JPanel {
 					lblMa.setText(String.valueOf(table.getValueAt(selectedRow, 0)));
 					lblLoai.setText((String) table.getValueAt(selectedRow, 1));
 					lblTenSp.setText((String) table.getValueAt(selectedRow, 2));
+					txtGiaNhap.setText("");
+					txtSoLuong.setText("");
 				}
 			}
 		});
@@ -367,10 +482,38 @@ public class NhapHangGUI extends JPanel {
 		defaultTableModel.setRowCount(0);
 		for (SanPhamDTO s : arr) {
 			String tenTheLoai = TheLoaiBUS.getTheLoaiByID(s.getCategory_id()).getCategory_name();
-			Object[] row = { s.getProduct_id(), tenTheLoai, s.getProduct_name(), s.getDiscount_percent() + "%",
-					s.getQuantity() };
+			Object[] row = { s.getProduct_id(), tenTheLoai, s.getProduct_name(), s.getCountry(), s.getQuantity() };
 			defaultTableModel.addRow(row);
 		}
 	}
 
+	public int findRowByValue(JTable table, int columnIndex, Object key) {
+		for (int i = 0; i < table.getRowCount(); i++) {
+			Object value = table.getValueAt(i, columnIndex);
+			if (value != null && value.equals(key)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public void xoaDong() {
+		int rowSelected = tableCT.getSelectedRow();
+		if (tableCT.getRowCount() == 0) {
+			JOptionPane.showMessageDialog(null, "Không có sản phẩm nào !", "Thông báo", JOptionPane.ERROR_MESSAGE);
+			return;
+		} else if (rowSelected < 0) {
+			JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần xóa !", "Thông báo",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		DefaultTableModel model = (DefaultTableModel) tableCT.getModel();
+		model.removeRow(rowSelected);
+	}
+
+	public void reset() {
+		lblMaPN.setText(PhieuNhapBUS.generate_Id() + "");
+		lblTongTien.setText("0.0");
+		defaultTableModelCT.setRowCount(0);
+	}
 }

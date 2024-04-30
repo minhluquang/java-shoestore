@@ -9,7 +9,7 @@ import org.apache.poi.hslf.record.Sound;
 
 import DTO.ThongKeNhaCungCapDTO;
 import DTO.ThongKeTonKhoDTO;
-import GUI.main;
+
 
 public class ThongKeNhaCungCapDAO {
 //	List<ThongKeNhaCungCapDTO>
@@ -94,7 +94,5 @@ public class ThongKeNhaCungCapDAO {
 		return list;
 	}
 	
-	public static void main(String[] args) {
-		ThongKeNhaCungCapDAO.getAllNCC();
-	}
+	
 }

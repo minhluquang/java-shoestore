@@ -1,9 +1,12 @@
 package DAO;
 
 import java.security.AlgorithmParametersSpi;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Locale.IsoCountryCode;
+
+import com.mysql.cj.xdevapi.PreparableStatement;
 
 import DTO.NhanVien;
 import DTO.TaiKhoan;
@@ -144,7 +147,6 @@ public class TaiKhoanDAO {
 					+ "SET username = '" + username + "', account_status = " + accountStatus + ", position = '" + position + "' "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
-			System.out.println(i);
 			if (i > 0) {
 				success = true;
 			}
@@ -163,7 +165,6 @@ public class TaiKhoanDAO {
 		try {
 			String sql = "INSERT INTO accounts (username, password, account_status, position, status) "
 					    + "VALUES ('" + username + "', '" + password + "', " + accountStatus + ", '" + position + "', " + status + ")";
-			
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
 				success = true;
@@ -190,7 +191,9 @@ public class TaiKhoanDAO {
 				continue;
 			}
 			
-
+			if (!NhanVienDAO.isExistNhanVien(staffId)) {
+				continue;
+			}
 			
 			success = insertTaiKhoan(username, password, accountStatus, position, status);
 			if (!success) {
@@ -266,6 +269,30 @@ public class TaiKhoanDAO {
 		return tk;
 	}
 	
+	public static TaiKhoan getDetailTaiKhoanByAccountId(int accountId) {
+		connectDB.getConnection();
+		TaiKhoan tk = null;
+		
+		try {
+			String sql = "SELECT * FROM accounts WHERE account_id = '" + accountId + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+			
+			if (rs.next()) {
+				tk = new TaiKhoan();
+				tk.setAccountId(rs.getInt("account_id"));
+				tk.setUsername(rs.getString("username"));
+				tk.setPassword(rs.getString("password"));
+				tk.setAccountStatus(rs.getInt("account_status"));
+				tk.setPosition(rs.getString("position"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();	
+		return tk;
+	}
+	
 	public static boolean deleteTaiKhoanById(int accountId) {
 		connectDB.getConnection();
 		boolean success = false;
@@ -285,5 +312,51 @@ public class TaiKhoanDAO {
 		
 		connectDB.closeConnection();
 		return success;
+	}
+	
+	public static boolean isTruePassword(int accountId, String password) {
+		connectDB.getConnection();
+		boolean isTrue = false;
+		
+		try {
+			String sql = "SELECT * FROM accounts WHERE account_id = ? AND password = ?";
+			PreparedStatement prest = connectDB.prepareStatement(sql);
+			prest.setInt(1, accountId);
+			prest.setString(2, password);
+			
+			ResultSet rs = prest.executeQuery();
+			if (rs.next()) {
+				isTrue = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return isTrue;
+	}
+	
+	public static boolean updatePasswordByAccountId(int accountId, String password) {
+		connectDB.getConnection();
+		boolean isTrue = false;
+		
+		try {
+			String sql = "UPDATE  accounts "
+					+ "SET password = ? "
+					+ "WHERE account_id = ?";
+			PreparedStatement prest = connectDB.prepareStatement(sql);
+			prest.setString(1, password);
+			prest.setInt(2, accountId);
+			
+			int i = prest.executeUpdate();
+			if (i > 0) {
+				isTrue = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return isTrue;
 	}
 }

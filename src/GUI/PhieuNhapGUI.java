@@ -45,7 +45,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 	private DefaultTableModel defaultTableModel;
 
 	private static ChiTietPhieuNhapGUI chiTietPhieuNhap;
-	private static ChiTietNhaCungCapGUI chiTietNhanVienGUI;
 
 	/**
 	 * Create the panel.
@@ -104,6 +103,11 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		panel_2.add(btnTim);
 
 		JButton btnLamMoi = new JButton("Làm mới");
+		btnLamMoi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadDanhSachPhieuNhap();
+			}
+		});
 		btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnLamMoi.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnLamMoi.setFocusable(false);
