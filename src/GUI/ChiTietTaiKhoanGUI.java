@@ -199,6 +199,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 		
 		JButton btnLuu = new JButton("Lưu");
+		btnLuu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLuu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				xuLyLuuThongTinTaiKhoan();
@@ -213,6 +214,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_2.add(btnLuu);
 		
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
+		btnNewButton_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết khách hàng không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết khách hàng", JOptionPane.YES_NO_OPTION);
@@ -264,6 +266,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_2_1.setLayout(new GridLayout(0, 2, 20, 0));
 		
 		JButton btnDoiMatKhau = new JButton("Đổi mật khẩu");
+		btnDoiMatKhau.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDoiMatKhau.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				xuLyDoiMatKhauTaiKhoan();
@@ -278,6 +281,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		panel_2_1.add(btnDoiMatKhau);
 		
 		JButton btnNewButton_1_1 = new JButton("Huỷ bỏ");
+		btnNewButton_1_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa tài khoản không?", "Xác nhận huỷ bỏ chỉnh sửa tài khoản", JOptionPane.YES_NO_OPTION);
@@ -385,7 +389,11 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				if (TaiKhoanBUS.isExistIdTaiKhoan(accountId)) {
-					if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position) && autoSetFullQuyen(accountId)) {
+					if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position)) {
+						if (position.equalsIgnoreCase("admin")) {
+							 ChiTietQuyenBUS.deleteTatCaQuyenCuaTaiKhoanBangId(accountId);
+							 autoSetFullQuyen(accountId);
+						}
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						parentGUI.loadDanhSachTaiKhoan();
 						dispose();

@@ -17,7 +17,7 @@ public class TaiKhoanDAO {
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM accounts WHERE account_status = 1";
+			String sql = "SELECT * FROM accounts WHERE status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 			while(rs.next()) {
 				TaiKhoan tk = new TaiKhoan();
@@ -147,7 +147,6 @@ public class TaiKhoanDAO {
 					+ "SET username = '" + username + "', account_status = " + accountStatus + ", position = '" + position + "' "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
-			System.out.println(i);
 			if (i > 0) {
 				success = true;
 			}
@@ -166,7 +165,6 @@ public class TaiKhoanDAO {
 		try {
 			String sql = "INSERT INTO accounts (username, password, account_status, position, status) "
 					    + "VALUES ('" + username + "', '" + password + "', " + accountStatus + ", '" + position + "', " + status + ")";
-			
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
 				success = true;
@@ -193,7 +191,9 @@ public class TaiKhoanDAO {
 				continue;
 			}
 			
-
+			if (!NhanVienDAO.isExistNhanVien(staffId)) {
+				continue;
+			}
 			
 			success = insertTaiKhoan(username, password, accountStatus, position, status);
 			if (!success) {
@@ -217,7 +217,7 @@ public class TaiKhoanDAO {
 			String sql = "SELECT * "
 					+ "FROM accounts "
 					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')"
-					+ " AND account_status = 1";
+					+ " AND status = 1";
 			if (searchStatus != -1) {
 				sql += " AND account_status = " + searchStatus;
 			}

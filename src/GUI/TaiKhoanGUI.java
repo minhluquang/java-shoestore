@@ -361,7 +361,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 			}
         } else if (e.getSource() == btnThem) {
         	if (chonTaiKhoanGUI == null || !chonTaiKhoanGUI.isVisible()) {
-        		chonTaiKhoanGUI = new ChonTaiKhoanGUI();
+        		chonTaiKhoanGUI = new ChonTaiKhoanGUI(this);
         	} else {
         		chonTaiKhoanGUI.toFront();
         	}
@@ -569,6 +569,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
         for (int i = 0; i < expectedHeaders.length; i++) {
             Cell cell = row.getCell(i);
             if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+            	System.out.println(cell.getStringCellValue());
                 headerMatched = false;
                 break;
             }

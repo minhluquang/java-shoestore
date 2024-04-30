@@ -56,6 +56,8 @@ public class ChonTaiKhoanGUI extends JFrame {
 	private JComboBox cmbChucVu;
 	private JComboBox cmbTrangThai;
 	
+	private static TaiKhoanGUI tKhoanGUI;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -64,7 +66,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChonTaiKhoanGUI frame = new ChonTaiKhoanGUI();
+					ChonTaiKhoanGUI frame = new ChonTaiKhoanGUI(tKhoanGUI);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -76,7 +78,9 @@ public class ChonTaiKhoanGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ChonTaiKhoanGUI() {
+	public ChonTaiKhoanGUI(TaiKhoanGUI tKhoanGUI) {
+		this.tKhoanGUI = tKhoanGUI;
+		
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
@@ -85,11 +89,12 @@ public class ChonTaiKhoanGUI extends JFrame {
     	            dispose();
     	        }
     		}
+
     	});
 		
 		int width = 850;
 		int height = 480;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, width, height);
 		setLocationRelativeTo(null);
 		setTitle("Chọn tài khoản");
@@ -352,7 +357,6 @@ public class ChonTaiKhoanGUI extends JFrame {
 					return;
 				}
 				
-				System.out.println(TaiKhoanBUS.isUsedUsername(username));
 				
 				if (isError) {
 					JOptionPane.showMessageDialog(null, messageError, "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -368,6 +372,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 			boolean isSuccessUpdateStaff = NhanVienBUS.updateAccountIdForStaff(staffId, accountId, true);
 			
 			if (isSuccessCreateNewAccount && isSuccessUpdateStaff) {
+				tKhoanGUI.loadDanhSachTaiKhoan();
 				JOptionPane.showMessageDialog(null, "Hệ thống đã tạo tài khoản thành công!", "Thông báo tạo thành công tài khoản", JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 			} else {
