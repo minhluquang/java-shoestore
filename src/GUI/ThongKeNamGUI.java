@@ -7,6 +7,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -24,14 +28,22 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import BUS.ThongKeDoanhThuBUS;
+import BUS.ThongKeTonKhoBUS;
 import DTO.ThongKeDoanhThuDTO;
+import DTO.ThongKeTonKhoDTO;
 
 public class ThongKeNamGUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTable tblDoanhThu;
 	private DefaultTableModel dtmDoanhThu;
+	public String absolutePath = new File("").getAbsolutePath();
 
 	/**
 	 * Create the panel.
@@ -63,6 +75,15 @@ public class ThongKeNamGUI extends JPanel {
 	        pnl_xuat.setLayout(new BorderLayout(0, 0));
 	        
 	        JButton btn_xuat = new JButton("Xuất Excel");
+	        btn_xuat.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		try {
+						exportExcel();
+					} catch (Exception e2) {
+						// TODO: handle exception
+					}
+	        	}
+	        });
 	        pnl_xuat.add(btn_xuat, BorderLayout.CENTER);
 		
 		JPanel pnl_center = new JPanel();
@@ -243,5 +264,45 @@ public long[] calculateColumnTotal() {
     }
     return columnTotals;
 }
+
+public void exportExcel() throws IOException {
+	List<ThongKeDoanhThuDTO> doanhThuNam = ThongKeDoanhThuBUS.thongKeTheoNam();
+	try {
+		FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/doanh_thu_tung_nam.xlsx");
+	    XSSFWorkbook wb = new XSSFWorkbook();
+	    XSSFSheet sheet = wb.createSheet("Doanh thu từng năm");
+	    XSSFRow row = null;
+	    Cell cell = null;
+	    
+	    // Ghi header
+	    XSSFRow headerRow = sheet.createRow(0);
+	    headerRow.createCell(0).setCellValue("Năm");
+	    headerRow.createCell(1).setCellValue("Tổng đơn nhập");
+	    headerRow.createCell(2).setCellValue("Vốn");
+	    headerRow.createCell(3).setCellValue("Tổng hóa đơn");
+	    headerRow.createCell(4).setCellValue("Doanh thu");
+	    headerRow.createCell(5).setCellValue("Lợi nhuận");
+	    
+	   
+	    int rowNum = 1;
+	    for (ThongKeDoanhThuDTO dtNam : doanhThuNam) {
+	    	 row = sheet.createRow(rowNum++);
+	    	row.createCell(0).setCellValue(dtNam.getThoigian());
+	    	row.createCell(1).setCellValue(dtNam.getSlDonNhap());
+	    	row.createCell(2).setCellValue(dtNam.getVon());
+	    	row.createCell(3).setCellValue(dtNam.getSlHoaDon());
+	    	row.createCell(4).setCellValue(dtNam.getDoanhthu());
+	    	row.createCell(5).setCellValue(dtNam.getLoinhuan());
+	    }
+	    
+	    wb.write(fileOutputStream);
+	    wb.close();
+	    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+	} catch (Exception e) {
+	    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+	}
+}
+
+
 
 }
