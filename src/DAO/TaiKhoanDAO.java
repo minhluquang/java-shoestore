@@ -14,7 +14,7 @@ public class TaiKhoanDAO {
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM accounts WHERE status = 1";
+			String sql = "SELECT * FROM accounts WHERE account_status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 			while(rs.next()) {
 				TaiKhoan tk = new TaiKhoan();

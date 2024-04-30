@@ -75,7 +75,7 @@ public class ChiTietQuyenGUI extends JFrame {
     	});
 		
 		int width = 400;
-		int height = 300;
+		int height = 450;
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
@@ -107,12 +107,6 @@ public class ChiTietQuyenGUI extends JFrame {
 		
 		// Load danh sách quyền
 		loadDanhSachQuyen();
-		
-		JLabel lblXo = new JLabel("");
-		lblXo.setForeground(new Color(255, 255, 255));
-		lblXo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblXo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(lblXo);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));

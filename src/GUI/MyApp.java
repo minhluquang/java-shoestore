@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +28,12 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-public class main extends JFrame implements ActionListener, MouseListener {
+import BUS.QuyenBUS;
+import BUS.RoleBUS;
+import DTO.Quyen;
+import DTO.Role;
+
+public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel pnlSidebar;
@@ -48,12 +54,11 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	private JButton btnThongKe;
 	private JButton btnNhaCungCap;
 	private JButton btnNhapHang;
+	private JButton btnReturn;	
 	public String absolutePath = new File("").getAbsolutePath();
 	private JPanel pnlCards;
 
 	private CardLayout cardLayout;
-	private JPanel pnlQLNV;
-	private JButton btnReturn;
 	private JPanel pnlNhaCungCap;
 	private JPanel pnlNhapHang;
 	private JPanel pnlBanHang;
@@ -68,6 +73,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	private JPanel pnlPhanQuyen;
 	private JPanel pnlWarranty;
 	private JPanel pnlThongKe;
+	
+	private static String username = "";
 
 	/**
 	 * Launch the application.
@@ -76,8 +83,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					main frame = new main();
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+					MyApp frame = new MyApp(username);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,7 +96,10 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	/**
 	 * Create the frame.
 	 */
-	public main() {
+	public MyApp(String username) {
+		this.username = username;
+		
+		System.out.println(username);
 		setBackground(new Color(230, 230, 230));
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -155,6 +165,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		pnlSidebarCenter.setLayout(new GridLayout(0, 1, 0, 0));
 
 		btnTrangChu = new JButton(" Trang chủ");
+		btnTrangChu.setEnabled(false);
 		btnTrangChu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTrangChu.setIcon(new ImageIcon(absolutePath + "/src/images/icons/home.png"));
 		btnTrangChu.setForeground(new Color(255, 255, 255));
@@ -165,6 +176,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		pnlSidebarCenter.add(btnTrangChu);
 
 		btnBanHang = new JButton(" Bán hàng");
+		btnBanHang.setEnabled(false);
 		btnBanHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnBanHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/cart.png"));
 		btnBanHang.setForeground(new Color(255, 255, 255));
@@ -173,18 +185,9 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		btnBanHang.setFocusable(false);
 		btnBanHang.setBorder(null);
 		pnlSidebarCenter.add(btnBanHang);
-
-		btnNhapHang = new JButton(" Nhập Hàng ");
-		btnNhapHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNhapHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/import.png"));
-		btnNhapHang.setForeground(new Color(255, 255, 255));
-		btnNhapHang.setBackground(new Color(51, 51, 51));
-		btnNhapHang.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnNhapHang.setFocusable(false);
-		btnNhapHang.setBorder(null);
-		pnlSidebarCenter.add(btnNhapHang);
-
+		
 		btnSanPham = new JButton(" Sản phẩm");
+		btnSanPham.setEnabled(false);
 		btnSanPham.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSanPham.setIcon(new ImageIcon(absolutePath + "/src/images/icons/sneakers.png"));
 		btnSanPham.setForeground(new Color(255, 255, 255));
@@ -194,37 +197,19 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		btnSanPham.setBorder(null);
 		pnlSidebarCenter.add(btnSanPham);
 
-		btnKhuyenMai = new JButton(" Khuyến mãi");
-		btnKhuyenMai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnKhuyenMai.setIcon(new ImageIcon(absolutePath + "/src/images/icons/coupon.png"));
-		btnKhuyenMai.setForeground(new Color(255, 255, 255));
-		btnKhuyenMai.setBackground(new Color(51, 51, 51));
-		btnKhuyenMai.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnKhuyenMai.setFocusable(false);
-		btnKhuyenMai.setBorder(null);
-		pnlSidebarCenter.add(btnKhuyenMai);
-
-		btnNhanVien = new JButton(" Nhân viên");
-		btnNhanVien.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNhanVien.setIcon(new ImageIcon(absolutePath + "/src/images/icons/staff.png"));
-		btnNhanVien.setForeground(new Color(255, 255, 255));
-		btnNhanVien.setBackground(new Color(51, 51, 51));
-		btnNhanVien.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnNhanVien.setFocusable(false);
-		btnNhanVien.setBorder(null);
-		pnlSidebarCenter.add(btnNhanVien);
-
-		btnKhachHang = new JButton(" Khách hàng");
-		btnKhachHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnKhachHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/customer.png"));
-		btnKhachHang.setForeground(new Color(255, 255, 255));
-		btnKhachHang.setBackground(new Color(51, 51, 51));
-		btnKhachHang.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnKhachHang.setFocusable(false);
-		btnKhachHang.setBorder(null);
-		pnlSidebarCenter.add(btnKhachHang);
-
-		btnPhieuNhap = new JButton(" Phiếu Nhập ");
+		btnNhapHang = new JButton(" Nhập Hàng ");
+		btnNhapHang.setEnabled(false);
+		btnNhapHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnNhapHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/import.png"));
+		btnNhapHang.setForeground(new Color(255, 255, 255));
+		btnNhapHang.setBackground(new Color(51, 51, 51));
+		btnNhapHang.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNhapHang.setFocusable(false);
+		btnNhapHang.setBorder(null);
+		pnlSidebarCenter.add(btnNhapHang);
+		
+		btnPhieuNhap = new JButton(" Phiếu Nhập");
+		btnPhieuNhap.setEnabled(false);
 		btnPhieuNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnPhieuNhap.setIcon(new ImageIcon(absolutePath + "/src/images/icons/truck.png"));
 		btnPhieuNhap.setForeground(new Color(255, 255, 255));
@@ -234,17 +219,19 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		btnPhieuNhap.setBorder(null);
 		pnlSidebarCenter.add(btnPhieuNhap);
 
-		btnReturn = new JButton(" Return ");
-		btnReturn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnReturn.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
-		btnReturn.setForeground(Color.WHITE);
-		btnReturn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnReturn.setFocusable(false);
-		btnReturn.setBorder(null);
-		btnReturn.setBackground(new Color(51, 51, 51));
-		pnlSidebarCenter.add(btnReturn);
+		btnKhuyenMai = new JButton(" Khuyến mãi");
+		btnKhuyenMai.setEnabled(false);
+		btnKhuyenMai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnKhuyenMai.setIcon(new ImageIcon(absolutePath + "/src/images/icons/coupon.png"));
+		btnKhuyenMai.setForeground(new Color(255, 255, 255));
+		btnKhuyenMai.setBackground(new Color(51, 51, 51));
+		btnKhuyenMai.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnKhuyenMai.setFocusable(false);
+		btnKhuyenMai.setBorder(null);
+		pnlSidebarCenter.add(btnKhuyenMai);
 
-		btnNhaCungCap = new JButton(" Nhà cung cấp ");
+		btnNhaCungCap = new JButton(" Nhà cung cấp");
+		btnNhaCungCap.setEnabled(false);
 		btnNhaCungCap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhaCungCap.setIcon(new ImageIcon(absolutePath + "/src/images/icons/supplier.png"));
 		btnNhaCungCap.setForeground(Color.WHITE);
@@ -255,7 +242,8 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		pnlSidebarCenter.add(btnNhaCungCap);
 
 		// warranty
-		btnWarranty = new JButton(" Warranty ");
+		btnWarranty = new JButton(" Bảo hành");
+		btnWarranty.setEnabled(false);
 		btnWarranty.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnWarranty.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
 		btnWarranty.setForeground(Color.WHITE);
@@ -264,8 +252,21 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		btnWarranty.setBorder(null);
 		btnWarranty.setBackground(new Color(51, 51, 51));
 		pnlSidebarCenter.add(btnWarranty);
+		
+		btnReturn = new JButton(" Đổi trả");
+		btnReturn.setEnabled(false);
+		btnReturn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnReturn.setIcon(new ImageIcon(absolutePath + "/src/images/icons/support.png"));
+		btnReturn.setForeground(Color.WHITE);
+		btnReturn.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnReturn.setFocusable(false);
+		btnReturn.setBorder(null);
+		btnReturn.setBackground(new Color(51, 51, 51));
+		pnlSidebarCenter.add(btnReturn);
+		
 		// phân quyền
 		btnPhanQuyen = new JButton(" Phân Quyền");
+		btnPhanQuyen.setEnabled(false);
 		btnPhanQuyen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnPhanQuyen.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
 		btnPhanQuyen.setForeground(Color.WHITE);
@@ -274,8 +275,31 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		btnPhanQuyen.setBorder(null);
 		btnPhanQuyen.setBackground(new Color(51, 51, 51));
 		pnlSidebarCenter.add(btnPhanQuyen);
+		
+		btnNhanVien = new JButton(" Nhân viên");
+		btnNhanVien.setEnabled(false);
+		btnNhanVien.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnNhanVien.setIcon(new ImageIcon(absolutePath + "/src/images/icons/staff.png"));
+		btnNhanVien.setForeground(new Color(255, 255, 255));
+		btnNhanVien.setBackground(new Color(51, 51, 51));
+		btnNhanVien.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNhanVien.setFocusable(false);
+		btnNhanVien.setBorder(null);
+		pnlSidebarCenter.add(btnNhanVien);
 
+		btnKhachHang = new JButton(" Khách hàng");
+		btnKhachHang.setEnabled(false);
+		btnKhachHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnKhachHang.setIcon(new ImageIcon(absolutePath + "/src/images/icons/customer.png"));
+		btnKhachHang.setForeground(new Color(255, 255, 255));
+		btnKhachHang.setBackground(new Color(51, 51, 51));
+		btnKhachHang.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnKhachHang.setFocusable(false);
+		btnKhachHang.setBorder(null);
+		pnlSidebarCenter.add(btnKhachHang);
+		
 		btnTaiKhoan = new JButton(" Tài khoản");
+		btnTaiKhoan.setEnabled(false);
 		btnTaiKhoan.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTaiKhoan.setIcon(new ImageIcon(absolutePath + "/src/images/icons/account.png"));
 		btnTaiKhoan.setForeground(Color.WHITE);
@@ -287,6 +311,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 // Thong ke
 
 		btnThongKe = new JButton(" Thống kê");
+		btnThongKe.setEnabled(false);
 		btnThongKe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnThongKe.setIcon(new ImageIcon(absolutePath + "/src/images/icons/tk.png"));
 		btnThongKe.setForeground(Color.WHITE);
@@ -342,17 +367,7 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		pnlCards.add(pnlKhuyenMai, "pnlKhuyenMai");
 		pnlKhuyenMai.setLayout(new BorderLayout(0, 0));
 		pnlKhuyenMai.add(new KhuyenMaiGUI(), BorderLayout.CENTER);
-
-		pnlNhanVien = new JPanel();
-		pnlCards.add(pnlNhanVien, "pnlNhanVien");
-		pnlNhanVien.setLayout(new BorderLayout(0, 0));
-		pnlNhanVien.add(new NhanVienGUI(), BorderLayout.CENTER);
-
-		pnlKhachHang = new JPanel();
-		pnlCards.add(pnlKhachHang, "pnlKhachHang");
-		pnlKhachHang.setLayout(new BorderLayout(0, 0));
-		pnlKhachHang.add(new KhachHangGUI(), BorderLayout.CENTER);
-
+		
 		pnlPhieuNhap = new JPanel();
 		pnlCards.add(pnlPhieuNhap, "pnlPhieuNhap");
 		pnlPhieuNhap.setLayout(new BorderLayout(0, 0));
@@ -387,12 +402,30 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		pnlTrangChu.setLayout(new BorderLayout(0, 0));
 		pnlTrangChu.add(new TrangChuGUI(), BorderLayout.CENTER);
 
+		pnlNhanVien = new JPanel();
+		pnlCards.add(pnlNhanVien, "pnlNhanVien");
+		pnlNhanVien.setLayout(new BorderLayout(0, 0));
+		pnlNhanVien.add(new NhanVienGUI(), BorderLayout.CENTER);
+
+		pnlKhachHang = new JPanel();
+		pnlCards.add(pnlKhachHang, "pnlKhachHang");
+		pnlKhachHang.setLayout(new BorderLayout(0, 0));
+		pnlKhachHang.add(new KhachHangGUI(), BorderLayout.CENTER);
+		
 		pnlTaiKhoan = new JPanel();
 		pnlCards.add(pnlTaiKhoan, "pnlTaiKhoan");
 		pnlTaiKhoan.setLayout(new BorderLayout(0, 0));
 		pnlTaiKhoan.add(new TaiKhoanGUI(), BorderLayout.CENTER);
 
 		// ========== End: CardLayout section ==========
+		
+		
+		
+		// ========== Start: Xử lý quyền chọn tab ==========
+		phanQuyenChonTab();
+		// ========== End: Xử lý quyền chọn tab ==========
+
+		
 
 		// Add action listener
 		btnBanHang.addActionListener(this);
@@ -512,6 +545,26 @@ public class main extends JFrame implements ActionListener, MouseListener {
 		}
 	}
 	// ========== End: Xử lý hover btn ==========
+	
+	
+	
+	// ========== Start: Xử lý quyền chọn tab ==========
+	public void phanQuyenChonTab() {
+		ArrayList<Quyen> dsqUser = QuyenBUS.getDanhSachQuyenByUsername(username);
+		JButton[] buttons = { btnTrangChu, btnThongKe, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang,
+				btnPhieuNhap, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty, btnNhapHang,
+				btnNhaCungCap };
+		for (JButton button : buttons) {
+			for (Quyen qUser : dsqUser) {
+				if (button.getText().trim().equalsIgnoreCase(qUser.getRoleTabName())) {
+					button.setEnabled(true);
+				}
+			}
+		}
+	}
+	// ========== End: Xử lý quyền chọn tab ==========
+
+	
 
 	// ========== Start: Reset màu btns ==========
 	private void resetButtonColors(JButton selectedButton) {
@@ -537,4 +590,6 @@ public class main extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
+	
+	
 }
