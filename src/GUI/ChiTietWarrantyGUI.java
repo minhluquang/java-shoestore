@@ -186,12 +186,12 @@ public class ChiTietWarrantyGUI extends JFrame {
 		txtWarrantyDate.setColumns(10);
 		panel_5.add(txtWarrantyDate);
 		
-		JLabel lblNewLabel_6_3_1_3 = new JLabel("Warranty Status");
+		JLabel lblNewLabel_6_3_1_3 = new JLabel("Status");
 		lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1_3);
 		
 		cmbTrangThai = new JComboBox();
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"Complete", "Non Complete"}));
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"1", "0"}));
 		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbTrangThai.setFocusable(false);
 		panel_5.add(cmbTrangThai);
@@ -271,7 +271,7 @@ public class ChiTietWarrantyGUI extends JFrame {
     	} else {
     		txtWarrantyId.setText(Integer.toString(wt.getWarrantyid()));
     	}
-    	txtProductId.setText(Integer.toString(wt.getProductid()));
+    	txtProductId.setText(Integer.toString(wt.getProduct_serial_id()));
     	txtProductId.setEditable(true);
     	txtStartDate.setText(wt.getStartDate());
     	txtStartDate.setEditable(true);
@@ -290,7 +290,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         String enddate = txtEndDate.getText().trim();
         String wardate = txtWarrantyDate.getText().trim();
         String reason = txtReason.getText().trim();
-        String warstatus = cmbTrangThai.getSelectedItem().toString();
+        int warstatus = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
         if(startdate.isEmpty() || enddate.isEmpty() || wardate.isEmpty() || reason.isEmpty()) {
     		 String message = "Vui lòng nhập đầy đủ các trường:";
  	        message += "\n - Ngày bắt đầu";

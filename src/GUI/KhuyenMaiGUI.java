@@ -95,7 +95,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 		comboBox_1.setFocusable(false);
 		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","Active" ,"Non Active"}));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","1" ,"0"}));
 		
 		// ========== Start: Xử lý search trạng thái ==========
 		comboBox_1.addItemListener(new ItemListener() {
@@ -247,7 +247,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmKhuyenMai = new DefaultTableModel(new Object[]{"Tên", "Điều kiện", "Giảm giá","NgàyBD","NgàyKT","Trạng thái"}, 0);
+		dtmKhuyenMai = new DefaultTableModel(new Object[]{"Name", "Discount_Value", "Type","Start_Date","End_Date","Status"}, 0);
 		table.setModel(dtmKhuyenMai);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -285,14 +285,14 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
         ArrayList<KhuyenMai> dskm = KhuyenMaiBUS.searchKhuyenMai(keyword, searchStatus);
 
         for (KhuyenMai km : dskm) {
-            String statusINT = km.getActive();
+        	String statusINT = String.valueOf(km.getStatus());
             String status;
-            if ("active".equals(statusINT)) {
-                status = "active";
+            if ("1".equals(statusINT)) {
+                status = "1";
             } else {
-                status = "nonactive";
+                status = "0";
             }
-            Object[] row = new Object[]{km.getDiscount_code(), km.getConditionValue(), km.getDiscount(), km.getStart_date(), km.getEnd_date(), status};
+            Object[] row = new Object[]{km.getDiscount_code(),km.getStatus(), km.getDiscount_value(), km.getStart_date(), km.getEnd_date(), status};
             model.addRow(row);
         }
     }
@@ -302,7 +302,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
     		dtmKhuyenMai.setRowCount(0);
     		ArrayList<KhuyenMai> dskm = KhuyenMaiBUS.getDanhSachKhuyenMai();
     		for (KhuyenMai km : dskm) {
-    		    Object[] rowData = new Object[]{km.getDiscount_code(),km.getConditionValue(),km.getDiscount(),km.getStart_date(),km.getEnd_date(),km.getActive()};
+    		    Object[] rowData = new Object[]{km.getDiscount_code(),km.getDiscount_value(), km.getType(), km.getStart_date(),km.getEnd_date(),km.getStatus()};
     		    dtmKhuyenMai.addRow(rowData);
     		}	
     	}
