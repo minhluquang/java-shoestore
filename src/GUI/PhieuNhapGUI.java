@@ -45,7 +45,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 	private DefaultTableModel defaultTableModel;
 
 	private static ChiTietPhieuNhapGUI chiTietPhieuNhap;
-	private static ChiTietNhanVienGUI chiTietNhanVienGUI;
 
 	/**
 	 * Create the panel.
@@ -104,6 +103,11 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		panel_2.add(btnTim);
 
 		JButton btnLamMoi = new JButton("Làm mới");
+		btnLamMoi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadDanhSachPhieuNhap();
+			}
+		});
 		btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnLamMoi.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnLamMoi.setFocusable(false);
@@ -190,6 +194,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 
 //		=================================TABLE================================
 		table = new JTable();
+		table.setFillsViewportHeight(true);
 		table.setSelectionForeground(Color.WHITE);
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
@@ -206,6 +211,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
+		scrollPane.getVerticalScrollBar().setUnitIncrement(8);
 		pnlCenter.add(scrollPane, BorderLayout.NORTH);
 
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -214,7 +220,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		table.getTableHeader().setForeground(new Color(255, 255, 255));
 		table.setRowHeight(25);
 		loadDanhSachPhieuNhap();
-
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
@@ -244,30 +249,30 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 				int maPhieu = (int) defaultTableModel.getValueAt(selectedRow, 1);
 				hienThiThongTinPhieuNhap(maPhieu);
 			}
-		} else if (e.getSource() == btnThem) {
-			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-			} else {
-				chiTietNhanVienGUI.toFront();
-			}
-			chiTietNhanVienGUI.setVisible(true);
-			chiTietNhanVienGUI.requestFocus();
-		} else if (e.getSource() == btnSua) {
-			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-			} else {
-				chiTietNhanVienGUI.toFront();
-			}
-			chiTietNhanVienGUI.setVisible(true);
-			chiTietNhanVienGUI.requestFocus();
-		} else if (e.getSource() == btnXoa) {
-			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
-//				chiTietNhanVienGUI = new ChiTietNhanVienGUI();
-			} else {
-				chiTietNhanVienGUI.toFront();
-			}
-			chiTietNhanVienGUI.setVisible(true);
-			chiTietNhanVienGUI.requestFocus();
+//		} else if (e.getSource() == btnThem) {
+//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
+//			} else {
+//				chiTietNhanVienGUI.toFront();
+//			}
+//			chiTietNhanVienGUI.setVisible(true);
+//			chiTietNhanVienGUI.requestFocus();
+//		} else if (e.getSource() == btnSua) {
+//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
+//			} else {
+//				chiTietNhanVienGUI.toFront();
+//			}
+//			chiTietNhanVienGUI.setVisible(true);
+//			chiTietNhanVienGUI.requestFocus();
+//		} else if (e.getSource() == btnXoa) {
+//			if (chiTietNhanVienGUI == null || !chiTietNhanVienGUI.isVisible()) {
+//				chiTietNhanVienGUI = new ChiTietNhaCungCapGUI();
+//			} else {
+//				chiTietNhanVienGUI.toFront();
+//			}
+//			chiTietNhanVienGUI.setVisible(true);
+//			chiTietNhanVienGUI.requestFocus();
 		} else if (e.getSource() == btnNhapExcel) {
 			// Xử lý khi button "Nhập excel" được nhấn
 		} else if (e.getSource() == btnXuatExcel) {

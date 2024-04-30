@@ -12,7 +12,7 @@ public class SanPhamDAO {
         ArrayList<SanPhamDTO> danhSachSanPham = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM product";
+            String sql = "SELECT * FROM products";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int product_id = rs.getInt("product_id");
@@ -43,7 +43,7 @@ public class SanPhamDAO {
         SanPhamDTO product = new SanPhamDTO();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM product WHEWE product_id = " + product_id;
+            String sql = "SELECT * FROM products WHEWE product_id = " + product_id;
             ResultSet rs = connectDB.runQuery(sql);
             if (rs.next()) {
                 int category_id = rs.getInt("category_id");
@@ -80,7 +80,7 @@ public class SanPhamDAO {
         String tenSanPham = "";
         try {
             connectDB.getConnection();
-            String sql = "select product_name from product where product_id=" + product_id;
+            String sql = "select product_name from products where product_id=" + product_id;
             ResultSet rs = connectDB.runQuery(sql);
             if (rs.next()) {
                 tenSanPham = rs.getString("product_name");
@@ -98,7 +98,7 @@ public class SanPhamDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO product (product_id, category_id, brand_id, product_name, output_price, country, year_of_product, discount_percent, image_path, quantity, status) "
+            String sql = "INSERT INTO products (product_id, category_id, brand_id, product_name, output_price, country, year_of_product, discount_percent, image_path, quantity, status) "
                     +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
@@ -132,7 +132,7 @@ public class SanPhamDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "UPDATE product SET status = false WHERE product_id = ?";
+            String sql = "UPDATE products SET status = false WHERE product_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
             // Set the product_id parameter in the PreparedStatement
@@ -156,7 +156,7 @@ public class SanPhamDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "UPDATE product SET category_id = ?, brand_id = ?, product_name = ?, output_price = ?, country = ?, "
+            String sql = "UPDATE products SET category_id = ?, brand_id = ?, product_name = ?, output_price = ?, country = ?, "
                     +
                     "year_of_product = ?, discount_percent = ?, image_path = ?, quantity = ?, status = ? " +
                     "WHERE product_id = ?";
@@ -191,7 +191,7 @@ public class SanPhamDAO {
         int count=0;
         try {
             connectDB.getConnection();
-            String sql = "SELECT COUNT(*) AS count FROM product";
+            String sql = "SELECT COUNT(*) AS count FROM products";
             ResultSet rs= connectDB.runQuery(sql);
             if (rs.next()) {
                 count = rs.getInt("count");

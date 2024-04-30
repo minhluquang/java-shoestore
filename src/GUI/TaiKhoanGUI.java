@@ -357,11 +357,11 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 				chiTietQuyenGUI.setVisible(true);
 				chiTietQuyenGUI.requestFocus();
 			} else {
-				JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần sửa", "Thông báo lỗi sửa thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn tài khoản cần xem chi tiết quyền", "Thông báo lỗi xem chi tiêt quyền tài khoản", JOptionPane.INFORMATION_MESSAGE);
 			}
         } else if (e.getSource() == btnThem) {
         	if (chonTaiKhoanGUI == null || !chonTaiKhoanGUI.isVisible()) {
-        		chonTaiKhoanGUI = new ChonTaiKhoanGUI();
+        		chonTaiKhoanGUI = new ChonTaiKhoanGUI(this);
         	} else {
         		chonTaiKhoanGUI.toFront();
         	}
@@ -569,6 +569,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
         for (int i = 0; i < expectedHeaders.length; i++) {
             Cell cell = row.getCell(i);
             if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+            	System.out.println(cell.getStringCellValue());
                 headerMatched = false;
                 break;
             }

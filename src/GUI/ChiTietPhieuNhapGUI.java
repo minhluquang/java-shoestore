@@ -187,7 +187,6 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		table.getTableHeader().setBackground(new Color(36, 136, 203));
 		table.getTableHeader().setForeground(new Color(255, 255, 255));
 		table.setRowHeight(25);
-
 		loadChiTietPhieuNhap(id);
 	}
 
@@ -197,7 +196,7 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		int rowNum = defaultTableModel.getRowCount();
 		for (ChiTietPhieuNhap ct : dsct) {
 			int stt = ++rowNum;
-			String tenSanPham = SanPhamBUS.getTenSanPhamById(id);
+			String tenSanPham = SanPhamBUS.getTenSanPhamById(ct.getProduct_id());
 			Object[] row = { stt, ct.getProduct_id(), tenSanPham, ct.getQuantity(), ct.getInput_price() };
 			defaultTableModel.addRow(row);
 		}

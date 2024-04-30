@@ -13,4 +13,8 @@ public class ChiTietPhieuNhapBUS {
 		dsct = ChiTietPhieuNhapDAO.getDanhSachChiTietPhieuNhap(id);
 		return dsct;
 	}
+
+	public static boolean create_GoodsReceipts_Details(int product_id, int quantity, int receipt_id, int input_price) {
+		return ChiTietPhieuNhapDAO.create_GoodsReceipts_Details(product_id, quantity, receipt_id, input_price);
+	}
 }

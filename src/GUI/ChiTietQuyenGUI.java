@@ -23,8 +23,10 @@ import javax.swing.border.LineBorder;
 
 import BUS.ChiTietQuyenBUS;
 import BUS.QuyenBUS;
+import BUS.TaiKhoanBUS;
 import DAO.QuyenDAO;
 import DTO.Quyen;
+import DTO.TaiKhoan;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -75,7 +77,7 @@ public class ChiTietQuyenGUI extends JFrame {
     	});
 		
 		int width = 400;
-		int height = 300;
+		int height = 450;
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, width, height);
@@ -107,12 +109,6 @@ public class ChiTietQuyenGUI extends JFrame {
 		
 		// Load danh sách quyền
 		loadDanhSachQuyen();
-		
-		JLabel lblXo = new JLabel("");
-		lblXo.setForeground(new Color(255, 255, 255));
-		lblXo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblXo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(lblXo);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -179,6 +175,7 @@ public class ChiTietQuyenGUI extends JFrame {
 
 	public void loadDanhSachQuyen() {
 		ArrayList<Quyen> dsq = QuyenBUS.getDanhSachQuyen();
+		TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByAccountId(accountId);
 		
 		// Gán quyền của tài khoản cho listCheckboxSelected
 		listCheckboxSelected = ChiTietQuyenBUS.getDanhSachQuyenCuaTaiKhoanBangId(accountId);
@@ -192,6 +189,11 @@ public class ChiTietQuyenGUI extends JFrame {
 			checkBox.setBackground(new Color(255, 255, 255));
 	        checkBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+	        
+	        if (tk.getPosition().equalsIgnoreCase("admin")) {
+	        	checkBox.setEnabled(false);
+	        	checkBox.setSelected(true);
+	        }
 	        
 	        // Kiểm tra xem q.getRoleId() có trong listCheckboxSelected hay không
 	        if (listCheckboxSelected.contains(q.getRoleId())) {

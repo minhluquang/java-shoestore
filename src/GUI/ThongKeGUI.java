@@ -30,12 +30,12 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 	private JPanel pnlTongQuan;
 	private JPanel pnlTonKho;
 	private JPanel pnlDoanhThu;
-	private JPanel pnlKhachHang;
+	private JPanel pnlNhaCungCap;
 	private JPanel pnlCards;
 	private JButton btnTongQuan;
 	private JButton btnTonKho;
 	private JButton btnDoanhThu;
-	private JButton btnKhachHang;
+	private JButton btnNhaCungCap;
 	private CardLayout cardLayout;
 
 	/**
@@ -64,15 +64,15 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 		pnlDoanhThu.setLayout(new BorderLayout(0,0));
 		pnlDoanhThu.add(new ThongKeDoanhThuGUI(), BorderLayout.CENTER);
 		
-		pnlKhachHang = new JPanel();
-		pnlCards.add(pnlKhachHang, "pnlKhachHang");
-		pnlKhachHang.setLayout(new BorderLayout(0,0));
-		pnlKhachHang.add(new ThongKeKhachHangGUI(), BorderLayout.CENTER);
+		pnlNhaCungCap = new JPanel();
+		pnlCards.add(pnlNhaCungCap, "pnlNhaCungCap");
+		pnlNhaCungCap.setLayout(new BorderLayout(0,0));
+		pnlNhaCungCap.add(new ThongKeNhaCungCapGUI(), BorderLayout.CENTER);
 		
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
 		add(pnlTopBottom, BorderLayout.NORTH);
-		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
+		pnlTopBottom.setLayout(new GridLayout(0, 4, 20, 0));
 		
 		btnTongQuan = new JButton("Tổng quan");
 		btnTongQuan.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -98,17 +98,17 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 		btnDoanhThu.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnDoanhThu);
 		
-		btnKhachHang = new JButton("Khách Hàng");
-		btnKhachHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnKhachHang.setPreferredSize(new Dimension(150, 40));
-		btnKhachHang.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnKhachHang.setFocusable(false);
-		btnKhachHang.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnKhachHang);
+		btnNhaCungCap = new JButton("Nhà cung cấp");
+		btnNhaCungCap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnNhaCungCap.setPreferredSize(new Dimension(150, 40));
+		btnNhaCungCap.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnNhaCungCap.setFocusable(false);
+		btnNhaCungCap.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnNhaCungCap);
 		
 		
 		btnDoanhThu.addActionListener(this);
-		btnKhachHang.addActionListener(this);
+		btnNhaCungCap.addActionListener(this);
 		btnTongQuan.addActionListener(this);
 		btnTonKho.addActionListener(this);
 
@@ -127,10 +127,10 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 	        cardLayout.show(pnlCards, "pnlDoanhThu");
 	        btnDoanhThu.setBackground(new Color(163, 163, 163)); 
 	        resetButtonColors(btnDoanhThu);
-	    } else if (e.getSource() == btnKhachHang ) {
-	        cardLayout.show(pnlCards, "pnlKhachHang");
-	        btnKhachHang.setBackground(new Color(163, 163, 163)); 
-	        resetButtonColors(btnKhachHang);
+	    } else if (e.getSource() == btnNhaCungCap ) {
+	        cardLayout.show(pnlCards, "pnlNhaCungCap");
+	        btnNhaCungCap.setBackground(new Color(163, 163, 163)); 
+	        resetButtonColors(btnNhaCungCap);
 	    } else if (e.getSource() == btnTonKho) {
 	        cardLayout.show(pnlCards, "pnlTonKho");
 	        btnTonKho.setBackground(new Color(163, 163, 163)); 
@@ -142,7 +142,7 @@ public class ThongKeGUI extends JPanel implements ActionListener  {
 	
 	// ========== Start: Reset màu btns ==========
 	private void resetButtonColors(JButton selectedButton) {
-	    JButton[] buttons = {btnDoanhThu, btnKhachHang, btnTongQuan, btnTonKho};
+	    JButton[] buttons = {btnDoanhThu, btnNhaCungCap, btnTongQuan, btnTonKho};
 	    for (JButton button : buttons) {
 	        if (button != selectedButton) {
 	            button.setBackground(Color.WHITE);

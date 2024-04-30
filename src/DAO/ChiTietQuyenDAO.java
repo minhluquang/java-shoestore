@@ -1,5 +1,6 @@
 package DAO;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -63,4 +64,26 @@ public class ChiTietQuyenDAO {
 		connectDB.closeConnection();
 		return success;
 	}
+	
+//	public static boolean deleteQuyenCuaTaiKhoan(int role_id, int account_id) {
+//		connectDB.getConnection();
+//		boolean success = false;
+//		
+//		try {
+//			String sql = "DELETE FROM role_details "
+//					+ "WHERE role_id = ? AND account_id = ?";
+//			PreparedStatement prest = connectDB.prepareStatement(sql);
+//			prest.setInt(1, role_id);
+//			prest.setInt(2, account_id);
+//			int i = prest.executeUpdate();
+//			if (i > 0) {
+//				success = true;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		connectDB.closeConnection();
+//		return success;
+//	}
 }

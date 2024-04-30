@@ -39,6 +39,8 @@ public class DangNhapDangKyGUI extends JFrame {
 	private JButton btnDangNhapNgay;
 	private JPanel panel;
 	private JLabel lblNewLabel;
+	
+    private String username = null;
 
 	/**
 	 * Launch the application.
@@ -84,60 +86,59 @@ public class DangNhapDangKyGUI extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 16));
 		
 		pnlSwich = new JPanel();
+		pnlSwich.setVisible(false);
 		pnlSwich.setBackground(Color.WHITE);
 		contentPane.add(pnlSwich, BorderLayout.SOUTH);
 		pnlSwich.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		lblSwitchToRegister = new JLabel("Bạn chưa có tài khoản?");
-		lblSwitchToRegister.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlSwich.add(lblSwitchToRegister);
-		
-		btnDangKyNgay = new JButton("Đăng ký ngay!");
-		btnDangKyNgay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				lblSwitchToLogin.setVisible(false);
-				btnDangKyNgay.setVisible(false);
-				
-				lblSwitchToRegister.setVisible(true);
-				btnDangNhapNgay.setVisible(true);
-				
-				cardLayout.show(pnlCards, "pnlDangKy");
-			}
-		});
-		btnDangKyNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDangKyNgay.setForeground(new Color(0, 64, 128));
-		btnDangKyNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		btnDangKyNgay.setFocusable(false);
-		btnDangKyNgay.setBorder(null);
-		btnDangKyNgay.setBackground(Color.WHITE);
-		pnlSwich.add(btnDangKyNgay);
-		
-		lblSwitchToLogin = new JLabel("Bạn đã có tài khoản?");
-		lblSwitchToLogin.setVisible(false);
-		lblSwitchToLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		pnlSwich.add(lblSwitchToLogin);
-		
-		btnDangNhapNgay = new JButton("Đăng nhập ngay!");
-		btnDangNhapNgay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				lblSwitchToLogin.setVisible(false);
-				btnDangKyNgay.setVisible(true);
-				
-				lblSwitchToRegister.setVisible(true);
-				btnDangNhapNgay.setVisible(false);
-				
-				cardLayout.show(pnlCards, "pnlDangNhap");
-			}
-		});
-		btnDangNhapNgay.setVisible(false);
-		btnDangNhapNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDangNhapNgay.setForeground(new Color(0, 64, 128));
-		btnDangNhapNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		btnDangNhapNgay.setFocusable(false);
-		btnDangNhapNgay.setBorder(null);
-		btnDangNhapNgay.setBackground(Color.WHITE);
-		pnlSwich.add(btnDangNhapNgay);
-		
+//		lblSwitchToRegister = new JLabel("Bạn chưa có tài khoản?");
+//		lblSwitchToRegister.setFont(new Font("Tahoma", Font.PLAIN, 12));
+//		pnlSwich.add(lblSwitchToRegister);
+//		
+//		btnDangKyNgay = new JButton("Đăng ký ngay!");
+//		btnDangKyNgay.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				lblSwitchToLogin.setVisible(false);
+//				btnDangKyNgay.setVisible(false);
+//				
+//				lblSwitchToRegister.setVisible(true);
+//				btnDangNhapNgay.setVisible(true);
+//				
+//				cardLayout.show(pnlCards, "pnlDangKy");
+//			}
+//		});
+//		btnDangKyNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnDangKyNgay.setForeground(new Color(0, 64, 128));
+//		btnDangKyNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
+//		btnDangKyNgay.setFocusable(false);
+//		btnDangKyNgay.setBorder(null);
+//		btnDangKyNgay.setBackground(Color.WHITE);
+//		pnlSwich.add(btnDangKyNgay);
+//		
+//		lblSwitchToLogin = new JLabel("Bạn đã có tài khoản?");
+//		lblSwitchToLogin.setFont(new Font("Tahoma", Font.PLAIN, 12));
+//		pnlSwich.add(lblSwitchToLogin);
+//		
+//		btnDangNhapNgay = new JButton("Đăng nhập ngay!");
+//		btnDangNhapNgay.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				lblSwitchToLogin.setVisible(false);
+//				btnDangKyNgay.setVisible(true);
+//				
+//				lblSwitchToRegister.setVisible(true);
+//				btnDangNhapNgay.setVisible(false);
+//				
+//				cardLayout.show(pnlCards, "pnlDangNhap");
+//			}
+//		});
+//		btnDangNhapNgay.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnDangNhapNgay.setForeground(new Color(0, 64, 128));
+//		btnDangNhapNgay.setFont(new Font("Tahoma", Font.ITALIC, 12));
+//		btnDangNhapNgay.setFocusable(false);
+//		btnDangNhapNgay.setBorder(null);
+//		btnDangNhapNgay.setBackground(Color.WHITE);
+//		pnlSwich.add(btnDangNhapNgay);
+//		
 		pnlCards = new JPanel();
 		contentPane.add(pnlCards, BorderLayout.CENTER);
 		pnlCards.setLayout(new CardLayout());
@@ -164,7 +165,6 @@ public class DangNhapDangKyGUI extends JFrame {
 		pnlChiTietDangKy.add(chiTietDangKyGUI, BorderLayout.CENTER);
 		chiTietDangKyGUI.setCardLayout(cardLayout);
 		chiTietDangKyGUI.setPnlCards(pnlCards);
-		
-		
 	}
+
 }

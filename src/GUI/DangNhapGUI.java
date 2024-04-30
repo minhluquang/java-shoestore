@@ -19,6 +19,7 @@ public class DangNhapGUI extends JPanel {
     private JTextField txtUsernameLogin;
     private JPasswordField txtMatKhauLogin;
 	private JCheckBox chckbxNewCheckBox;
+    
     public DangNhapGUI() {
         int width = 380;
         int height = 400;
@@ -126,7 +127,6 @@ public class DangNhapGUI extends JPanel {
         if (savedLoginInfo != null && savedLoginInfo.length == 2) {
             txtUsernameLogin.setText(savedLoginInfo[0]);
             txtMatKhauLogin.setText(savedLoginInfo[1]);
-            System.out.println(Arrays.toString(savedLoginInfo));
         }
         btnDangNhap.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -147,17 +147,14 @@ public class DangNhapGUI extends JPanel {
                     case "success":
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
                         SwingUtilities.getWindowAncestor(DangNhapGUI.this).dispose();
-                        main frame = new main();
-                        frame.setVisible(true);
-
+                        MyApp myApp = new MyApp(username);
+                		myApp.setVisible(true);
                         break;
                     case "invalid_password":
                         JOptionPane.showMessageDialog(null, "Sai mật khẩu!");
-
                         break;
                     case "invalid_username":
                         JOptionPane.showMessageDialog(null, "Tài khoản không tồn tại!");
-
                         break;  
                     case "inactive_account":
                         JOptionPane.showMessageDialog(null, "Tài khoản không còn hoạt động	!");
@@ -181,9 +178,6 @@ public class DangNhapGUI extends JPanel {
         btnDangNhap.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnDangNhap.setPreferredSize(new Dimension(200, 30));
         pnlService.add(btnDangNhap);
-        
-        
     }
-    
 }
 

@@ -4,6 +4,7 @@ public class NhaCungCap {
 	private int supplier_id;
 	private String supplier_name;
 	private String supplier_addresss;
+	private int status;
 
 	public NhaCungCap(int supplier_id, String supplier_name, String supplier_addresss) {
 		this.supplier_id = supplier_id;
@@ -37,6 +38,14 @@ public class NhaCungCap {
 
 	public NhaCungCap() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }
