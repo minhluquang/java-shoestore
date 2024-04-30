@@ -42,7 +42,7 @@ public class SanPhamDAO {
         SanPhamDTO product = new SanPhamDTO();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM products WHEWE product_id = " + product_id;
+            String sql = "SELECT * FROM products WHERE product_id = " + product_id;
             ResultSet rs = connectDB.runQuery(sql);
             if (rs.next()) {
                 int category_id = rs.getInt("category_id");

@@ -28,6 +28,5 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.36.jar"/>
 	<classpathentry kind="lib" path="lib/SparseBitSet-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-5.1.1.jar"/>
-	<classpathentry kind="lib" path="E:/phan_mem/mysql-connector-j-8.1.0/mysql-connector-j-8.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

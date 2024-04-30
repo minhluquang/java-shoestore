@@ -450,7 +450,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
-        initData();
+        loadData();
 
         btnXoa.addActionListener(this);
         btnHuy.addActionListener(this);
@@ -500,7 +500,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         }
     }
 
-    private void initData() {
+    private void loadData() {
         loadDanhSachSanPham();
         loadDanhSachHoaDon();
         loadChiTietHoaDon();
@@ -508,25 +508,24 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
     }
 
-    public void tableAddListener() {
-        tblSanPham.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+    // public void tableAddListener() {
+    //     tblSanPham.addMouseListener(new MouseAdapter() {
+    //         public void mouseClicked(MouseEvent e) {
 
-            }
-        });
-        tblDSHD.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+    //         }
+    //     });
+    //     tblDSHD.addMouseListener(new MouseAdapter() {
+    //         public void mouseClicked(MouseEvent e) {
 
-            }
-        });
-        tblGioHang.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+    //         }
+    //     });
+    //     tblGioHang.addMouseListener(new MouseAdapter() {
+    //         public void mouseClicked(MouseEvent e) {
 
-            }
-        });
-    }
+    //         }
+    //     });
+    // }
 
 }
