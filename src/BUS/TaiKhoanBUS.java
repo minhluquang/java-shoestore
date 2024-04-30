@@ -63,4 +63,12 @@ public class TaiKhoanBUS {
 	public static TaiKhoan getDetailTaiKhoanByAccountId(int accountId) {
 		return TaiKhoanDAO.getDetailTaiKhoanByAccountId(accountId);
 	}
+	
+	public static boolean isTruePassword(int accountId, String password) {
+		return TaiKhoanDAO.isTruePassword(accountId, password);
+	}
+	
+	public static boolean updatePasswordByAccountId(int accountId, String password) {
+		return TaiKhoanDAO.updatePasswordByAccountId(accountId, password);
+	}
 }

@@ -80,7 +80,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết tài khoản không?", "Xác nhận đóng chi tiết tài khoản", JOptionPane.YES_NO_OPTION);
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ thêm tài khoản không?", "Xác nhận huỷ thêm tài khoản", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }
@@ -221,7 +221,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 		JButton btnNewButton_1 = new JButton("Huỷ bỏ");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết tài khoản không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết tài khoản", JOptionPane.YES_NO_OPTION);
+				int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ thêm tài khoản không?", "Xác nhận huỷ thêm tài khoản", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }

@@ -1,9 +1,12 @@
 package DAO;
 
 import java.security.AlgorithmParametersSpi;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Locale.IsoCountryCode;
+
+import com.mysql.cj.xdevapi.PreparableStatement;
 
 import DTO.NhanVien;
 import DTO.TaiKhoan;
@@ -309,5 +312,51 @@ public class TaiKhoanDAO {
 		
 		connectDB.closeConnection();
 		return success;
+	}
+	
+	public static boolean isTruePassword(int accountId, String password) {
+		connectDB.getConnection();
+		boolean isTrue = false;
+		
+		try {
+			String sql = "SELECT * FROM accounts WHERE account_id = ? AND password = ?";
+			PreparedStatement prest = connectDB.prepareStatement(sql);
+			prest.setInt(1, accountId);
+			prest.setString(2, password);
+			
+			ResultSet rs = prest.executeQuery();
+			if (rs.next()) {
+				isTrue = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return isTrue;
+	}
+	
+	public static boolean updatePasswordByAccountId(int accountId, String password) {
+		connectDB.getConnection();
+		boolean isTrue = false;
+		
+		try {
+			String sql = "UPDATE  accounts "
+					+ "SET password = ? "
+					+ "WHERE account_id = ?";
+			PreparedStatement prest = connectDB.prepareStatement(sql);
+			prest.setString(1, password);
+			prest.setInt(2, accountId);
+			
+			int i = prest.executeUpdate();
+			if (i > 0) {
+				isTrue = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return isTrue;
 	}
 }
