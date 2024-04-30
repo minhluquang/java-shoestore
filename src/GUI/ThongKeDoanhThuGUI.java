@@ -66,7 +66,7 @@ public class ThongKeDoanhThuGUI extends JPanel implements ActionListener {
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
 		add(pnlTopBottom, BorderLayout.NORTH);
-		pnlTopBottom.setLayout(new GridLayout(0, 4, 5, 0));
+		pnlTopBottom.setLayout(new GridLayout(0, 4, 20, 0));
 		
 		
 		btn_ngay = new JButton("Thống kê từng ngày của tháng");

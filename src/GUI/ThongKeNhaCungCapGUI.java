@@ -1,6 +1,12 @@
 package GUI;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -11,35 +17,27 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import BUS.ThongKeDoanhThuBUS;
+import BUS.NhanVienBUS;
 import BUS.ThongKeNhaCungCapBUS;
 import BUS.ThongKeTonKhoBUS;
-import DTO.ThongKeDoanhThuDTO;
+import DTO.NhanVien;
 import DTO.ThongKeNhaCungCapDTO;
 import DTO.ThongKeTonKhoDTO;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import java.awt.GridLayout;
-
-public class ThongKeTonKhoGUI extends JPanel {
-
+public class ThongKeNhaCungCapGUI extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTable tblThongKe;
 	private DefaultTableModel dtmThongKe;
@@ -49,7 +47,7 @@ public class ThongKeTonKhoGUI extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ThongKeTonKhoGUI() {
+	public ThongKeNhaCungCapGUI() {
 		setLayout(new BorderLayout(0, 0));
 		this.setBorder(BorderFactory.createEmptyBorder(50,0, 0, 0));
 		
@@ -65,7 +63,7 @@ public class ThongKeTonKhoGUI extends JPanel {
 		panelSearch.add(pnl_search);
 		pnl_search.setLayout(new GridLayout(0, 1, 10, 5));
 		
-		JLabel lblNewLabel = new JLabel("Nhập tên sản phẩm: ");
+		JLabel lblNewLabel = new JLabel("Nhập tên nhà cung cấp	: ");
 		pnl_search.add(lblNewLabel);
 		
 		textField = new JTextField();
@@ -81,10 +79,10 @@ public class ThongKeTonKhoGUI extends JPanel {
 		btn_search.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dtmThongKe.setRowCount(0);
-				String tenSP = textField.getText();
-				List<ThongKeTonKhoDTO> dataList = ThongKeTonKhoBUS.getSanPhamSearch(tenSP);
-		        for (ThongKeTonKhoDTO dto : dataList) {
-		            Object[] row = { dto.getStt(),dto.getMaSP(), dto.getTenSP(),dto.getSlNhap(), dto.getSlXuat(), dto.getTonKho() };
+				String tenNCC = textField.getText();
+				List<ThongKeNhaCungCapDTO> dataList = ThongKeNhaCungCapBUS.getNCCSearch(tenNCC);
+		        for (ThongKeNhaCungCapDTO dto : dataList) {
+		            Object[] row = { dto.getStt(),dto.getMaNCC(), dto.getTenNCC(),dto.getSL_Nhap(), dto.getTongTien() };
 		            dtmThongKe.addRow(row);
 		        }
 			}
@@ -108,7 +106,6 @@ public class ThongKeTonKhoGUI extends JPanel {
 				} catch (Exception e2) {
 					// TODO: handle exception
 				}
-				
 			}
 		});
 		pnl_button.add(btn_xuatExcel);
@@ -131,7 +128,7 @@ public class ThongKeTonKhoGUI extends JPanel {
 		tblThongKe.setIntercellSpacing(new Dimension(0, 0));
 		tblThongKe.setFocusable(false);
 		
-		dtmThongKe = new DefaultTableModel(new Object[] {"STT","Mã SP", "Tên sản phẩm","SL Nhập", "SL Xuất", "Tồn kho"}, 0);
+		dtmThongKe = new DefaultTableModel(new Object[] {"STT","Mã nhà cung cấp", "Tên nhà cung cấp","SL đơn nhập", "Tổng tiền"}, 0);
 		tblThongKe.setModel(dtmThongKe);
 		tblThongKe.setDefaultEditor(Object.class, null);
 		pnl_right.setLayout(new BorderLayout(0, 0));
@@ -158,39 +155,37 @@ public class ThongKeTonKhoGUI extends JPanel {
 	}
 	
 	public void displayData() {
-        List<ThongKeTonKhoDTO> dataList = ThongKeTonKhoBUS.getAllSanPham();
-        for (ThongKeTonKhoDTO dto : dataList) {
-            Object[] row = { dto.getStt(),dto.getMaSP(), dto.getTenSP(),dto.getSlNhap(), dto.getSlXuat(), dto.getTonKho() };
+		List<ThongKeNhaCungCapDTO> dataList = ThongKeNhaCungCapBUS.getAllNCC();
+        for (ThongKeNhaCungCapDTO dto : dataList) {
+            Object[] row = { dto.getStt(),dto.getMaNCC(), dto.getTenNCC(),dto.getSL_Nhap(), dto.getTongTien() };
             dtmThongKe.addRow(row);
         }
     }
 	
 	public void exportExcel() throws IOException {
-		List<ThongKeTonKhoDTO> dataList = ThongKeTonKhoBUS.getAllSanPham();
+		List<ThongKeNhaCungCapDTO> dsncc = ThongKeNhaCungCapBUS.getAllNCC();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/ds_ton_kho.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/sdncc.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
-		    XSSFSheet sheet = wb.createSheet("Danh sách tồn kho");
+		    XSSFSheet sheet = wb.createSheet("Danh sách nhà cung cấp");
 		    XSSFRow row = null;
 		    Cell cell = null;
 		    
 		    // Ghi header
 		    XSSFRow headerRow = sheet.createRow(0);
-		    headerRow.createCell(0).setCellValue("Mã sản phẩm");
-		    headerRow.createCell(1).setCellValue("Tên sản phẩm cấp");
-		    headerRow.createCell(2).setCellValue("Số lượng nhập");
-		    headerRow.createCell(3).setCellValue("Số lượng bán");
-		    headerRow.createCell(4).setCellValue("Số lượng tồn kho");
+		    headerRow.createCell(0).setCellValue("Mã nhà cung cấp");
+		    headerRow.createCell(1).setCellValue("Tên nhà cung cấp");
+		    headerRow.createCell(2).setCellValue("Số lượng đơn nhập");
+		    headerRow.createCell(3).setCellValue("Tổng tiền");
 		    
-		   
+		    // Ghi thông tin nhân viên
 		    int rowNum = 1;
-		    for (ThongKeTonKhoDTO spTon : dataList) {
+		    for (ThongKeNhaCungCapDTO ncc : dsncc) {
 		    	 row = sheet.createRow(rowNum++);
-		    	row.createCell(0).setCellValue(spTon.getMaSP());
-		    	row.createCell(1).setCellValue(spTon.getTenSP());
-		    	row.createCell(2).setCellValue(spTon.getSlNhap());
-		    	row.createCell(3).setCellValue(spTon.getSlXuat());
-		    	row.createCell(4).setCellValue(spTon.getTonKho());
+		    	row.createCell(0).setCellValue(ncc.getMaNCC());
+		    	row.createCell(1).setCellValue(ncc.getTenNCC());
+		    	row.createCell(2).setCellValue(ncc.getSL_Nhap());
+		    	row.createCell(3).setCellValue(ncc.getTongTien());
 		    }
 		    
 		    wb.write(fileOutputStream);
@@ -200,4 +195,5 @@ public class ThongKeTonKhoGUI extends JPanel {
 		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
 }

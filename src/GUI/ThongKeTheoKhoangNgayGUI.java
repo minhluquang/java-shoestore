@@ -7,6 +7,9 @@
 	import java.awt.GridLayout;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,8 +30,13 @@ import javax.swing.JPanel;
 	import javax.swing.SwingConstants;
 	import javax.swing.table.DefaultTableCellRenderer;
 	import javax.swing.table.DefaultTableModel;
-	
-	import BUS.ThongKeDoanhThuBUS;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import BUS.ThongKeDoanhThuBUS;
 	import DTO.ThongKeDoanhThuDTO;
 	
 	public class ThongKeTheoKhoangNgayGUI extends JPanel {
@@ -37,7 +45,7 @@ import javax.swing.JPanel;
 		private JTable table;
 		private JTable tblDoanhThu;
 		private DefaultTableModel dtmDoanhThu;
-	
+		public String absolutePath = new File("").getAbsolutePath();
 		/**
 		 * Create the panel.
 		 */
@@ -102,6 +110,24 @@ import javax.swing.JPanel;
 		        pnl_top.setBorder(BorderFactory.createEmptyBorder(0, 150, 0, 150));
 		        
 		        JButton btn_xuat = new JButton("Xuất Excel");
+		        btn_xuat.addActionListener(new ActionListener() {
+		        	public void actionPerformed(ActionEvent e) {
+		        		Date startDate = (Date) spn_dateStart.getValue();
+		        		 Date finishDate = (Date) spn_dateFinish.getValue();		        		 		        		 		        		    
+		        		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		        		 String dateStart = dateFormat.format(startDate);		    	        		
+		        		 String dateFinish = dateFormat.format(finishDate);
+		        		 
+		        		 try {
+							exportExcel(dateStart, dateFinish);
+						} catch (Exception e2) {
+							// TODO: handle exception
+						}
+		        	}
+		        });
+		       
+		        	
+		       
 		        pnl_xuat.add(btn_xuat);
 			
 			JPanel pnl_center = new JPanel();
@@ -295,5 +321,43 @@ import javax.swing.JPanel;
 		    }
 		    return columnTotals;
 	}
+		
+		public void exportExcel(String dateStart, String dateFinish) throws IOException {
+	    	List<ThongKeDoanhThuDTO> doanhThuNgay = ThongKeDoanhThuBUS.thongKeTheoKhoangNgay(dateStart, dateFinish);
+	    	try {
+	    		FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/dt_tu_"+dateStart+"_den_"+dateFinish+".xlsx");
+	    	    XSSFWorkbook wb = new XSSFWorkbook();
+	    	    XSSFSheet sheet = wb.createSheet("Doanh thu từ ngày " +dateStart+ " Tới ngày " + dateFinish);
+	    	    XSSFRow row = null;
+	    	    Cell cell = null;
+	    	    
+	    	    // Ghi header
+	    	    XSSFRow headerRow = sheet.createRow(0);
+	    	    headerRow.createCell(0).setCellValue("Ngày");
+	    	    headerRow.createCell(1).setCellValue("Tổng đơn nhập");
+	    	    headerRow.createCell(2).setCellValue("Vốn");
+	    	    headerRow.createCell(3).setCellValue("Tổng hóa đơn");
+	    	    headerRow.createCell(4).setCellValue("Doanh thu");
+	    	    headerRow.createCell(5).setCellValue("Lợi nhuận");
+	    	    
+	    	   
+	    	    int rowNum = 1;
+	    	    for (ThongKeDoanhThuDTO dtNgay : doanhThuNgay) {
+	    	    	 row = sheet.createRow(rowNum++);
+	    	    	row.createCell(0).setCellValue(dtNgay.getThoigian());
+	    	    	row.createCell(1).setCellValue(dtNgay.getSlDonNhap());
+	    	    	row.createCell(2).setCellValue(dtNgay.getVon());
+	    	    	row.createCell(3).setCellValue(dtNgay.getSlHoaDon());
+	    	    	row.createCell(4).setCellValue(dtNgay.getDoanhthu());
+	    	    	row.createCell(5).setCellValue(dtNgay.getLoinhuan());
+	    	    }
+	    	    
+	    	    wb.write(fileOutputStream);
+	    	    wb.close();
+	    	    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+	    	} catch (Exception e) {
+	    	    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+	    	}
+	    }
 	
-	}
+}
