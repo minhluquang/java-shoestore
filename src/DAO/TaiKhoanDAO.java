@@ -214,7 +214,7 @@ public class TaiKhoanDAO {
 			String sql = "SELECT * "
 					+ "FROM accounts "
 					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')"
-					+ " AND status = 1";
+					+ " AND account_status = 1";
 			if (searchStatus != -1) {
 				sql += " AND account_status = " + searchStatus;
 			}
@@ -263,6 +263,30 @@ public class TaiKhoanDAO {
 		if (closeDatabase) {
 			connectDB.closeConnection();			
 		}
+		return tk;
+	}
+	
+	public static TaiKhoan getDetailTaiKhoanByAccountId(int accountId) {
+		connectDB.getConnection();
+		TaiKhoan tk = null;
+		
+		try {
+			String sql = "SELECT * FROM accounts WHERE account_id = '" + accountId + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+			
+			if (rs.next()) {
+				tk = new TaiKhoan();
+				tk.setAccountId(rs.getInt("account_id"));
+				tk.setUsername(rs.getString("username"));
+				tk.setPassword(rs.getString("password"));
+				tk.setAccountStatus(rs.getInt("account_status"));
+				tk.setPosition(rs.getString("position"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();	
 		return tk;
 	}
 	

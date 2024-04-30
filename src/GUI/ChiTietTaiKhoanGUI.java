@@ -7,7 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import BUS.ChiTietQuyenBUS;
+import BUS.QuyenBUS;
 import BUS.TaiKhoanBUS;
+import DTO.Quyen;
 import DTO.TaiKhoan;
 
 import java.awt.Color;
@@ -16,6 +19,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.RasterFormatException;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -300,6 +305,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 			position = "admin";
 		}
 		
+		
 		if (username.isEmpty()) {
 			String message = "Vui lòng nhập đầy đủ các trường:";
 			message += "\n - Username";
@@ -326,7 +332,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã tồn tại username: " + username, "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				if (TaiKhoanBUS.isExistIdTaiKhoan(accountId)) {
-					if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position)) {
+					if (TaiKhoanBUS.updateTaiKhoan(accountId, username, status, position) && autoSetFullQuyen(accountId)) {
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin tài khoản", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						parentGUI.loadDanhSachTaiKhoan();
 						dispose();
@@ -336,5 +342,17 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 				}
 			}
 		}
+	}
+	
+	// Tự động gán hết quyền cho tài khoản
+	public boolean autoSetFullQuyen(int accountId) {
+		ArrayList<Quyen> dsq = QuyenBUS.getDanhSachQuyen();
+		boolean success = true;
+		for (Quyen quyen : dsq) {
+			if (!ChiTietQuyenBUS.insertQuyenVaoTaiKhoan(quyen.getRoleId(), accountId)) {
+				success = false;
+			}
+		}
+		return success;
 	}
 }

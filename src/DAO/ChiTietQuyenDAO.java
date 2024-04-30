@@ -63,4 +63,6 @@ public class ChiTietQuyenDAO {
 		connectDB.closeConnection();
 		return success;
 	}
+	
+	
 }

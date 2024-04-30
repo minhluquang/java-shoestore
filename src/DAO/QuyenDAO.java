@@ -19,7 +19,7 @@ public class QuyenDAO {
 				q.setRoleId(rs.getInt("role_id"));
 				q.setRoleName(rs.getString("role_name"));
 				q.setRoleTabName(rs.getString("role_tab_name"));
-				q.setRoleBtnName(rs.getString("role_tbtn_name"));
+				q.setStatus(rs.getInt("status"));
 				dsq.add(q);
 			}
 		} catch (Exception e) {

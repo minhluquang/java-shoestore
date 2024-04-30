@@ -59,4 +59,8 @@ public class TaiKhoanBUS {
 	public static boolean insertDanhSachTaiKhoan(ArrayList<TaiKhoan> dstk) {
 		return TaiKhoanDAO.insertDanhSachTaiKhoan(dstk);
 	}
+	
+	public static TaiKhoan getDetailTaiKhoanByAccountId(int accountId) {
+		return TaiKhoanDAO.getDetailTaiKhoanByAccountId(accountId);
+	}
 }

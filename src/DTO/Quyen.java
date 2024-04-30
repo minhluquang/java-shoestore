@@ -4,7 +4,6 @@ public class Quyen {
 	private int roleId;
 	private String roleName;
 	private String roleTabName;
-	private String roleBtnName;
 	private int status;
 	
 	public Quyen() {}
@@ -44,14 +43,6 @@ public class Quyen {
 		this.roleTabName = roleTabName;
 	}
 
-	public String getRoleBtnName() {
-		return roleBtnName;
-	}
-
-	public void setRoleBtnName(String roleBtnName) {
-		this.roleBtnName = roleBtnName;
-	}
-	
 	
 	
 }

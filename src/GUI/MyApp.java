@@ -30,8 +30,10 @@ import javax.swing.border.EtchedBorder;
 
 import BUS.QuyenBUS;
 import BUS.RoleBUS;
+import BUS.TaiKhoanBUS;
 import DTO.Quyen;
 import DTO.Role;
+import DTO.TaiKhoan;
 
 public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private static final long serialVersionUID = 1L;
@@ -554,10 +556,17 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 		JButton[] buttons = { btnTrangChu, btnThongKe, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang,
 				btnPhieuNhap, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty, btnNhapHang,
 				btnNhaCungCap };
-		for (JButton button : buttons) {
-			for (Quyen qUser : dsqUser) {
-				if (button.getText().trim().equalsIgnoreCase(qUser.getRoleTabName())) {
-					button.setEnabled(true);
+		TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username, true);
+		if (tk.getPosition().equalsIgnoreCase("admin")) {
+			for (JButton button : buttons) {
+				button.setEnabled(true);
+			}
+		} else {
+			for (JButton button : buttons) {
+				for (Quyen qUser : dsqUser) {
+					if (button.getText().trim().equalsIgnoreCase(qUser.getRoleTabName())) {
+						button.setEnabled(true);
+					}
 				}
 			}
 		}
