@@ -88,7 +88,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		comboBox_1.setFocusable(false);
 		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","Complete" ,"Non Complete"}));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","1" ,"0"}));
 		pnlChucVu.add(comboBox_1);
 		
 		// ========== Start: Xử lý search trạng thái ==========
@@ -232,7 +232,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_ID", "Start_Date", " End_Date"," Warranty_Date" ,"Reason", "Warranty_Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID", "Start_Date", " End_Date"," Warranty_Date" ,"Reason", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -270,7 +270,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     	dtmWarranty.setRowCount(0);
     	ArrayList<Warranty> dswt = WarrantyBUS.getDanhSachWarranty();
     	for(Warranty wt: dswt) {
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProductid(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getWarrantyStatus()};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus()};
     		dtmWarranty.addRow(rowData);
     	}
     }
@@ -280,14 +280,14 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     	model.setRowCount(0);
     	ArrayList<Warranty> dswt = WarrantyBUS.searchWarranty(keyword, searchStatus);
     	for(Warranty wt: dswt) {
-    		String statusINT = wt.getWarrantyStatus();
+    		String statusINT = String.valueOf(wt.getStatus());
     		String status;
-    		if("complete".equals(statusINT)) {
-    			status = "complete";
+    		if("1".equals(statusINT)) {
+    			status = "1";
     		} else {
-    			status = "noncomplete";
+    			status = "0";
     		}
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProductid(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getWarrantyStatus(),status};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus(),status};
     		model.addRow(rowData);
     	}
     }

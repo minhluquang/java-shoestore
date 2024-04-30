@@ -72,7 +72,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		addWindowListener(new WindowAdapter() {
     		@Override
     		public void windowClosing(WindowEvent e) {
-    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?", "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết khuyến mãi không?", "Xác nhận đóng chi tiết khuyến mãi", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
     	            dispose();
     	        }
@@ -131,7 +131,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6_2 = new JLabel("Tên Mã Khuyến Mãi");
+		JLabel lblNewLabel_6_2 = new JLabel("Name");
 		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_2);
 		
@@ -140,7 +140,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtTen.setColumns(10);
 		panel_5.add(txtTen);
 		
-		JLabel lblNewLabel_6 = new JLabel("Điều Kiện Giảm Bill");
+		JLabel lblNewLabel_6 = new JLabel("Discount_Value");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6);
 		
@@ -150,7 +150,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		panel_5.add(txtDieuKien);
 		
 		
-		JLabel lblNewLabel_6_3 = new JLabel("% Giảm Giá");
+		JLabel lblNewLabel_6_3 = new JLabel("Type");
 		lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3);
 		
@@ -160,7 +160,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtPhanTramGiamGia.setColumns(10);
 		panel_5.add(txtPhanTramGiamGia);
 		
-		JLabel lblNewLabel_6_3_1 = new JLabel("Ngày Bắt Đầu");
+		JLabel lblNewLabel_6_3_1 = new JLabel("Start_Date");
 		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1);
 		
@@ -170,7 +170,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtStartDate.setColumns(10);
 		panel_5.add(txtStartDate);
 		
-		JLabel lblNewLabel_6_3_1_2 = new JLabel("Ngày Kết Thúc");
+		JLabel lblNewLabel_6_3_1_2 = new JLabel("End_Date");
 		lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1_2);
 		
@@ -180,12 +180,12 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtEndDate.setColumns(10);
 		panel_5.add(txtEndDate);
 		
-		JLabel lblNewLabel_6_3_1_1 = new JLabel("Trạng thái");
+		JLabel lblNewLabel_6_3_1_1 = new JLabel("Status");
 		lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1_1);
 		
 		cmbTrangThai = new JComboBox();
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"active", "non active"}));
+		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"1", "0"}));
 		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbTrangThai.setFocusable(false);
 		panel_5.add(cmbTrangThai);
@@ -257,13 +257,13 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	
 	public void xuLyLuuThongTinKhuyenMai() {
 	    String discountCode = txtTen.getText();
-	    int conditionValue = Integer.parseInt(txtDieuKien.getText());
-	    String discount = txtPhanTramGiamGia.getText();
+	    int discount = Integer.parseInt(txtDieuKien.getText());
+	    String type = txtPhanTramGiamGia.getText();
 	    String startDate = txtStartDate.getText();
 	    String endDate = txtEndDate.getText();
-	    String active = cmbTrangThai.getSelectedItem().toString();
+	    int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
 	    // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
-	    if (discountCode.trim().isEmpty() || discount.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
+	    if (discountCode.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
 	        String message = "Vui lòng nhập đầy đủ các trường:";
 	        message += "\n - Mã khuyến mãi";
 	        message += "\n - Phần trăm giảm giá";
@@ -274,7 +274,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	        // Kiểm tra xem discount_code đã tồn tại chưa
 	        boolean isExistDiscount = KhuyenMaiBUS.isExistKM(discountCode);
 	        if (!isExistDiscount) {
-	        	   if (KhuyenMaiBUS.insertKhuyenMai(discountCode, conditionValue, discount, startDate, endDate, active)) {
+	        	   if (KhuyenMaiBUS.insertKhuyenMai(discountCode, discount ,type,  startDate, endDate, status)) {
 		                JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 		                parentGUI.loadDanhSachKhuyenMai();
 		                dispose();
@@ -282,7 +282,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		                JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khuyến mãi", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 		            }
 	        } else {
-	            if(KhuyenMaiBUS.updateKhuyenMai(discountCode, conditionValue, discount, startDate, endDate, active) ) {
+	            if(KhuyenMaiBUS.updateKhuyenMai(discountCode, discount ,type,  startDate, endDate, status) ) {
 	            	 JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 	            	  parentGUI.loadDanhSachKhuyenMai();
 		                dispose();
@@ -296,8 +296,8 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	//
 	public void hienThiThongTinKhuyenMai() {
 	    txtTen.setText(km.getDiscount_code());
-	    txtDieuKien.setText(String.valueOf(km.getConditionValue()));
-	    txtPhanTramGiamGia.setText(km.getDiscount());
+	    txtDieuKien.setText(String.valueOf(km.getDiscount_value()));
+	    txtPhanTramGiamGia.setText(km.getType());
 	    txtStartDate.setText(km.getStart_date());
 	    txtEndDate.setText(km.getEnd_date());
 	}

@@ -23,11 +23,11 @@ public class KhuyenmaiDAO {
             while (resultSet.next()) {
                 KhuyenMai km = new KhuyenMai();
                 km.setDiscount_code(resultSet.getString("discount_code"));
-                km.setConditionValue(resultSet.getInt("condition_value"));
-                km.setDiscount(resultSet.getString("discount"));
+                km.setDiscount_value(resultSet.getInt("discount_value"));
+                km.setType(resultSet.getString("type"));
                 km.setStart_date(resultSet.getString("start_date"));
                 km.setEnd_date(resultSet.getString("end_date"));
-                km.setActive(resultSet.getString("active"));
+                km.setStatus(resultSet.getInt("status"));
                 dskm.add(km);
             }
         } catch (Exception e) {
@@ -41,21 +41,21 @@ public class KhuyenmaiDAO {
 		connectDB.getConnection();
 		ArrayList<KhuyenMai> dskm = new ArrayList<>();
 	    try {
-	        String sql = "SELECT * FROM discount WHERE (discount_code LIKE '%" + keyword + "%' OR condition_value LIKE '%" + keyword + "%' OR discount LIKE '%" + keyword + "%' OR start_date LIKE '%" + keyword + "%' OR end_date LIKE '%" + keyword + "%')";
+	        String sql = "SELECT * FROM `discounts` WHERE (discount_code LIKE '%" + keyword + "%' OR status LIKE '%" + keyword + "%' OR discount_value LIKE '%" + keyword + "%' OR start_date LIKE '%" + keyword + "%' OR end_date LIKE '%" + keyword + "%')";
 	        
 	        if (status != -1) {
-	            sql += " AND active = '" + (status == 1 ? "Active" : "Non Active") + "'";
+	            sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
 	        }
 	        
 	        ResultSet rs = connectDB.runQuery(sql);
 	        while (rs.next()) {
 	            KhuyenMai km = new KhuyenMai();          
 	            km.setDiscount_code(rs.getString("discount_code"));
-	            km.setConditionValue(rs.getInt("condition_value"));
-	            km.setDiscount(rs.getString("discount"));
-	            km.setStart_date(rs.getString("start_date"));
-	            km.setEnd_date(rs.getString("end_date"));
-	            km.setActive(rs.getString("active"));                          
+                km.setDiscount_value(rs.getInt("discount_value"));
+                km.setType(rs.getString("type"));
+                km.setStart_date(rs.getString("start_date"));
+                km.setEnd_date(rs.getString("end_date"));
+                km.setStatus(rs.getInt("status"));                      
 	            dskm.add(km);
 	        }
 	    } catch (Exception e) {
@@ -74,7 +74,7 @@ public class KhuyenmaiDAO {
 		    ResultSet resultSet = null;
 		    try {
 		        // Chuẩn bị truy vấn SQL
-		        String sql = "SELECT * FROM discount WHERE discount_code = ?";
+		        String sql = "SELECT * FROM `discounts` WHERE discount_code = ?";
 		        statement = connectDB.prepareStatement(sql);
 		        statement.setString(1, discount_code);
 		        // Thực thi truy vấn và nhận kết quả
@@ -89,21 +89,21 @@ public class KhuyenmaiDAO {
 		    connectDB.closeConnection();
 		    return isExist;
 		}
-	  public static boolean updateKhuyenMai(String discount_code, int condition_value, String discount, String start_date, String end_date, String active) {
+	  public static boolean updateKhuyenMai(String discount_code, int discount_value , String type, String start_date, String end_date, int status) {
 		  connectDB.getConnection();  
 		  boolean success = false;
-		    Connection connection = null;
+		  Connection connection = null;
 		    PreparedStatement statement = null;
 		    try {
-		        String sql = "UPDATE discount "
-		                   + "SET condition_value = ?, discount = ?, start_date = ?, end_date = ?, active = ? "
+		        String sql = "UPDATE `discounts` "
+		                   + "SET discount_value = ?, type = ?, start_date = ?, end_date = ?, status = ? "
 		                   + "WHERE discount_code = ?";
 		        statement = connectDB.prepareStatement(sql);
-		        statement.setInt(1, condition_value);
-		        statement.setString(2, discount);
+		        statement.setInt(1, discount_value);
+		        statement.setString(2, type);
 		        statement.setString(3, start_date);
 		        statement.setString(4, end_date);
-		        statement.setString(5, active);
+		        statement.setInt(5, status);
 		        statement.setString(6, discount_code);
 		        // Thực thi truy vấn
 		        int rowsUpdated = statement.executeUpdate();
@@ -117,20 +117,20 @@ public class KhuyenmaiDAO {
 		    return success;
 		}
 
-		public static boolean insertKhuyenMai(String discount_code, int condition_value, String discount, String start_date, String end_date, String active) {
+		public static boolean insertKhuyenMai(String discount_code, int status, int discount_value, String start_date, String end_date, String type) {
 			connectDB.getConnection();
 			boolean success = false;
 		    Connection connection = null;
 		    PreparedStatement statement = null;
 		    try {
-		        String sql = "INSERT INTO discount (discount_code, condition_value, discount, start_date, end_date, active) VALUES (?, ?, ?, ?, ?, ?)";
+		        String sql = "INSERT INTO `discounts` (discount_code, discount_value, type , start_date, end_date, status) VALUES (?, ?, ?, ?, ?, ?)";
 		        statement = connectDB.prepareStatement(sql);
 		        statement.setString(1, discount_code);
-		        statement.setInt(2, condition_value);
-		        statement.setString(3, discount);
+		        statement.setInt(2, discount_value);
+		        statement.setString(3, type);
 		        statement.setString(4, start_date);
 		        statement.setString(5, end_date);
-		        statement.setString(6, active);
+		        statement.setInt(6, status);
 		        // Thực thi truy vấn
 		        int rowsInserted = statement.executeUpdate();
 		        if (rowsInserted > 0) {
@@ -150,7 +150,7 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    try {
 		        // Chuẩn bị truy vấn SQL để xóa dữ liệu dựa trên discount_code
-		        String sql = "DELETE FROM discount WHERE discount_code = ?";
+		        String sql = "DELETE FROM `discounts` WHERE discount_code = ?";
 		        statement = connectDB.prepareStatement(sql);
 		        // Thiết lập tham số cho câu lệnh SQL
 		        statement.setString(1, discount_code);
@@ -174,18 +174,18 @@ public class KhuyenmaiDAO {
 		    PreparedStatement statement = null;
 		    ResultSet rs = null;
 		    try {
-		        String sql = "SELECT * FROM discount WHERE discount_code = ?";
+		        String sql = "SELECT * FROM `discounts` WHERE discount_code = ?";
 		        statement = connectDB.prepareStatement(sql);
 		        statement.setString(1, discount_code);
 		        rs = statement.executeQuery();	        
 		        if (rs.next()) {
 		             km = new KhuyenMai();
 		             km.setDiscount_code(rs.getString("discount_code"));
-	                 km.setConditionValue(rs.getInt("condition_value"));
-	                 km.setDiscount(rs.getString("discount"));
+		             km.setDiscount_value(rs.getInt("discount_value"));
+		             km.setType(rs.getString("type"));      
 	                 km.setStart_date(rs.getString("start_date"));
 	                 km.setEnd_date(rs.getString("end_date"));
-	                 km.setActive(rs.getString("active"));      
+	                 km.setStatus(rs.getInt("status"));
 		        }
 		    } catch (Exception e) {
     	        e.printStackTrace();

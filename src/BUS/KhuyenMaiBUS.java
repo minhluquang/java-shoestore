@@ -24,13 +24,13 @@ public class KhuyenMaiBUS {
 	    return isExist;
 	}
 	// insert
-	public static boolean insertKhuyenMai(String discount_code, int condition_value, String discount, String start_date, String end_date, String active) {
-	    boolean success = KhuyenmaiDAO.insertKhuyenMai(discount_code, condition_value, discount, start_date, end_date, active);
+	public static boolean insertKhuyenMai(String discount_code, int discount_value, String type, String start_date, String end_date, int status) {
+	    boolean success = KhuyenmaiDAO.insertKhuyenMai(discount_code, status, discount_value, start_date, end_date, type);
 	    return success;
 	}
 	// update
-	public static boolean updateKhuyenMai(String discount_code, int condition_value, String discount, String start_date, String end_date, String active) {
-	    boolean success = KhuyenmaiDAO.updateKhuyenMai(discount_code, condition_value, discount, start_date, end_date, active);
+	public static boolean updateKhuyenMai(String discount_code, int discount_value, String type, String start_date, String end_date, int status) {
+	    boolean success = KhuyenmaiDAO.updateKhuyenMai(discount_code, discount_value, type, start_date, end_date, status);
 	    return success;
 	}	
 	// delete

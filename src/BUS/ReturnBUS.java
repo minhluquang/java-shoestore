@@ -14,8 +14,8 @@ private static ArrayList<Return> dsbh ;
 			dsbh = ReturnDAO.getDanhSachReturn();		
 		return dsbh;
 	}
-	public static ArrayList<Return> searchReturn(String keyword) {
-	    ArrayList<Return> dsbh = ReturnDAO.searchReturn(keyword);
+	public static ArrayList<Return> searchReturn(String keyword, int status) {
+	    dsbh = ReturnDAO.searchReturn(keyword, status);
 	    return dsbh;
 	}
 	// write id
@@ -29,13 +29,13 @@ private static ArrayList<Return> dsbh ;
 		return isExist;
 	}
 	// insert
-	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason) {
-		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason);
+	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason, int status) {
+		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason,status);
 		return success;
 	}
 	// update
-	public static boolean updateReturn(int return_id, int product_id, String date_return,String reason) {
-		boolean success = ReturnDAO.updateReturn(return_id,product_id,date_return,reason);
+	public static boolean updateReturn(int return_id, int product_id, String date_return,String reason, int status) {
+		boolean success = ReturnDAO.updateReturn(return_id,product_id,date_return,reason, status);
 	    return success;
 	}
 	// delete

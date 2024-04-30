@@ -2,26 +2,24 @@ package DTO;
 
 public class KhuyenMai {
 	private String discount_code;
-	private int condition_value;
-	private String discount;
+	private int status;
+	private int discount_value;
+	private String type;
 	private String start_date;
 	private String end_date;
-	private String active;
 	
 	// Constructors
     public KhuyenMai() {
     }
 
-	public KhuyenMai(String discount_code, int condition_value, String discount, String start_date, String end_date,
-			String active) {
+	public KhuyenMai(String discount_code, int status, int discount_value, String start_date, String end_date,String type) {
 		this.discount_code = discount_code;
-		this.condition_value = condition_value;
-		this.discount = discount;
+		this.discount_value = discount_value;
+		this.type = type;
 		this.start_date = start_date;
 		this.end_date = end_date;
-		this.active = active;
+		this.status = status;
 	}
-	// Getters and setters
 
 	public String getDiscount_code() {
 		return discount_code;
@@ -31,20 +29,28 @@ public class KhuyenMai {
 		this.discount_code = discount_code;
 	}
 
-	public int getConditionValue() {
-		return condition_value;
+	public int getStatus() {
+		return status;
 	}
 
-	public void setConditionValue(int condition_value) {
-		this.condition_value = condition_value;
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
-	public String getDiscount() {
-		return discount;
+	public int getDiscount_value() {
+		return discount_value;
 	}
 
-	public void setDiscount(String discount) {
-		this.discount = discount;
+	public void setDiscount_value(int discount_value) {
+		this.discount_value = discount_value;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getStart_date() {
@@ -62,13 +68,7 @@ public class KhuyenMai {
 	public void setEnd_date(String end_date) {
 		this.end_date = end_date;
 	}
-
-	public String getActive() {
-		return active;
-	}
-
-	public void setActive(String active) {
-		this.active = active;
-	}
+	
+	
 	
 }
