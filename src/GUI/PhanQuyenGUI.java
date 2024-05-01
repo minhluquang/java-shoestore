@@ -147,6 +147,16 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
+		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -186,19 +196,13 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		
 		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
 		tblRole = new JTable();
-		tblRole.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				xuLyClickTable();
-			}
-		});
 		tblRole.setBorder(null);
 		tblRole.setSelectionBackground(new Color(232, 57, 95));
 		tblRole.setRowHeight(25);
 		tblRole.setIntercellSpacing(new Dimension(0, 0));
 		tblRole.setFocusable(false);
 		
-		dtmRole = new DefaultTableModel(new Object[]{"Mã Nhóm Quyền", "Tên Nhóm Quyền"},0);
+		dtmRole = new DefaultTableModel(new Object[]{"Role_Id", "Role_Name", "Role_Tab_Name","Status"},0);
 		tblRole.setModel(dtmRole);
 		tblRole.setDefaultEditor(Object.class, null);
 		tblRole.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -222,6 +226,7 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		// Sự kiện lắng nghe click
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
+		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
@@ -231,34 +236,11 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 	public void loadDanhSachRole() {
 		dtmRole.setRowCount(0);
 		ArrayList<Role> dsrl = RoleBUS.getDanhSachRole();
-		
 		 for (Role role : dsrl) {
-	            Object[] row = {role.getRole_id(), role.getRole_name()};
+	            Object[] row = {role.getRole_id(), role.getRole_name(),role.getRole_tab_name(),role.getStatus()};
 	            dtmRole.addRow(row); // Thêm dữ liệu mới
 	        }		
 	}
-	
-	// Xử lý click vào row table
-	public void xuLyClickTable() {
-	    int selectedRow = tblRole.getSelectedRow();
-	    if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
-	        int role_id = (int) tblRole.getValueAt(selectedRow, 0); // Lấy role_id từ hàng được chọn
-	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
-	        if (choice == JOptionPane.YES_OPTION) {
-	            boolean success = RoleBUS.deleteRole(role_id); // Gọi phương thức xóa từ RoleBUS hoặc RoleDAO
-	            if (success) {
-	                JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
-	                loadDanhSachRole(); // Sau khi xóa thành công, cập nhật lại danh sách vai trò
-	            } else {
-	                JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
-	            }
-	        }
-	    } else {
-	        JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	    }
-	}
-
-	
 	// Xử lý tìm kiếm
 		public void xuLyTimKiem(String keyword) {
 		    	dtmRole.setRowCount(0);
@@ -302,7 +284,24 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 	        	chiTietPhanQuyenGUI.requestFocus();
 	        } else if (e.getSource() == btnSua) {
 	        	 hienThiGiaoDienSua();
-	        } 
+	        } else if (e.getSource() == btnXoa) {
+	            int selectedRow = tblRole.getSelectedRow();
+	            if (selectedRow != -1) {
+	                int role_id = (int) tblRole.getValueAt(selectedRow, 0); // Lấy role_id từ hàng được chọn
+	                int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
+	                if (choice == JOptionPane.YES_OPTION) {
+	                    boolean success = RoleBUS.deleteRole(role_id); // Gọi phương thức xóa từ RoleBUS hoặc RoleDAO
+	                    if (success) {
+	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
+	                        loadDanhSachRole(); 
+	                    } else {
+	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
+	                    }
+	                }
+	            } else {
+	                JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            }
+	        }
 	        else if (e.getSource() == btnNhapExcel) {
 	            // Xử lý khi button "Nhập excel" được nhấn
 	        } else if (e.getSource() == btnXuatExcel) {

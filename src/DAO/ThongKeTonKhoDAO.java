@@ -10,8 +10,7 @@ import DTO.ThongKeTonKhoDTO;
 public class ThongKeTonKhoDAO {
 //	List<ThongKeTonKhoDTO>
 	public static List<ThongKeTonKhoDTO>  getAllSanPham() {
-		List<ThongKeTonKhoDTO> list = new ArrayList<>();
-		
+		List<ThongKeTonKhoDTO> list = new ArrayList<>();		
 		try {
 			connectDB.getConnection();
 			String sqlProduct = "select * from products";

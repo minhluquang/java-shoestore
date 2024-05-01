@@ -15,13 +15,15 @@ public class RoleDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {   
-            String sql = "SELECT role_id, role_name FROM `roles`";
+            String sql = "SELECT role_id, role_name, role_tab_name, status FROM `roles`";           
             statement = connectDB.prepareStatement(sql);            
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Role rl = new Role();
                 rl.setRole_id(resultSet.getInt("role_id"));
                 rl.setRole_name(resultSet.getString("role_name"));
+                rl.setRole_tab_name(resultSet.getString("role_tab_name"));
+                rl.setStatus(resultSet.getInt("status"));
                 dsrl.add(rl);
             }
         } catch (SQLException e) {
@@ -40,7 +42,7 @@ public class RoleDAO {
             while (rs.next()) {
                 Role rl = new Role();            
                 rl.setRole_id(rs.getInt("role_id"));
-                rl.setRole_name(rs.getString("role_name"));                             
+                rl.setRole_name(rs.getString("role_name"));
                 dsrl.add(rl);
             }
         } catch (Exception e) {
@@ -85,13 +87,15 @@ public class RoleDAO {
         return isExist;
     }
 
-    public static boolean updateRole(int role_id, String role_name) {
+    public static boolean updateRole(int role_id, String role_name, String role_tab_name, int status) {
     		connectDB.getConnection();
     		boolean success = false;
     		try {
-    			String sql = "UPDATE `roles` "
-                    + "SET role_name = '" + role_name + "' "
-                    + "WHERE role_id = " + role_id;
+    			 String sql = "UPDATE `roles` "
+    	                   + "SET role_name = '" + role_name + "', "
+    	                   + "role_tab_name = '" + role_tab_name + "', "
+    	                   + "status = " + status + " "
+    	                   + "WHERE role_id = " + role_id;
     			int i = connectDB.runUpdate(sql);
     			if (i > 0) {
                 success = true;
@@ -104,21 +108,21 @@ public class RoleDAO {
     	}
 
     	// insert
-    public static boolean insertRole(int role_id, String role_name) {
-    		connectDB.getConnection();
-    	    boolean success = false;
-    	    try {
-    	        String sql = "INSERT INTO `roles` (role_id, role_name) VALUES (" + role_id + ", '" + role_name + "')";
-    	        int i = connectDB.runUpdate(sql);
-    	        if (i > 0) {
-    	            success = true;
-    	        }
-    	    } catch (Exception e) {
-    	        e.printStackTrace();
-    	    }
-    	    connectDB.closeConnection();
-    	    return success;
-    	}
+    public static boolean insertRole(int role_id, String role_name, String role_tab_name, int status) {
+        connectDB.getConnection();
+        boolean success = false;
+        try {
+            String sql = "INSERT INTO `roles` (role_id, role_name, role_tab_name, status) VALUES (" + role_id + ", '" + role_name + "', '" + role_tab_name + "', " + status + ")";
+            int i = connectDB.runUpdate(sql);
+            if (i > 0) {
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        connectDB.closeConnection();
+        return success;
+    }
     	// delete
     public static boolean deleteRole(int role_id) {
     		connectDB.getConnection();
@@ -189,7 +193,9 @@ public class RoleDAO {
     	        if (resultSet.next()) {
     	            role = new Role();
     	            role.setRole_id(resultSet.getInt("role_id"));
-    	            role.setRole_name(resultSet.getString("role_name"));    	            
+    	            role.setRole_name(resultSet.getString("role_name"));
+    	            role.setRole_tab_name(resultSet.getString("role_tab_name"));
+    	            role.setStatus(resultSet.getInt("status"));
     	        }
     	    } catch (SQLException e) {
     	        e.printStackTrace();

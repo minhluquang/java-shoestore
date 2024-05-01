@@ -113,17 +113,13 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 					}
 				});
 				// ========== End: Xử lý search trạng thái ==========
-		
-		
+				
 		pnlChucVu.add(comboBox_1);
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		
-		
-	       
+			       
 		txtTmKim = new JTextField();
 		// ========== Start: Xử lý search ==========
 		txtTmKim.addKeyListener(new KeyAdapter() {
@@ -195,6 +191,15 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -234,13 +239,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 		
 		
 		// ========== TABLE DANH SÁCH ==========
-		table = new JTable();
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				xuLyClickTable();
-			}
-		});
+		table = new JTable();		
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
 		table.setRowHeight(25);
@@ -275,6 +274,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
 		// Sự kiện lắng nghe click
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
+		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
     }
@@ -306,25 +306,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
     		    dtmKhuyenMai.addRow(rowData);
     		}	
     	}
-    // click table
-    	public void xuLyClickTable() {
-    	    int selectedRow = table.getSelectedRow();
-    	    if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
-    	        String discount_code = (String) table.getValueAt(selectedRow, 0); // Lấy discount_code từ hàng được chọn
-    	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa mã giảm giá này?", "Xác nhận xóa mã giảm giá", JOptionPane.YES_NO_OPTION);
-    	        if (choice == JOptionPane.YES_OPTION) {
-    	            boolean success = KhuyenMaiBUS.deleteKhuyenMai(discount_code); // Gọi phương thức xóa từ KhuyenMaiBUS hoặc KhuyenmaiDAO
-    	            if (success) {
-    	                JOptionPane.showMessageDialog(null, "Xóa mã giảm giá thành công.");
-    	                loadDanhSachKhuyenMai(); // Sau khi xóa thành công, cập nhật lại danh sách mã giảm giá
-    	            } else {
-    	                JOptionPane.showMessageDialog(null, "Xóa mã giảm giá thất bại.");
-    	            }
-    	        }
-    	    } else {
-    	        JOptionPane.showMessageDialog(null, "Vui lòng chọn một mã giảm giá để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    	    }
-    	}
+
     // btnSua
     	public void hienThiGiaoDienSua() {
     	    int selectedRow = table.getSelectedRow();
@@ -361,7 +343,24 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
    			 chiTietKhuyenMaiGUI.requestFocus();
            } else if (e.getSource() == btnSua) {
            	hienThiGiaoDienSua();
-           } 
+           } else if (e.getSource() == btnXoa) {
+        	   int selectedRow = table.getSelectedRow();
+       	    if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+       	        String discount_code = (String) table.getValueAt(selectedRow, 0); // Lấy discount_code từ hàng được chọn
+       	        int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa mã giảm giá này?", "Xác nhận xóa mã giảm giá", JOptionPane.YES_NO_OPTION);
+       	        if (choice == JOptionPane.YES_OPTION) {
+       	            boolean success = KhuyenMaiBUS.deleteKhuyenMai(discount_code); // Gọi phương thức xóa từ KhuyenMaiBUS hoặc KhuyenmaiDAO
+       	            if (success) {
+       	                JOptionPane.showMessageDialog(null, "Xóa mã giảm giá thành công.");
+       	                loadDanhSachKhuyenMai(); // Sau khi xóa thành công, cập nhật lại danh sách mã giảm giá
+       	            } else {
+       	                JOptionPane.showMessageDialog(null, "Xóa mã giảm giá thất bại.");
+       	            }
+       	        }
+       	    } else {
+       	        JOptionPane.showMessageDialog(null, "Vui lòng chọn một mã giảm giá để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+       	    }
+           }
            else if (e.getSource() == btnNhapExcel) {
                // Xử lý khi button "Nhập excel" được nhấn
            } else if (e.getSource() == btnXuatExcel) {
