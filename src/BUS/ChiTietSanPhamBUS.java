@@ -27,6 +27,11 @@ public class ChiTietSanPhamBUS {
     }
 
     public static boolean suaChiTietSanPham(ChiTietSanPhamDTO productDetails) {
+        
         return ChiTietSanPhamDAO.suaProductDetails(productDetails);
+    }
+
+    public static boolean danhDauDanhSachDaBan(ArrayList<ChiTietSanPhamDTO> chiTietSanPhamDTOs){
+        return ChiTietSanPhamDAO.danhDauDanhSachDaBan(chiTietSanPhamDTOs);
     }
 }

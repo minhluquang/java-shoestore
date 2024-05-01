@@ -16,10 +16,9 @@ public class ChiTietHoaDonDAO {
             while (rs.next()) {
                 int productSerialId = rs.getInt("product_serial_id");
                 int billId = rs.getInt("bill_id");
-                int quantity = rs.getInt("quantity");
                 int priceSingle = rs.getInt("price_single");
 
-                ChiTietHoaDonDTO billDetail = new ChiTietHoaDonDTO(productSerialId, billId, quantity, priceSingle);
+                ChiTietHoaDonDTO billDetail = new ChiTietHoaDonDTO(productSerialId, billId, priceSingle);
                 billDetails.add(billDetail);
             }
         } catch (Exception e) {
@@ -38,13 +37,11 @@ public class ChiTietHoaDonDAO {
             ResultSet rs = connectDB.runQuery(sql);
             while(rs.next()) {
                 int product_serial_id = rs.getInt("product_serial_id");
-                int quantity = rs.getInt("quantity");
                 int price_single = rs.getInt("price_single");
 
                 ChiTietHoaDonDTO billsDetail = new ChiTietHoaDonDTO();
                 billsDetail.setProductSerialId(product_serial_id);
                 billsDetail.setBillId(bill_id);
-                billsDetail.setQuantity(quantity);
                 billsDetail.setPriceSingle(price_single);
                 billsDetails.add(billsDetail);
             }
@@ -81,11 +78,10 @@ public class ChiTietHoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO bills_details (product_serial_id, bill_id, quantity, price_single) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO bills_details (product_serial_id, bill_id, price_single) VALUES (?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
             pstmt.setInt(1, billsDetails.getProductSerialId());
             pstmt.setInt(2, billsDetails.getBillId());
-            pstmt.setInt(3, billsDetails.getQuantity());
             pstmt.setInt(4, billsDetails.getPriceSingle());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -104,14 +100,13 @@ public class ChiTietHoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO bills_details (product_serial_id, bill_id, quantity, price_single) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO bills_details (product_serial_id, bill_id, price_single) VALUES (?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
             int rowsAffected = 0;
             for (ChiTietHoaDonDTO chiTietHoaDonDTO : billsDetails) {
                 pstmt.setInt(1, chiTietHoaDonDTO.getProductSerialId());
                 pstmt.setInt(2, chiTietHoaDonDTO.getBillId());
-                pstmt.setInt(3, chiTietHoaDonDTO.getQuantity());
-                pstmt.setInt(4, chiTietHoaDonDTO.getPriceSingle());
+                pstmt.setInt(3, chiTietHoaDonDTO.getPriceSingle());
                 rowsAffected += pstmt.executeUpdate();
             }
             if (rowsAffected == 0) {
@@ -130,12 +125,11 @@ public class ChiTietHoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "UPDATE bills_details SET quantity = ?, price_single = ? WHERE product_serial_id = ? AND bill_id = ?";
+            String sql = "UPDATE bills_details SET price_single = ? WHERE product_serial_id = ? AND bill_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
-            pstmt.setInt(1, billsDetails.getQuantity());
-            pstmt.setInt(2, billsDetails.getPriceSingle());
-            pstmt.setInt(3, billsDetails.getProductSerialId());
-            pstmt.setInt(4, billsDetails.getBillId());
+            pstmt.setInt(1, billsDetails.getPriceSingle());
+            pstmt.setInt(2, billsDetails.getProductSerialId());
+            pstmt.setInt(3, billsDetails.getBillId());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
                 flag = false;

@@ -3,15 +3,13 @@ package DTO;
 public class ChiTietHoaDonDTO {
     private int productSerialId;
     private int billId;
-    private int quantity;
     private int priceSingle;
 
     public ChiTietHoaDonDTO() {
     }
-    public ChiTietHoaDonDTO(int productSerialId, int billId, int quantity, int priceSingle) {
+    public ChiTietHoaDonDTO(int productSerialId, int billId, int priceSingle) {
         this.productSerialId = productSerialId;
         this.billId = billId;
-        this.quantity = quantity;
         this.priceSingle = priceSingle;
     }    
     public int getProductSerialId() {
@@ -25,12 +23,6 @@ public class ChiTietHoaDonDTO {
     }
     public void setBillId(int billId) {
         this.billId = billId;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
     public int getPriceSingle() {
         return priceSingle;
