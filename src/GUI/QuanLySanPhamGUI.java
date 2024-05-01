@@ -9,6 +9,7 @@ import java.awt.EventQueue;
 import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -28,7 +29,12 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import BUS.HangBUS;
+import BUS.SanPhamBUS;
+import BUS.TheLoaiBUS;
+import DTO.HangDTO;
 import DTO.SanPhamDTO;
+import DTO.TheLoaiDTO;
 
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
@@ -47,6 +53,9 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
+	private DefaultTableModel dtmTableModel;
+
+	private ArrayList<SanPhamDTO> dsSanPham;
     
 //    private static ChiTienSanPhamGUI chiTienSanPhamGUI;
     
@@ -201,22 +210,9 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		table.setRowHeight(25);
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"SP001", "tên gì đó", "loại", "123456789", "SGU"},
-			},
-			new String[] {
-				"Mã SP", "Tên sản phẩm", "Loại", "Giá", "Hãng"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, true, true, true
-			};
-                        @Override
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		String[] s = {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái"};
+		dtmTableModel = new DefaultTableModel(s,0);
+		table.setModel(dtmTableModel);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(null);
@@ -236,6 +232,21 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
+
+		loadDanhSachSanPham();
+
+	}
+
+	private void loadDanhSachSanPham(){
+		// String[] s = {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái"};
+		dsSanPham = SanPhamBUS.getDanhSachSanPham();
+		for (SanPhamDTO sanPhamDTO : dsSanPham) {
+			HangDTO hang = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+			TheLoaiDTO theLoai = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+			String status = sanPhamDTO.isStatus()?"Đang kinh doanh":"Ngừng kinh doanh";
+			Object[] obj = {sanPhamDTO.getProduct_id(), sanPhamDTO.getProduct_name(), hang.getBrand_name(), theLoai.getCategory_name(), sanPhamDTO.getOutput_price(), sanPhamDTO.getQuantity(), status};
+			dtmTableModel.addRow(obj);
+		}
 	}
 
 

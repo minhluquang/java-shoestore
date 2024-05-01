@@ -2,16 +2,29 @@ package DTO;
 
 public class Warranty {
 	private int warrantyid;
-	private int productid;
+	private int product_serial_id;
 	private String startDate;
 	private String endDate;
 	private String warrantyDate;
 	private String reason;
-	private String warrantyStatus;
+	private int status;
 	
 	public Warranty() {
 		
 	}
+	
+	
+	public Warranty(int warrantyid, int product_serial_id, String startDate, String endDate, String warrantyDate,
+	String reason, int status) {
+		this.warrantyid = warrantyid;
+		this.product_serial_id = product_serial_id;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.warrantyDate = warrantyDate;
+		this.reason = reason;
+		this.status = status;
+	}
+
 
 	public int getWarrantyid() {
 		return warrantyid;
@@ -21,12 +34,12 @@ public class Warranty {
 		this.warrantyid = warrantyid;
 	}
 
-	public int getProductid() {
-		return productid;
+	public int getProduct_serial_id() {
+		return product_serial_id;
 	}
 
-	public void setProductid(int productid) {
-		this.productid = productid;
+	public void setProduct_serial_id(int product_serial_id) {
+		this.product_serial_id = product_serial_id;
 	}
 
 	public String getStartDate() {
@@ -61,12 +74,13 @@ public class Warranty {
 		this.reason = reason;
 	}
 
-	public String getWarrantyStatus() {
-		return warrantyStatus;
+	public int getStatus() {
+		return status;
 	}
 
-	public void setWarrantyStatus(String warrantyStatus) {
-		this.warrantyStatus = warrantyStatus;
+	public void setStatus(int status) {
+		this.status = status;
 	}
+
 	
 }

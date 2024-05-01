@@ -79,12 +79,11 @@ public class TheLoaiDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO categories (category_id, category_name, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO categories (category_name, status) VALUES (?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
-            pstmt.setInt(1, theLoai.getCategory_id());
-            pstmt.setString(2, theLoai.getCategory_name());
-            pstmt.setBoolean(3, theLoai.isStatus());
+            pstmt.setString(1, theLoai.getCategory_name());
+            pstmt.setBoolean(2, theLoai.isStatus());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {

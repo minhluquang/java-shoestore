@@ -20,15 +20,16 @@ public class ReturnDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            String sql = "SELECT return_id, product_id, date_return, reason FROM `return`";
+            String sql = "SELECT return_id, product_serial_id, date_return, reason , status FROM `returns`";
             statement = connectDB.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Return rt = new Return();
                 rt.setReturn_id(resultSet.getInt("return_id"));
-                rt.setProduct_id(resultSet.getInt("product_id"));
+                rt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 rt.setDate_return(resultSet.getString("date_return"));
                 rt.setReason(resultSet.getString("reason"));
+                rt.setStatus(resultSet.getInt("status"));
                 dsReturn.add(rt);
             }
         } catch (SQLException e) {
@@ -56,7 +57,7 @@ public class ReturnDAO {
     	connectDB.getConnection();
         int idReturn = 0;
         try {
-        	String sql = "SELECT return_id FROM `return` ORDER BY return_id DESC LIMIT 1";
+        	String sql = "SELECT return_id FROM `returns` ORDER BY return_id DESC LIMIT 1";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int lastId = rs.getInt("return_id");
@@ -74,7 +75,7 @@ public class ReturnDAO {
     	connectDB.getConnection();
         boolean isExist = false;        
         try {
-            String sql = "SELECT * FROM `return` WHERE return_id = " + id;
+            String sql = "SELECT * FROM `returns` WHERE return_id = " + id;
             ResultSet rs = connectDB.runQuery(sql);            
             if (rs.next()) {
                 isExist = true;
@@ -87,33 +88,39 @@ public class ReturnDAO {
     }
   
     
-    public static ArrayList<Return> searchReturn(String keyword) {
-    	connectDB.getConnection();
+    public static ArrayList<Return> searchReturn(String keyword, int status) {
+        connectDB.getConnection();
         ArrayList<Return> dsReturn = new ArrayList<>();
         try {
-        	 String sql = "SELECT * FROM `return` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_id LIKE '%" + keyword + "%'";
+            String sql = "SELECT * FROM `returns` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%'";
+            if (status != -1) {
+                sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
+            }
+
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 Return rt = new Return();
                 rt.setReturn_id(rs.getInt("return_id"));
-                rt.setProduct_id(rs.getInt("product_id"));
+                rt.setProduct_serial_id(rs.getInt("product_serial_id"));
                 rt.setDate_return(rs.getString("date_return"));
                 rt.setReason(rs.getString("reason"));
+                rt.setStatus(rs.getInt("status"));
                 dsReturn.add(rt);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        } 
         connectDB.closeConnection();
         return dsReturn;
     }
+
     
     // insert
-    public static boolean insertReturn(int return_id, int product_id, String date_return,String reason) {
+    public static boolean insertReturn(int return_id, int product_serial_id, String date_return,String reason, int status) {
     	connectDB.getConnection();
     	boolean success = false;
     	try {
-    		String sql = "INSERT INTO `return` (return_id,product_id,date_return,reason) VALUES (" + return_id + ",'" + product_id + "','" + date_return + "' ,'" + reason +"')";
+    		String sql = "INSERT INTO `returns` (return_id,product_serial_id,date_return,reason,status) VALUES (" + return_id + ",'" + product_serial_id + "','" + date_return + "' ,'" + reason +"' ,'" + status + "')";
     		int i = connectDB.runUpdate(sql);
     		if(i>0) {
     			success = true;
@@ -133,7 +140,7 @@ public class ReturnDAO {
 	    PreparedStatement statement = null;
 	    ResultSet resultSet = null;   	    
 	    try {
-	        String sql = "SELECT * FROM `return` WHERE return_id = ?";
+	        String sql = "SELECT * FROM `returns` WHERE return_id = ?";
 	        statement = connectDB.prepareStatement(sql);
 	        statement.setInt(1, return_id);
 	        resultSet = statement.executeQuery();
@@ -141,9 +148,10 @@ public class ReturnDAO {
 	        if (resultSet.next()) {
 	        	rt = new Return();
 	        	 rt.setReturn_id(resultSet.getInt("return_id"));
-	             rt.setProduct_id(resultSet.getInt("product_id"));
+	        	 rt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
 	             rt.setDate_return(resultSet.getString("date_return"));
-	             rt.setReason(resultSet.getString("reason"));   	            
+	             rt.setReason(resultSet.getString("reason"));
+	             rt.setStatus(resultSet.getInt("status"));
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -164,7 +172,7 @@ public class ReturnDAO {
 		connectDB.getConnection();
 	    boolean success = false;
 	    try {	       
-	        String sql = "DELETE FROM `return` WHERE return_id = ?";   	        
+	        String sql = "DELETE FROM `returns` WHERE return_id = ?";   	        
 	        connectDB.getConnection();
 	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        	       
 	        statement.setInt(1, return_id);    	        
@@ -190,7 +198,7 @@ public class ReturnDAO {
 		connectDB.getConnection();
 	    try {
 	        // Tìm role_id lớn nhất mà nhỏ hơn deletedRoleId
-	        String sql = "SELECT MAX(return_id) AS max_id FROM `return` WHERE return_id < ?";
+	        String sql = "SELECT MAX(return_id) AS max_id FROM `returns` WHERE return_id < ?";
 	        PreparedStatement statement = connectDB.prepareStatement(sql);
 	        statement.setInt(1, deletedReturnId);
 	        ResultSet resultSet = statement.executeQuery();
@@ -199,7 +207,7 @@ public class ReturnDAO {
 	            nextRoleId = resultSet.getInt("max_id") + 1;
 	        }
 	        // Thiết lập role_id tiếp theo
-	        sql = "ALTER TABLE `return` AUTO_INCREMENT = ?";
+	        sql = "ALTER TABLE `returns` AUTO_INCREMENT = ?";
 	        statement = connectDB.prepareStatement(sql);
 	        statement.setInt(1, nextRoleId);
 	        statement.executeUpdate();
@@ -211,17 +219,18 @@ public class ReturnDAO {
 	        e.printStackTrace();
 	    }
 	}
-	public static boolean updateReturn(int return_id, int product_id, String date_return, String reason) {
+	public static boolean updateReturn(int return_id, int product_serial_id, String date_return, String reason, int status) {
 		connectDB.getConnection();
 		boolean success = false;
 	    try {
-	        String sql = "UPDATE `return` SET product_id = ?, date_return = ?, reason = ? WHERE return_id = ?";
+	        String sql = "UPDATE `returns` SET product_serial_id = ?, date_return = ?, reason = ?, status = ? WHERE return_id = ?";
 	        PreparedStatement statement = connectDB.prepareStatement(sql);
 	        // Set the parameters for the PreparedStatement
-	        statement.setInt(1, product_id);
+	        statement.setInt(1, product_serial_id);
 	        statement.setString(2, date_return);
 	        statement.setString(3, reason);
-	        statement.setInt(4, return_id);	        
+	        statement.setInt(4, status);
+	        statement.setInt(5, return_id);	        
 	        // Execute the update query
 	        int rowsUpdated = statement.executeUpdate();	        
 	        // Check if the update was successful
