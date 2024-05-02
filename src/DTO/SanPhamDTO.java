@@ -16,13 +16,12 @@ public class SanPhamDTO {
     private int output_price;
     private String country;
     private int year_of_product;
-    private int discount_percent;
     private String image_path;
     private int quantity;
     private boolean status;
 
     // Constructor
-    public SanPhamDTO(int product_id, int category_id, int brand_id, String product_name, int output_price, String country, int year_of_product, int discount_percent, String image_path, int quantity, boolean status) {
+    public SanPhamDTO(int product_id, int category_id, int brand_id, String product_name, int output_price, String country, int year_of_product, String image_path, int quantity, boolean status) {
         this.product_id = product_id;
         this.category_id = category_id;
         this.brand_id = brand_id;
@@ -30,7 +29,6 @@ public class SanPhamDTO {
         this.output_price = output_price;
         this.country = country;
         this.year_of_product = year_of_product;
-        this.discount_percent = discount_percent;
         this.image_path = image_path;
         this.quantity = quantity;
         this.status = status;
@@ -94,14 +92,6 @@ public class SanPhamDTO {
 
     public void setYear_of_product(int year_of_product) {
         this.year_of_product = year_of_product;
-    }
-
-    public int getDiscount_percent() {
-        return discount_percent;
-    }
-
-    public void setDiscount_percent(int discount_percent) {
-        this.discount_percent = discount_percent;
     }
 
     public String getImage_path() {

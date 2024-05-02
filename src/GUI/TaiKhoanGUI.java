@@ -582,7 +582,7 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 	public void exportExcel() throws IOException {
 		ArrayList<TaiKhoan> dstk= TaiKhoanBUS.getDanhSachTaiKhoan();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("export/dstk.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dstk.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
 		    XSSFSheet sheet = wb.createSheet("Danh sách tài khoản");
 		    

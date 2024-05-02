@@ -79,12 +79,11 @@ public class HangDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO brands (brand_id, brand_name, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO brands (brand_name, status) VALUES (?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
-            pstmt.setInt(1, hang.getBrand_id());
-            pstmt.setString(2, hang.getBrand_name());
-            pstmt.setBoolean(3, hang.isStatus());
+            pstmt.setString(1, hang.getBrand_name());
+            pstmt.setBoolean(2, hang.isStatus());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -138,6 +137,28 @@ public class HangDAO {
             connectDB.closeConnection();
         }
         return count;
+    }
+
+    public static HangDTO getHangByName(String brand_name) {
+        HangDTO brand = new HangDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM brands WHERE brand_name = " + brand_name;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int brand_id = rs.getInt("brand_id");
+                boolean status = rs.getBoolean("status");
+
+                brand.setBrand_id(brand_id);
+                brand.setBrand_name(brand_name);
+                brand.setStatus(status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return brand;
     }
 
 }

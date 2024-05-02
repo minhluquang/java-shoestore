@@ -79,12 +79,11 @@ public class TheLoaiDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO categories (category_id, category_name, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO categories (category_name, status) VALUES (?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
-            pstmt.setInt(1, theLoai.getCategory_id());
-            pstmt.setString(2, theLoai.getCategory_name());
-            pstmt.setBoolean(3, theLoai.isStatus());
+            pstmt.setString(1, theLoai.getCategory_name());
+            pstmt.setBoolean(2, theLoai.isStatus());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -138,6 +137,28 @@ public class TheLoaiDAO {
             connectDB.closeConnection();
         }
         return count;
+    }
+
+    public static TheLoaiDTO getTheLoaiByName(String category_name) {
+        TheLoaiDTO category = new TheLoaiDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM categories WHERE category_name = " + category_name;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int category_id = rs.getInt("category_id");
+                boolean status = rs.getBoolean("status");
+
+                category.setCategory_id(category_id);
+                category.setCategory_name(category_name);
+                category.setStatus(status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return category;
     }
 
 }

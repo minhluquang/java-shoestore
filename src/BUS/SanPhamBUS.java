@@ -28,4 +28,7 @@ public class SanPhamBUS {
 	public static int getSoluongSanPham(){
 		return SanPhamDAO.getSoluongSanPham();
 	}
+	public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name){
+		return SanPhamDAO.searchDanhSachSanPham(hang, loai, name);
+	}
 }

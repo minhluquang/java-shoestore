@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -23,10 +25,23 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
+import BUS.HoaDonBUS;
+import BUS.KhuyenMaiBUS;
+import DTO.ChiTietHoaDonDTO;
+import DTO.HoaDonDTO;
+import DTO.KhuyenMai;
 
 /**
  *
@@ -40,11 +55,17 @@ public class ChiTietHoaDonGUI extends JFrame {
     private JTextField txtAccountID;
     private JTextField txtDate;
     private JTextField txtToTalPrice;
-    private JTextField txtAddress;
     private JTextField txtCustomerID;
     private JComboBox cmbDiscountCode;
+    private DefaultComboBoxModel dcmMaGiamGia;
+    private JScrollPane spnSanPham;
+    private JLabel lblDSSP;
+    private JTable tblSanPham;
+    private DefaultTableModel sanPhamModel;
+    private JPanel jPanelSanPham;
+
     private final ButtonGroup buttonGroup = new ButtonGroup();
-   
+
     /**
      * Launch the application.
      */
@@ -70,14 +91,15 @@ public class ChiTietHoaDonGUI extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?", "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết nhân viên không?",
+                        "Xác nhận đóng chi tiết nhân viên", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
             }
         });
 
-        int width = 380;
+        int width = 880;
         int height = 600;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -94,7 +116,7 @@ public class ChiTietHoaDonGUI extends JFrame {
         pnlRight.setPreferredSize(new Dimension(200, 10));
         pnlRight.setBorder(null);
         pnlRight.setBackground(Color.WHITE);
-        contentPane.add(pnlRight);
+        contentPane.add(pnlRight, BorderLayout.WEST);
         pnlRight.setLayout(new BorderLayout(0, 10));
 
         JPanel panel = new JPanel();
@@ -102,16 +124,12 @@ public class ChiTietHoaDonGUI extends JFrame {
         pnlRight.add(panel, BorderLayout.NORTH);
         panel.setLayout(new GridLayout(0, 1, 0, 0));
 
-        panel.add(new JLabel());
-
         JLabel lblNewLabel_4 = new JLabel("Chi tiết hóa đơn");
         lblNewLabel_4.setForeground(new Color(255, 255, 255));
         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel.setBackground(new Color(36, 136, 203));
         panel.add(lblNewLabel_4);
-        
-        panel.add(new JLabel());
 
         JPanel panel_3 = new JPanel();
         pnlRight.add(panel_3, BorderLayout.CENTER);
@@ -138,15 +156,16 @@ public class ChiTietHoaDonGUI extends JFrame {
         txtBillID.setColumns(10);
         panel_5.add(txtBillID);
 
-        JLabel lblNewLabel_6 = new JLabel("Tài khoản");
+        JLabel lblNewLabel_6 = new JLabel("Khách hàng");
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
         txtCustomerID = new JTextField();
         txtCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtCustomerID.setColumns(10);
+        txtCustomerID.setEnabled(false);
         panel_5.add(txtCustomerID);
-        
+
         JLabel lblNewLabel_6_3 = new JLabel("Nhân viên lập");
         lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3);
@@ -155,6 +174,7 @@ public class ChiTietHoaDonGUI extends JFrame {
         txtAccountID.setPreferredSize(new Dimension(100, 19));
         txtAccountID.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtAccountID.setColumns(10);
+        txtAccountID.setEnabled(false);
         panel_5.add(txtAccountID);
 
         JLabel lblNewLabel_6_3_1 = new JLabel("Ngày lập");
@@ -165,6 +185,7 @@ public class ChiTietHoaDonGUI extends JFrame {
         txtDate.setPreferredSize(new Dimension(100, 19));
         txtDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtDate.setColumns(10);
+        txtDate.setEnabled(false);
         panel_5.add(txtDate);
 
         JLabel lblNewLabel_6_3_1_1 = new JLabel("Tổng tiền");
@@ -175,24 +196,16 @@ public class ChiTietHoaDonGUI extends JFrame {
         txtToTalPrice.setPreferredSize(new Dimension(100, 19));
         txtToTalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtToTalPrice.setColumns(10);
+        txtToTalPrice.setEnabled(false);
         panel_5.add(txtToTalPrice);
 
-        JLabel lblNewLabel_6_3_1_2 = new JLabel("Địa chỉ");
-        lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-        panel_5.add(lblNewLabel_6_3_1_2);
-
-        txtAddress = new JTextField();
-        txtAddress.setPreferredSize(new Dimension(100, 19));
-        txtAddress.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtAddress.setColumns(10);
-        panel_5.add(txtAddress);
-        
         JLabel lblNewLabel_6_3_1_3 = new JLabel("Mã giảm giá");
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_3);
 
         cmbDiscountCode = new JComboBox();
-        cmbDiscountCode.setModel(new DefaultComboBoxModel(new String[] {"10", "20"}));
+        dcmMaGiamGia = new DefaultComboBoxModel();
+        cmbDiscountCode.setModel(dcmMaGiamGia);
         cmbDiscountCode.setFont(new Font("Tahoma", Font.PLAIN, 14));
         cmbDiscountCode.setFocusable(false);
         panel_5.add(cmbDiscountCode);
@@ -209,7 +222,7 @@ public class ChiTietHoaDonGUI extends JFrame {
         btnNewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
             }
         });
 
@@ -226,7 +239,8 @@ public class ChiTietHoaDonGUI extends JFrame {
         btnNewButton_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết hóa đơn không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết hóa đơn", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn thoát chi tiết hóa đơn không?",
+                        "Xác nhận huỷ bỏ hóa đơn", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -257,5 +271,60 @@ public class ChiTietHoaDonGUI extends JFrame {
         JLabel lblNewLabel = new JLabel("");
         panel_1.add(lblNewLabel);
 
+        jPanelSanPham = new JPanel(new BorderLayout());
+        JPanel panel1 = new JPanel(new GridLayout(0, 1));
+        spnSanPham = new JScrollPane();
+        lblDSSP = new JLabel("Danh sách sản phẩm");
+        lblDSSP.setForeground(new Color(255, 255, 255));
+        lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
+        lblDSSP.setFont(new Font("Tahoma", Font.BOLD, 18));
+        panel1.setBackground(new Color(36, 136, 203));
+        panel1.add(lblDSSP);
+        tblSanPham = new JTable();
+        tblSanPham.setBorder(null);
+        tblSanPham.setSelectionBackground(new Color(232, 57, 95));
+        tblSanPham.setRowHeight(25);
+        tblSanPham.setIntercellSpacing(new Dimension(0, 0));
+        tblSanPham.setFocusable(false);
+        tblSanPham.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tblSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+        tblSanPham.getTableHeader().setOpaque(false);
+        tblSanPham.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
+        tblSanPham.setRowHeight(25);
+        String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0);
+        tblSanPham.setModel(sanPhamModel);
+        tblSanPham.setEnabled(false);
+        spnSanPham.setBorder(null);
+        spnSanPham.setBackground(new Color(255, 255, 255));
+        spnSanPham.setViewportView(tblSanPham);
+        jPanelSanPham.add(panel1, BorderLayout.NORTH);
+        jPanelSanPham.add(spnSanPham, BorderLayout.CENTER);
+
+        contentPane.add(jPanelSanPham, BorderLayout.CENTER);
+
+        loadMaGiamGia();
+
+    }
+
+    public HoaDonDTO taoHoaDon() {
+        HoaDonDTO hoaDonDTO = new HoaDonDTO();
+        int id = HoaDonBUS.getSoLuongHoaDon() + 1;
+        return hoaDonDTO;
+    }
+
+    public ArrayList<ChiTietHoaDonDTO> taoChiTietHoaDon(int billId) {
+        ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs = new ArrayList<>();
+        return chiTietHoaDonDTOs;
+    }
+
+    public void loadMaGiamGia() {
+        dcmMaGiamGia.addElement("Mã giảm giá");
+        dcmMaGiamGia.setSelectedItem(dcmMaGiamGia.getElementAt(0));
+        ArrayList<KhuyenMai> khuyenMais = KhuyenMaiBUS.getDanhSachKhuyenMai();
+        for (KhuyenMai khuyenMai : khuyenMais) {
+            dcmMaGiamGia.addElement(khuyenMai.getDiscount_code());
+        }
     }
 }
