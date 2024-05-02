@@ -76,7 +76,7 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private JPanel pnlThongKe;
 	
 	public String absolutePath = new File("").getAbsolutePath();
-	private static String username = "";
+	public static String username = "";
 
 	/**
 	 * Launch the application.

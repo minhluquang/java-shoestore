@@ -202,11 +202,11 @@ public class SanPhamDAO {
         ArrayList<SanPhamDTO> danhSachSanPham = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM products WHERE product_name LIKE '%"+name+"%'";
-            if (hang!=-1) {
+            String sql = "SELECT * FROM products WHERE LOWER(product_name) LIKE '%"+name+"%'";
+            if (hang!=0) {
                 sql+=" AND brand_id="+hang;
             }
-            if (loai!=1) {
+            if (loai!=0) {
                 sql+=" AND category_id="+loai;
             }
             ResultSet rs = connectDB.runQuery(sql);

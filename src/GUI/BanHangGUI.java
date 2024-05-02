@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -22,6 +23,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -100,7 +104,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JButton btnLuu;
     // private JButton btnXem;
     private JButton btnXoa;
-    private JButton btnXuatHoaDon;
+    private JButton btnMuaHang;
 
     private JPanel jPanelSanPham;
     private JPanel jPanelGioHang;
@@ -281,14 +285,14 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnXoa.setFocusable(false);
         btnXoa.setBorder(null);
         btnXoa.setBackground(new Color(220, 53, 69));
-        btnXuatHoaDon = new JButton("Xuất Hóa Đơn");
-        btnXuatHoaDon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnXuatHoaDon.setPreferredSize(new Dimension(100, 30));
-        btnXuatHoaDon.setForeground(Color.WHITE);
-        btnXuatHoaDon.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnXuatHoaDon.setFocusable(false);
-        btnXuatHoaDon.setBorder(null);
-        btnXuatHoaDon.setBackground(new Color(24, 24, 24));
+        btnMuaHang = new JButton("Mua hàng");
+        btnMuaHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnMuaHang.setPreferredSize(new Dimension(100, 30));
+        btnMuaHang.setForeground(Color.WHITE);
+        btnMuaHang.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnMuaHang.setFocusable(false);
+        btnMuaHang.setBorder(null);
+        btnMuaHang.setBackground(new Color(24, 24, 24));
 
         pnlThongTinSPGH.add(lblID);
         pnlThongTinSPGH.add(lblTen);
@@ -299,7 +303,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         // pnlButton.add(btnXem);
         pnlButton.add(btnLuu);
         pnlButton.add(btnXoa);
-        pnlButton.add(btnXuatHoaDon);
+        pnlButton.add(btnMuaHang);
 
         pnlBHPhai.add(pnlThongTinSPGH, BorderLayout.NORTH);
         pnlBHPhai.add(lblAnhSP, BorderLayout.CENTER);
@@ -387,7 +391,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         spnCTHD.setBackground(new Color(255, 255, 255));
         txtMaHD = new JTextField(10);
         txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtMaHD.addKeyListener( new KeyAdapter() {
+        txtMaHD.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -487,7 +491,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnXoa.addActionListener(this);
         // btnXem.addActionListener(this);
         btnLuu.addActionListener(this);
-        btnXuatHoaDon.addActionListener(this);
+        btnMuaHang.addActionListener(this);
     }
 
     private ArrayList<ChiTietSanPhamDTO> dssp;
@@ -556,12 +560,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
         loadChiTietHoaDon();
     }
 
-    public void capNhatSanPhamDaBan() {
-        ChiTietSanPhamBUS.danhDauDanhSachDaBan(dsgh);
-        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
-        loadDanhSachSanPham();
-    }
-
     public void themVaoGioHang() {
         int selectedIndex = tblSanPham.getSelectedRow();
         if (selectedIndex == -1) {
@@ -592,12 +590,49 @@ public class BanHangGUI extends JPanel implements ActionListener {
         loadDanhSachGioHang();
     }
 
+    public HoaDonDTO taoHoaDon() {
+        HoaDonDTO hoaDonDTO = new HoaDonDTO();
+        int id = HoaDonBUS.getSoLuongHoaDon() + 1;
+        hoaDonDTO.setBillId(id);
+        hoaDonDTO.setDate(Date.valueOf(LocalDate.now()));
+        int total = 0;
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dsgh) {
+            SanPhamDTO sp = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            total += sp.getOutput_price();
+        }
+        hoaDonDTO.setTotalPrice(total);
+        return hoaDonDTO;
+    }
+
+    public ArrayList<ChiTietHoaDonDTO> taoChiTietHoaDon(int billId) {
+        ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs = new ArrayList<>();
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dsgh) {
+            ChiTietHoaDonDTO chiTietHoaDonDTO = new ChiTietHoaDonDTO();
+            chiTietHoaDonDTO.setProductSerialId(chiTietSanPhamDTO.getProductSerialId());
+            chiTietHoaDonDTO.setPriceSingle(SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId()).getOutput_price());
+            chiTietHoaDonDTOs.add(chiTietHoaDonDTO);
+        }
+        return chiTietHoaDonDTOs;
+    }
+
     public void muaHang() {
         if (dsgh.size() == 0) {
             JOptionPane.showMessageDialog(null, "Hãy thêm sản phẩm vào giỏ hàng !");
             return;
         }
-        // capNhatSanPhamDaBan();
+        HoaDonDTO hoaDonDTO = taoHoaDon();
+        ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs = taoChiTietHoaDon(hoaDonDTO.getBillId());
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(hoaDonDTO, chiTietHoaDonDTOs);
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         xoaTatCaKhoiGioHang();
     }
 
@@ -609,7 +644,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         if (e.getSource() == btnXoa) {
             xoaKhoiGioHang();
         }
-        if (e.getSource() == btnXuatHoaDon) {
+        if (e.getSource() == btnMuaHang) {
             muaHang();
         }
         // if (e.getSource()==btnXem){}
@@ -643,16 +678,17 @@ public class BanHangGUI extends JPanel implements ActionListener {
         setChiTietHoaDonTable();
 
     }
-    public void setChiTietHoaDonTable(){
-        int maHoaDon=-1;
-        if(!txtMaHD.getText().isEmpty()){
+
+    public void setChiTietHoaDonTable() {
+        int maHoaDon = -1;
+        if (!txtMaHD.getText().isEmpty()) {
             maHoaDon = Integer.parseInt(txtMaHD.getText());
         }
-        
-        if(maHoaDon == -1){
+
+        if (maHoaDon == -1) {
             cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
         } else {
-            cthd = ChiTietHoaDonBUS.getChiTietHoaDonByID(maHoaDon);    
+            cthd = ChiTietHoaDonBUS.getChiTietHoaDonByID(maHoaDon);
         }
         loadChiTietHoaDon();
     }
