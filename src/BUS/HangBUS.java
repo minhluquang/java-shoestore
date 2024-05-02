@@ -24,4 +24,7 @@ public class HangBUS {
     public static boolean suaHang(HangDTO hangDTO){
         return HangDAO.suaHang(hangDTO);
     }
+    public static HangDTO getHangByName(String brand_name){
+        return HangDAO.getHangByName(brand_name);
+    }
 }

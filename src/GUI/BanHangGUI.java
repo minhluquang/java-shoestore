@@ -11,34 +11,68 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Label;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
+import BUS.ChiTietHoaDonBUS;
+import BUS.ChiTietSanPhamBUS;
+import BUS.HangBUS;
+import BUS.HoaDonBUS;
+import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
+import BUS.SanPhamBUS;
+import BUS.TheLoaiBUS;
+import DAO.SanPhamDAO;
+import DTO.ChiTietSanPhamDTO;
+import DTO.HangDTO;
+import DTO.HoaDonDTO;
+import DTO.KhachHang;
+import DTO.NhanVien;
+import DTO.SanPhamDTO;
+import DTO.TheLoaiDTO;
+import DTO.ChiTietHoaDonDTO;
 
 /**
  *
  * @author MSI
  */
-public class BanHangGUI extends JPanel {
+public class BanHangGUI extends JPanel implements ActionListener {
 
     // Khai báo các thành phần của giao diện
     private JTabbedPane tabbedPane;
@@ -57,15 +91,14 @@ public class BanHangGUI extends JPanel {
     private JLabel lblID;
     private JLabel lblTen;
     private JLabel lblHang;
+    private JLabel lblTheLoai;
     private JLabel lblXuatXu;
-    private JLabel lblKhuyenMai;
+    private JLabel lblNamSanXuat;
     private JLabel lblDonGia;
-    private JLabel lblSoLuong;
-    private JTextField txtSoLuong;
     private JLabel lblAnhSP;
     private JPanel pnlButton;
     private JButton btnLuu;
-    private JButton btnHuy;
+    // private JButton btnXem;
     private JButton btnXoa;
     private JButton btnXuatHoaDon;
 
@@ -81,7 +114,6 @@ public class BanHangGUI extends JPanel {
     private JLabel lblNVLap;
     private JLabel lblNgayLap;
     private JLabel lblTongTien;
-    private JLabel lblGhiChu;
     private JTextField txtGiaTu;
     private JTextField txtGiaDen;
     private JTextField txtNgayLapTu;
@@ -93,6 +125,11 @@ public class BanHangGUI extends JPanel {
     private JTextField txtMaHD;
     private JScrollPane spnCTHD;
     private JTable tblCTHD;
+
+    private DefaultTableModel sanPhamModel;
+    private DefaultTableModel gioHangModel;
+    private DefaultTableModel dsHDModel;
+    private DefaultTableModel dsCTModel;
 
     public BanHangGUI() {
         initComponents();
@@ -109,8 +146,8 @@ public class BanHangGUI extends JPanel {
         // Phần danh sách sản phẩm
         jPanelSanPham = new JPanel(new BorderLayout());
         spnSanPham = new JScrollPane();
-        
-        JPanel panel1 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel1 = new JPanel(new GridLayout(1, 0));
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
@@ -126,9 +163,18 @@ public class BanHangGUI extends JPanel {
         tblSanPham.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblSanPham.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblSanPham.getTableHeader().setOpaque(false);
-        tblSanPham.getTableHeader().setBackground(new Color(36,136,203));
-        tblSanPham.getTableHeader().setForeground(new Color(255,255,255));
+        tblSanPham.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
         tblSanPham.setRowHeight(25);
+        String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblSanPham.setModel(sanPhamModel);
+        tblSanPham.setRowSelectionAllowed(true);
+        tblSanPham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnSanPham.setBorder(null);
         spnSanPham.setBackground(new Color(255, 255, 255));
         spnSanPham.setViewportView(tblSanPham);
@@ -139,15 +185,15 @@ public class BanHangGUI extends JPanel {
         // Phần giỏ hàng
         jPanelGioHang = new JPanel(new BorderLayout());
         spnGioHang = new JScrollPane();
-        
-        JPanel panel2 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel2 = new JPanel(new GridLayout(1, 0));
         lblGH = new JLabel("Giỏ hàng");
         lblGH.setForeground(new Color(255, 255, 255));
         lblGH.setHorizontalAlignment(SwingConstants.CENTER);
         lblGH.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel2.setBackground(new Color(36, 136, 203));
         panel2.add(lblGH);
-        
+
         tblGioHang = new JTable();
         tblGioHang.setBorder(null);
         tblGioHang.setSelectionBackground(new Color(232, 57, 95));
@@ -157,9 +203,18 @@ public class BanHangGUI extends JPanel {
         tblGioHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblGioHang.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblGioHang.getTableHeader().setOpaque(false);
-        tblGioHang.getTableHeader().setBackground(new Color(36,136,203));
-        tblGioHang.getTableHeader().setForeground(new Color(255,255,255));
+        tblGioHang.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblGioHang.getTableHeader().setForeground(new Color(255, 255, 255));
         tblGioHang.setRowHeight(25);
+        String[] gioHangColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
+        gioHangModel = new DefaultTableModel(gioHangColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblGioHang.setModel(gioHangModel);
+        tblGioHang.setRowSelectionAllowed(true);
+        tblGioHang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnGioHang.setBorder(null);
         spnGioHang.setBackground(new Color(255, 255, 255));
         spnGioHang.setViewportView(tblGioHang);
@@ -174,35 +229,35 @@ public class BanHangGUI extends JPanel {
 
         // Phần thông tin sản phẩm
         pnlThongTinSPGH = new JPanel(new GridLayout(8, 1));
-        
-        JPanel panel3 = new JPanel(new GridLayout(1,0));
+
+        JPanel panel3 = new JPanel(new GridLayout(1, 0));
         lblThongTinSP = new JLabel("Thông tin sản phẩm");
         lblThongTinSP.setForeground(new Color(255, 255, 255));
         lblThongTinSP.setHorizontalAlignment(SwingConstants.CENTER);
         lblThongTinSP.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblThongTinSP.setPreferredSize(new Dimension(300, 30));
         panel3.setBackground(new Color(36, 136, 203));
         panel3.add(lblThongTinSP);
-        
+
         pnlThongTinSPGH.add(panel3);
-        lblID = new JLabel("ID:");
+        lblID = new JLabel("Serial:");
         lblID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblTen = new JLabel("Tên:");
+        lblTen = new JLabel("Tên sản phẩm:");
         lblTen.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblHang = new JLabel("Hãng:");
         lblHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTheLoai = new JLabel("Thể loại:");
+        lblTheLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblXuatXu = new JLabel("Xuất Xứ:");
         lblXuatXu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblKhuyenMai = new JLabel("Khuyến Mãi:");
-        lblKhuyenMai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNamSanXuat = new JLabel("Năm sản xuất: ");
+        lblNamSanXuat.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblDonGia = new JLabel("Đơn Giá:");
         lblDonGia.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblSoLuong = new JLabel("Số lượng:");
-        lblSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtSoLuong = new JTextField(5);
-        txtSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblAnhSP = new JLabel();
-        pnlButton = new JPanel(new FlowLayout());
-        btnLuu = new JButton("Lưu");
+        lblAnhSP.setPreferredSize(new Dimension(300, 300));
+        pnlButton = new JPanel(new GridLayout(0, 1, 10, 5));
+        btnLuu = new JButton("Thêm vào giỏ hàng");
         btnLuu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnLuu.setPreferredSize(new Dimension(100, 30));
         btnLuu.setForeground(Color.WHITE);
@@ -210,14 +265,14 @@ public class BanHangGUI extends JPanel {
         btnLuu.setFocusable(false);
         btnLuu.setBorder(null);
         btnLuu.setBackground(new Color(21, 155, 71));
-        btnHuy = new JButton("Hủy");
-        btnHuy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnHuy.setPreferredSize(new Dimension(100, 30));
-        btnHuy.setForeground(Color.WHITE);
-        btnHuy.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnHuy.setFocusable(false);
-        btnHuy.setBorder(null);
-        btnHuy.setBackground(new Color(220, 53, 69));
+        // btnXem = new JButton("Xem thông tin");
+        // btnXem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // btnXem.setPreferredSize(new Dimension(100, 30));
+        // btnXem.setForeground(Color.WHITE);
+        // btnXem.setFont(new Font("Tahoma", Font.BOLD, 14));
+        // btnXem.setFocusable(false);
+        // btnXem.setBorder(null);
+        // btnXem.setBackground(new Color(220, 53, 69));
         btnXoa = new JButton("Xóa");
         btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnXoa.setPreferredSize(new Dimension(100, 30));
@@ -239,14 +294,12 @@ public class BanHangGUI extends JPanel {
         pnlThongTinSPGH.add(lblTen);
         pnlThongTinSPGH.add(lblHang);
         pnlThongTinSPGH.add(lblXuatXu);
-        pnlThongTinSPGH.add(lblKhuyenMai);
         pnlThongTinSPGH.add(lblDonGia);
-        pnlThongTinSPGH.add(txtSoLuong);
 
+        // pnlButton.add(btnXem);
         pnlButton.add(btnLuu);
-        pnlButton.add(btnHuy);
-        pnlButton.add(btnXuatHoaDon);
         pnlButton.add(btnXoa);
+        pnlButton.add(btnXuatHoaDon);
 
         pnlBHPhai.add(pnlThongTinSPGH, BorderLayout.NORTH);
         pnlBHPhai.add(lblAnhSP, BorderLayout.CENTER);
@@ -258,14 +311,14 @@ public class BanHangGUI extends JPanel {
 
         pnlDanhSachHD = new JPanel(new BorderLayout());
         pnlThongTinHD = new JPanel(new BorderLayout());
-        
+
         lblThongTinHD = new JLabel("Thông Tin Hóa Đơn");
         lblThongTinHD.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblThongTinHD.setHorizontalAlignment(SwingConstants.CENTER);
         lblThongTinHD.setForeground(new Color(255, 255, 255));
         lblMaHD = new JLabel("Mã Hóa Đơn:");
         lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblMaKH = new JLabel("Mã Khách Hàng:");
+        lblMaKH = new JLabel("Khách Hàng:");
         lblMaKH.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNVLap = new JLabel("Nhân Viên Lập:");
         lblNVLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -273,8 +326,6 @@ public class BanHangGUI extends JPanel {
         lblNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblTongTien = new JLabel("Tổng Tiền:");
         lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblGhiChu = new JLabel("Ghi Chú:");
-        lblGhiChu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaTu = new JTextField(10);
         txtGiaTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaDen = new JTextField(10);
@@ -292,9 +343,18 @@ public class BanHangGUI extends JPanel {
         tblDSHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblDSHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblDSHD.getTableHeader().setOpaque(false);
-        tblDSHD.getTableHeader().setBackground(new Color(36,136,203));
-        tblDSHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblDSHD.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblDSHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblDSHD.setRowHeight(25);
+        String[] dsHDColumns = { "Mã HD", "Ngày Lập", "Tổng tiền" };
+        dsHDModel = new DefaultTableModel(dsHDColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblDSHD.setModel(dsHDModel);
+        tblDSHD.setRowSelectionAllowed(true);
+        tblDSHD.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnDSHD = new JScrollPane(tblDSHD);
         spnDSHD.setBorder(null);
         spnDSHD.setBackground(new Color(255, 255, 255));
@@ -310,15 +370,31 @@ public class BanHangGUI extends JPanel {
         tblCTHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
         tblCTHD.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tblCTHD.getTableHeader().setOpaque(false);
-        tblCTHD.getTableHeader().setBackground(new Color(36,136,203));
-        tblCTHD.getTableHeader().setForeground(new Color(255,255,255));
+        tblCTHD.getTableHeader().setBackground(new Color(36, 136, 203));
+        tblCTHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblCTHD.setRowHeight(25);
+        String[] cthdColumns = { "Mã Hóa Đơn", "Serial", "Tên sản phẩm", "Đơn giá" };
+        dsCTModel = new DefaultTableModel(cthdColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblCTHD.setModel(dsCTModel);
+        tblCTHD.setRowSelectionAllowed(true);
+        tblCTHD.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnCTHD = new JScrollPane(tblCTHD);
         spnCTHD.setBorder(null);
         spnCTHD.setBackground(new Color(255, 255, 255));
         txtMaHD = new JTextField(10);
         txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-
+        txtMaHD.addKeyListener( new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setChiTietHoaDonTable();
+                }
+            }
+        });
         JLabel jLabeltk = new JLabel("Tìm kiếm");
         jLabeltk.setFont(new Font("Tahoma", Font.BOLD, 14));
         JLabel jLabelgia1 = new JLabel("Giá từ");
@@ -331,22 +407,21 @@ public class BanHangGUI extends JPanel {
         JLabel jLabelngay2 = new JLabel("đến");
         jLabelngay2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabelngay2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-        JPanel panelHD1 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelHD1 = new JPanel(new GridLayout(0, 1));
         panelHD1.setBackground(new Color(36, 136, 203));
         panelHD1.add(lblThongTinHD);
         pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
 
-        JPanel panelHD2 = new JPanel(new GridLayout(0,1, 0, 5));
+        JPanel panelHD2 = new JPanel(new GridLayout(0, 1, 0, 5));
         panelHD2.setBackground(Color.WHITE);
         panelHD2.add(lblMaHD);
         panelHD2.add(lblMaKH);
         panelHD2.add(lblNVLap);
         panelHD2.add(lblNgayLap);
         panelHD2.add(lblTongTien);
-        panelHD2.add(lblGhiChu);
 
-        JPanel panelHD3 = new JPanel(new GridLayout(0,4, 0, 5));
+        JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 0, 5));
         panelHD3.setBackground(Color.WHITE);
         panelHD3.add(jLabeltk);
         panelHD3.add(new JLabel(""));
@@ -394,54 +469,225 @@ public class BanHangGUI extends JPanel {
                 for (int i = 0; i < tabbedPane.getTabCount(); i++) {
                     tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
                 }
-                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn thành màu đỏ
+                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn
+                                                                                    // thành màu đỏ
             }
         });
 
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
 
-        // Khởi tạo dữ liệu mẫu cho các bảng
-        initData();
+        tableAddListener();
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+        dshd = HoaDonBUS.getDanhSachHoaDon();
+        cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+
+        loadData();
+
+        btnXoa.addActionListener(this);
+        // btnXem.addActionListener(this);
+        btnLuu.addActionListener(this);
+        btnXuatHoaDon.addActionListener(this);
     }
 
-    private void initData() {
-        // Tạo dữ liệu mẫu cho bảng Sản phẩm
-        Object[][] sanPhamData = {
-            {"SP001", "Sản phẩm 1", "Hãng A", "Xuất xứ A", "KM 10%", 100000},
-            {"SP002", "Sản phẩm 2", "Hãng B", "Xuất xứ B", "KM 20%", 200000},
-            {"SP003", "Sản phẩm 3", "Hãng C", "Xuất xứ C", "KM 30%", 300000}
-        };
-        String[] sanPhamColumns = {"ID", "Tên", "Hãng", "Xuất Xứ", "KM", "Đơn giá"};
-        DefaultTableModel sanPhamModel = new DefaultTableModel(sanPhamData, sanPhamColumns);
-        tblSanPham.setModel(sanPhamModel);
+    private ArrayList<ChiTietSanPhamDTO> dssp;
+    private ArrayList<HoaDonDTO> dshd;
+    private ArrayList<ChiTietHoaDonDTO> cthd;
+    private ArrayList<ChiTietSanPhamDTO> dsgh = new ArrayList<>();
 
-        // Tạo dữ liệu mẫu cho bảng Giỏ hàng
-        Object[][] gioHangData = {
-            {"SP001", "Sản phẩm 1", 2, 200000},
-            {"SP002", "Sản phẩm 2", 3, 600000}
-        };
-        String[] gioHangColumns = {"ID", "Tên", "Số lượng", "Thành tiền"};
-        DefaultTableModel gioHangModel = new DefaultTableModel(gioHangData, gioHangColumns);
-        tblGioHang.setModel(gioHangModel);
+    public void loadDanhSachSanPham() {
 
-        // Tạo dữ liệu mẫu cho bảng Danh sách hóa đơn
-        Object[][] dsHDData = {
-            {"HD001", "01/01/2024", 800000},
-            {"HD002", "02/01/2024", 1500000}
-        };
-        String[] dsHDColumns = {"Mã HD", "Ngày Lập", "Tổng tiền"};
-        DefaultTableModel dsHDModel = new DefaultTableModel(dsHDData, dsHDColumns);
-        tblDSHD.setModel(dsHDModel);
+        sanPhamModel.setRowCount(0);
 
-        // Tạo dữ liệu mẫu cho bảng Chi tiết hóa đơn
-        Object[][] cthdData = {
-            {"HD001", "SP001", "Sản phẩm 1", 2, 200000},
-            {"HD001", "SP002", "Sản phẩm 2", 3, 600000}
-        };
-        String[] cthdColumns = {"Mã Hóa Đơn", "Mã sản phẩm", "Tên", "Số lượng", "Thành tiền"};
-        DefaultTableModel cthdModel = new DefaultTableModel(cthdData, cthdColumns);
-        tblCTHD.setModel(cthdModel);
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dssp) {
+            if (chiTietSanPhamDTO.isSold()) {
+                continue;
+            }
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+            TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+            Object[] sanPhamData = { chiTietSanPhamDTO.getProductSerialId(), sanPhamDTO.getProduct_name(),
+                    hangDTO.getBrand_name(), theLoaiDTO.getCategory_name(), sanPhamDTO.getOutput_price() };
+            sanPhamModel.addRow(sanPhamData);
+        }
+    }
+
+    public void loadDanhSachHoaDon() {
+
+        dsHDModel.setRowCount(0);
+
+        for (HoaDonDTO hoaDonDTO : dshd) {
+            Object[] hoaDonData = { hoaDonDTO.getBillId(), hoaDonDTO.getDate(), hoaDonDTO.getTotalPrice() };
+            dsHDModel.addRow(hoaDonData);
+        }
+    }
+
+    public void loadChiTietHoaDon() {
+
+        dsCTModel.setRowCount(0);
+
+        for (ChiTietHoaDonDTO chiTietHoaDonDTO : cthd) {
+            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
+                    .getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            Object[] ctHoaDonData = { chiTietHoaDonDTO.getBillId(), chiTietHoaDonDTO.getProductSerialId(),
+                    sanPhamDTO.getProduct_name(), chiTietHoaDonDTO.getPriceSingle() };
+            dsCTModel.addRow(ctHoaDonData);
+        }
+    }
+
+    public void loadDanhSachGioHang() {
+
+        gioHangModel.setRowCount(0);
+
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO : dsgh) {
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+            TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+            Object[] sanPhamData = { chiTietSanPhamDTO.getProductSerialId(), sanPhamDTO.getProduct_name(),
+                    hangDTO.getBrand_name(), theLoaiDTO.getCategory_name(), sanPhamDTO.getOutput_price() };
+            gioHangModel.addRow(sanPhamData);
+        }
+    }
+
+    public void loadData() {
+        loadDanhSachSanPham();
+        loadDanhSachHoaDon();
+        loadChiTietHoaDon();
+    }
+
+    public void capNhatSanPhamDaBan() {
+        ChiTietSanPhamBUS.danhDauDanhSachDaBan(dsgh);
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+        loadDanhSachSanPham();
+    }
+
+    public void themVaoGioHang() {
+        int selectedIndex = tblSanPham.getSelectedRow();
+        if (selectedIndex == -1) {
+            return;
+        }
+        int serial = (int) tblSanPham.getValueAt(selectedIndex, 0);
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO2 : dsgh) {
+            if (chiTietSanPhamDTO2.getProductSerialId() == serial) {
+                return;
+            }
+        }
+        ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
+        dsgh.add(chiTietSanPhamDTO);
+        loadDanhSachGioHang();
+    }
+
+    public void xoaKhoiGioHang() {
+        int selectedIndex = tblGioHang.getSelectedRow();
+        if (selectedIndex == -1) {
+            return;
+        }
+        dsgh.remove(selectedIndex);
+        loadDanhSachGioHang();
+    }
+
+    public void xoaTatCaKhoiGioHang() {
+        dsgh.clear();
+        loadDanhSachGioHang();
+    }
+
+    public void muaHang() {
+        if (dsgh.size() == 0) {
+            JOptionPane.showMessageDialog(null, "Hãy thêm sản phẩm vào giỏ hàng !");
+            return;
+        }
+        // capNhatSanPhamDaBan();
+        xoaTatCaKhoiGioHang();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnLuu) {
+            themVaoGioHang();
+        }
+        if (e.getSource() == btnXoa) {
+            xoaKhoiGioHang();
+        }
+        if (e.getSource() == btnXuatHoaDon) {
+            muaHang();
+        }
+        // if (e.getSource()==btnXem){}
+    }
+
+    public void xemThongTinSanPham(ChiTietSanPhamDTO chiTietSanPhamDTO, SanPhamDTO sanPhamDTO, String hang,
+            String loai) {
+        lblID.setText("Serial: " + chiTietSanPhamDTO.getProductSerialId());
+        lblTen.setText("Tên sản phẩm: " + sanPhamDTO.getProduct_name());
+        lblHang.setText("Hãng: " + hang);
+        lblTheLoai.setText("Thể loại: " + loai);
+        lblXuatXu.setText("Xuất Xứ: " + sanPhamDTO.getCountry());
+        lblNamSanXuat.setText("Năm sản xuất: " + sanPhamDTO.getYear_of_product());
+        lblDonGia.setText("Đơn Giá: " + sanPhamDTO.getOutput_price());
+        ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+        Image image = icon.getImage();
+        Image newImage = image.getScaledInstance(300, 300, Image.SCALE_DEFAULT);
+        ImageIcon newIcon = new ImageIcon(newImage);
+        lblAnhSP.setIcon(newIcon);
+    }
+
+    public void xemThongTinHoaDon(HoaDonDTO hoaDonDTO) {
+        lblMaHD.setText("Mã Hóa Đơn: " + hoaDonDTO.getBillId());
+        KhachHang khachHang = KhachHangBUS.getKhachHangByID(hoaDonDTO.getCustomerId());
+        lblMaKH.setText("Khách Hàng: " + khachHang.getCustomerId_Name());
+        NhanVien nhanVien = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
+        lblNVLap.setText("Nhân Viên Lập: " + nhanVien.getStaffId_Name());
+        lblNgayLap.setText("Ngày Lập: " + hoaDonDTO.getDate());
+        lblTongTien.setText("Tổng Tiền: " + hoaDonDTO.getTotalPrice());
+        txtMaHD.setText(hoaDonDTO.getBillId() + "");
+        setChiTietHoaDonTable();
+
+    }
+    public void setChiTietHoaDonTable(){
+        int maHoaDon=-1;
+        if(!txtMaHD.getText().isEmpty()){
+            maHoaDon = Integer.parseInt(txtMaHD.getText());
+        }
+        
+        if(maHoaDon == -1){
+            cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+        } else {
+            cthd = ChiTietHoaDonBUS.getChiTietHoaDonByID(maHoaDon);    
+        }
+        loadChiTietHoaDon();
+    }
+
+    public void tableAddListener() {
+        tblSanPham.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndex = tblSanPham.getSelectedRow();
+                int serial = (int) tblSanPham.getValueAt(selectedIndex, 0);
+                ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
+                SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+                String hang = tblSanPham.getValueAt(selectedIndex, 2).toString();
+                String theLoai = tblSanPham.getValueAt(selectedIndex, 3).toString();
+                xemThongTinSanPham(chiTietSanPhamDTO, sanPhamDTO, hang, theLoai);
+            }
+        });
+        tblDSHD.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndex = tblDSHD.getSelectedRow();
+                int maHoaDon = (int) tblDSHD.getValueAt(selectedIndex, 0);
+                HoaDonDTO hoaDonDTO = HoaDonBUS.getHoaDonByID(maHoaDon);
+                xemThongTinHoaDon(hoaDonDTO);
+            }
+        });
+        tblGioHang.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndex = tblGioHang.getSelectedRow();
+                int serial = (int) tblGioHang.getValueAt(selectedIndex, 0);
+                ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
+                SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+                String hang = tblGioHang.getValueAt(selectedIndex, 2).toString();
+                String theLoai = tblGioHang.getValueAt(selectedIndex, 3).toString();
+                xemThongTinSanPham(chiTietSanPhamDTO, sanPhamDTO, hang, theLoai);
+            }
+        });
     }
 
 }

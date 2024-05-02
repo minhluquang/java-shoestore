@@ -37,5 +37,8 @@ public class KhachHang {
 		this.phoneNumber = phoneNumber;
 	}
 	
+	public String getCustomerId_Name(){
+		return this.getCustomerId()+" "+this.getCustomerName();
+	}
 	
 }

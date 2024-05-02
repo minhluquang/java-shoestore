@@ -12,7 +12,7 @@ public class HoaDonDAO {
         ArrayList<HoaDonDTO> bills = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM bills";
+            String sql = "SELECT * FROM bills ORDER BY bill_id DESC";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int bill_id = rs.getInt("bill_id");
@@ -91,15 +91,14 @@ public class HoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO bills (bill_id, staff_id, date, total_price, address, customer_id, discount_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO bills (staff_id, date, total_price, address, customer_id, discount_code) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
-            pstmt.setInt(1, bill.getBillId());
-            pstmt.setInt(2, bill.getStaffId());
-            pstmt.setString(3, bill.getDate().toString());
-            pstmt.setInt(4, bill.getTotalPrice());
-            pstmt.setString(5, bill.getAddress());
-            pstmt.setInt(6, bill.getCustomerId());
-            pstmt.setString(7, bill.getDiscountCode());
+            pstmt.setInt(1, bill.getStaffId());
+            pstmt.setString(2, bill.getDate().toString());
+            pstmt.setInt(3, bill.getTotalPrice());
+            pstmt.setString(4, bill.getAddress());
+            pstmt.setInt(5, bill.getCustomerId());
+            pstmt.setString(6, bill.getDiscountCode());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
                 flag = false;

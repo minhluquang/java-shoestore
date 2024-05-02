@@ -84,4 +84,8 @@ public class NhanVien {
 	public void setTaiKhoan(TaiKhoan taiKhoan) {
 		this.taiKhoan = taiKhoan;
 	}
+
+	public String getStaffId_Name(){
+		return this.getStaffId()+" "+this.getFull_name();
+	}
 }

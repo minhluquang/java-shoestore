@@ -22,13 +22,12 @@ public class SanPhamDAO {
                 int output_price = rs.getInt("output_price");
                 String country = rs.getString("country");
                 int year_of_product = rs.getInt("year_of_product");
-                int discount_percent = rs.getInt("discount_percent");
                 String image_path = rs.getString("image_path");
                 int quantity = rs.getInt("quantity");
                 boolean status = rs.getBoolean("status");
 
                 SanPhamDTO product = new SanPhamDTO(product_id, category_id, brand_id, product_name, output_price,
-                        country, year_of_product, discount_percent, image_path, quantity, status);
+                        country, year_of_product, image_path, quantity, status);
                 danhSachSanPham.add(product);
             }
         } catch (Exception e) {
@@ -43,7 +42,7 @@ public class SanPhamDAO {
         SanPhamDTO product = new SanPhamDTO();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM products WHEWE product_id = " + product_id;
+            String sql = "SELECT * FROM products WHERE product_id = " + product_id;
             ResultSet rs = connectDB.runQuery(sql);
             if (rs.next()) {
                 int category_id = rs.getInt("category_id");
@@ -51,8 +50,7 @@ public class SanPhamDAO {
                 String product_name = rs.getString("product_name");
                 int output_price = rs.getInt("output_price");
                 String country = rs.getString("country");
-                int year_of_product = rs.getInt("year_of_product");
-                int discount_percent = rs.getInt("discount_percent");
+                int year_of_product = rs.getInt("year_of_product");                
                 String image_path = rs.getString("image_path");
                 int quantity = rs.getInt("quantity");
                 boolean status = rs.getBoolean("status");
@@ -63,7 +61,6 @@ public class SanPhamDAO {
                 product.setOutput_price(output_price);
                 product.setCountry(country);
                 product.setYear_of_product(year_of_product);
-                product.setDiscount_percent(discount_percent);
                 product.setImage_path(image_path);
                 product.setQuantity(quantity);
                 product.setStatus(status);
@@ -98,22 +95,20 @@ public class SanPhamDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO products (product_id, category_id, brand_id, product_name, output_price, country, year_of_product, discount_percent, image_path, quantity, status) "
+            String sql = "INSERT INTO products (category_id, brand_id, product_name, output_price, country, year_of_product, image_path, quantity, status) "
                     +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
-            pstmt.setInt(1, sanPham.getProduct_id());
-            pstmt.setInt(2, sanPham.getCategory_id());
-            pstmt.setInt(3, sanPham.getBrand_id());
-            pstmt.setString(4, sanPham.getProduct_name());
-            pstmt.setInt(5, sanPham.getOutput_price());
-            pstmt.setString(6, sanPham.getCountry());
-            pstmt.setInt(7, sanPham.getYear_of_product());
-            pstmt.setInt(8, sanPham.getDiscount_percent());
-            pstmt.setString(9, sanPham.getImage_path());
-            pstmt.setInt(10, sanPham.getQuantity());
-            pstmt.setBoolean(11, sanPham.isStatus());
+            pstmt.setInt(1, sanPham.getCategory_id());
+            pstmt.setInt(2, sanPham.getBrand_id());
+            pstmt.setString(3, sanPham.getProduct_name());
+            pstmt.setInt(4, sanPham.getOutput_price());
+            pstmt.setString(5, sanPham.getCountry());
+            pstmt.setInt(6, sanPham.getYear_of_product());
+            pstmt.setString(7, sanPham.getImage_path());
+            pstmt.setInt(8, sanPham.getQuantity());
+            pstmt.setBoolean(9, sanPham.isStatus());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -158,7 +153,7 @@ public class SanPhamDAO {
             connectDB.getConnection();
             String sql = "UPDATE products SET category_id = ?, brand_id = ?, product_name = ?, output_price = ?, country = ?, "
                     +
-                    "year_of_product = ?, discount_percent = ?, image_path = ?, quantity = ?, status = ? " +
+                    "year_of_product = ?, image_path = ?, quantity = ?, status = ? " +
                     "WHERE product_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
@@ -168,11 +163,10 @@ public class SanPhamDAO {
             pstmt.setInt(4, sanPham.getOutput_price());
             pstmt.setString(5, sanPham.getCountry());
             pstmt.setInt(6, sanPham.getYear_of_product());
-            pstmt.setInt(7, sanPham.getDiscount_percent());
-            pstmt.setString(8, sanPham.getImage_path());
-            pstmt.setInt(9, sanPham.getQuantity());
-            pstmt.setBoolean(10, sanPham.isStatus());
-            pstmt.setInt(11, sanPham.getProduct_id());
+            pstmt.setString(7, sanPham.getImage_path());
+            pstmt.setInt(8, sanPham.getQuantity());
+            pstmt.setBoolean(9, sanPham.isStatus());
+            pstmt.setInt(10, sanPham.getProduct_id());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -202,6 +196,42 @@ public class SanPhamDAO {
             connectDB.closeConnection();
         }
         return count;
+    }
+
+    public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name) {
+        ArrayList<SanPhamDTO> danhSachSanPham = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM products WHERE product_name LIKE '%"+name+"%'";
+            if (hang!=-1) {
+                sql+=" AND brand_id="+hang;
+            }
+            if (loai!=1) {
+                sql+=" AND category_id="+loai;
+            }
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int product_id = rs.getInt("product_id");
+                int category_id = rs.getInt("category_id");
+                int brand_id = rs.getInt("brand_id");
+                String product_name = rs.getString("product_name");
+                int output_price = rs.getInt("output_price");
+                String country = rs.getString("country");
+                int year_of_product = rs.getInt("year_of_product");
+                String image_path = rs.getString("image_path");
+                int quantity = rs.getInt("quantity");
+                boolean status = rs.getBoolean("status");
+
+                SanPhamDTO product = new SanPhamDTO(product_id, category_id, brand_id, product_name, output_price,
+                        country, year_of_product, image_path, quantity, status);
+                danhSachSanPham.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return danhSachSanPham;
     }
 
 }

@@ -28,6 +28,7 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.36.jar"/>
 	<classpathentry kind="lib" path="lib/SparseBitSet-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-5.1.1.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/barcodes-7.1.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/barcodes-7.1.9-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/barcodes-7.1.9-sources.jar"/>
@@ -82,5 +83,7 @@
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/svg-7.1.9-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/svg-7.1.9-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/lumin/OneDrive/Máy tính/LƯU TRỮ ĐỒ ÁN/java/java-shoestore/lib/xmlbeans-5.1.1.jar"/>
+=======
+>>>>>>> fdda74f063b7fed62fc10dc6d42cc36c65ea77da
 	<classpathentry kind="output" path="bin"/>
 </classpath>
