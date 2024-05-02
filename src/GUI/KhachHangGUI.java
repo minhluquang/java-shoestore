@@ -420,7 +420,7 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 	public void exportExcel() throws IOException {
 		ArrayList<KhachHang> dskh = KhachHangBUS.getDanhSachKhachHang();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("export/dskh.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dskh.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
 		    XSSFSheet sheet = wb.createSheet("Danh sách khách hàng");
 		    

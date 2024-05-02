@@ -447,7 +447,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	public void exportExcel() throws IOException {
 		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false);
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("export/dsnv.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsnv.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
 		    XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
 		    
