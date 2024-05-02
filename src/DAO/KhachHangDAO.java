@@ -233,4 +233,24 @@ public class KhachHangDAO {
 		}
 		return success;
 	}
+
+	public static KhachHang getKhachHangByID(int id) {
+		connectDB.getConnection();
+		KhachHang khachHang = new KhachHang();
+		
+		try {
+			String sql = "SELECT * FROM customers WHERE status = 1 AND customer_id="+id;
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				khachHang.setCustomerId(rs.getInt("customer_id"));
+				khachHang.setCustomerName(rs.getString("customer_name"));
+				khachHang.setPhoneNumber(rs.getString("phone_number"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return khachHang;
+	}
 }

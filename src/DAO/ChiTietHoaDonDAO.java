@@ -33,7 +33,7 @@ public class ChiTietHoaDonDAO {
         ArrayList<ChiTietHoaDonDTO> billsDetails = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM bills_details WHERE bill_id = ?";
+            String sql = "SELECT * FROM bills_details WHERE bill_id ="+bill_id;
             ResultSet rs = connectDB.runQuery(sql);
             while(rs.next()) {
                 int product_serial_id = rs.getInt("product_serial_id");

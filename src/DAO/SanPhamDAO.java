@@ -198,4 +198,40 @@ public class SanPhamDAO {
         return count;
     }
 
+    public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name) {
+        ArrayList<SanPhamDTO> danhSachSanPham = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM products WHERE product_name LIKE '%"+name+"%'";
+            if (hang!=-1) {
+                sql+=" AND brand_id="+hang;
+            }
+            if (loai!=1) {
+                sql+=" AND category_id="+loai;
+            }
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int product_id = rs.getInt("product_id");
+                int category_id = rs.getInt("category_id");
+                int brand_id = rs.getInt("brand_id");
+                String product_name = rs.getString("product_name");
+                int output_price = rs.getInt("output_price");
+                String country = rs.getString("country");
+                int year_of_product = rs.getInt("year_of_product");
+                String image_path = rs.getString("image_path");
+                int quantity = rs.getInt("quantity");
+                boolean status = rs.getBoolean("status");
+
+                SanPhamDTO product = new SanPhamDTO(product_id, category_id, brand_id, product_name, output_price,
+                        country, year_of_product, image_path, quantity, status);
+                danhSachSanPham.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return danhSachSanPham;
+    }
+
 }

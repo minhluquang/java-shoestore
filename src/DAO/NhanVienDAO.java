@@ -289,4 +289,25 @@ public class NhanVienDAO {
 		return 0;
 	}
 	
+	public static NhanVien getNhanVienByID(int id) {
+		connectDB.getConnection();
+		NhanVien nv = new NhanVien();
+		try {
+			String sql = " SELECT * FROM staffs WHERE staff_id="+id;
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+			    nv.setStaffId(rs.getInt("staff_id"));
+			    nv.setFull_name(rs.getString("fullname"));
+			    nv.setPhone_number(rs.getString("phone_number"));
+			    nv.setEmail(rs.getString("email"));
+			    nv.setStaffStatus(rs.getInt("status"));
+			    nv.setTaiKhoan(null);
+			}
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return nv;
+	}
 }

@@ -139,4 +139,26 @@ public class HangDAO {
         return count;
     }
 
+    public static HangDTO getHangByName(String brand_name) {
+        HangDTO brand = new HangDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM brands WHERE brand_name = " + brand_name;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int brand_id = rs.getInt("brand_id");
+                boolean status = rs.getBoolean("status");
+
+                brand.setBrand_id(brand_id);
+                brand.setBrand_name(brand_name);
+                brand.setStatus(status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return brand;
+    }
+
 }

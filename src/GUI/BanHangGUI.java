@@ -11,10 +11,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Label;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -38,6 +42,8 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
@@ -48,12 +54,16 @@ import BUS.ChiTietHoaDonBUS;
 import BUS.ChiTietSanPhamBUS;
 import BUS.HangBUS;
 import BUS.HoaDonBUS;
+import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
 import BUS.SanPhamBUS;
 import BUS.TheLoaiBUS;
 import DAO.SanPhamDAO;
 import DTO.ChiTietSanPhamDTO;
 import DTO.HangDTO;
 import DTO.HoaDonDTO;
+import DTO.KhachHang;
+import DTO.NhanVien;
 import DTO.SanPhamDTO;
 import DTO.TheLoaiDTO;
 import DTO.ChiTietHoaDonDTO;
@@ -83,11 +93,12 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JLabel lblHang;
     private JLabel lblTheLoai;
     private JLabel lblXuatXu;
+    private JLabel lblNamSanXuat;
     private JLabel lblDonGia;
     private JLabel lblAnhSP;
     private JPanel pnlButton;
     private JButton btnLuu;
-    // private JButton btnHuy;
+    // private JButton btnXem;
     private JButton btnXoa;
     private JButton btnXuatHoaDon;
 
@@ -103,7 +114,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JLabel lblNVLap;
     private JLabel lblNgayLap;
     private JLabel lblTongTien;
-    private JLabel lblGhiChu;
     private JTextField txtGiaTu;
     private JTextField txtGiaDen;
     private JTextField txtNgayLapTu;
@@ -157,7 +167,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
         tblSanPham.setRowHeight(25);
         String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
-        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0){
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -197,7 +207,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         tblGioHang.getTableHeader().setForeground(new Color(255, 255, 255));
         tblGioHang.setRowHeight(25);
         String[] gioHangColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
-        gioHangModel = new DefaultTableModel(gioHangColumns, 0){
+        gioHangModel = new DefaultTableModel(gioHangColumns, 0) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -240,13 +250,14 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblTheLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblXuatXu = new JLabel("Xuất Xứ:");
         lblXuatXu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNamSanXuat = new JLabel("Năm sản xuất: ");
+        lblNamSanXuat.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblDonGia = new JLabel("Đơn Giá:");
         lblDonGia.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblAnhSP = new JLabel();
         lblAnhSP.setPreferredSize(new Dimension(300, 300));
-        pnlButton = new JPanel(new GridLayout(0, 1, 5, 5));
+        pnlButton = new JPanel(new GridLayout(0, 1, 10, 5));
         btnLuu = new JButton("Thêm vào giỏ hàng");
-        // btnLuu.setIcon(new ImageIcon("/src/images/icons/cart.png"));
         btnLuu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnLuu.setPreferredSize(new Dimension(100, 30));
         btnLuu.setForeground(Color.WHITE);
@@ -254,16 +265,15 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnLuu.setFocusable(false);
         btnLuu.setBorder(null);
         btnLuu.setBackground(new Color(21, 155, 71));
-        // btnHuy = new JButton("Hủy");
-        // btnHuy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        // btnHuy.setPreferredSize(new Dimension(100, 30));
-        // btnHuy.setForeground(Color.WHITE);
-        // btnHuy.setFont(new Font("Tahoma", Font.BOLD, 14));
-        // btnHuy.setFocusable(false);
-        // btnHuy.setBorder(null);
-        // btnHuy.setBackground(new Color(220, 53, 69));
+        // btnXem = new JButton("Xem thông tin");
+        // btnXem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // btnXem.setPreferredSize(new Dimension(100, 30));
+        // btnXem.setForeground(Color.WHITE);
+        // btnXem.setFont(new Font("Tahoma", Font.BOLD, 14));
+        // btnXem.setFocusable(false);
+        // btnXem.setBorder(null);
+        // btnXem.setBackground(new Color(220, 53, 69));
         btnXoa = new JButton("Xóa");
-        // btnXoa.setIcon(new ImageIcon("/src/images/icons/delete.png"));
         btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnXoa.setPreferredSize(new Dimension(100, 30));
         btnXoa.setForeground(Color.WHITE);
@@ -272,7 +282,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnXoa.setBorder(null);
         btnXoa.setBackground(new Color(220, 53, 69));
         btnXuatHoaDon = new JButton("Xuất Hóa Đơn");
-        // btnXuatHoaDon.setIcon(new ImageIcon("/src/images/icons/Bill24.png"));
         btnXuatHoaDon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnXuatHoaDon.setPreferredSize(new Dimension(100, 30));
         btnXuatHoaDon.setForeground(Color.WHITE);
@@ -287,10 +296,10 @@ public class BanHangGUI extends JPanel implements ActionListener {
         pnlThongTinSPGH.add(lblXuatXu);
         pnlThongTinSPGH.add(lblDonGia);
 
+        // pnlButton.add(btnXem);
         pnlButton.add(btnLuu);
-        // pnlButton.add(btnHuy);
-        pnlButton.add(btnXuatHoaDon);
         pnlButton.add(btnXoa);
+        pnlButton.add(btnXuatHoaDon);
 
         pnlBHPhai.add(pnlThongTinSPGH, BorderLayout.NORTH);
         pnlBHPhai.add(lblAnhSP, BorderLayout.CENTER);
@@ -309,7 +318,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblThongTinHD.setForeground(new Color(255, 255, 255));
         lblMaHD = new JLabel("Mã Hóa Đơn:");
         lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblMaKH = new JLabel("Mã Khách Hàng:");
+        lblMaKH = new JLabel("Khách Hàng:");
         lblMaKH.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNVLap = new JLabel("Nhân Viên Lập:");
         lblNVLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -317,8 +326,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblTongTien = new JLabel("Tổng Tiền:");
         lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblGhiChu = new JLabel("Ghi Chú:");
-        lblGhiChu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaTu = new JTextField(10);
         txtGiaTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaDen = new JTextField(10);
@@ -340,7 +347,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         tblDSHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblDSHD.setRowHeight(25);
         String[] dsHDColumns = { "Mã HD", "Ngày Lập", "Tổng tiền" };
-        dsHDModel = new DefaultTableModel(dsHDColumns, 0){
+        dsHDModel = new DefaultTableModel(dsHDColumns, 0) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -367,7 +374,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         tblCTHD.getTableHeader().setForeground(new Color(255, 255, 255));
         tblCTHD.setRowHeight(25);
         String[] cthdColumns = { "Mã Hóa Đơn", "Serial", "Tên sản phẩm", "Đơn giá" };
-        dsCTModel = new DefaultTableModel(cthdColumns, 0){
+        dsCTModel = new DefaultTableModel(cthdColumns, 0) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -380,7 +387,14 @@ public class BanHangGUI extends JPanel implements ActionListener {
         spnCTHD.setBackground(new Color(255, 255, 255));
         txtMaHD = new JTextField(10);
         txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 14));
-
+        txtMaHD.addKeyListener( new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setChiTietHoaDonTable();
+                }
+            }
+        });
         JLabel jLabeltk = new JLabel("Tìm kiếm");
         jLabeltk.setFont(new Font("Tahoma", Font.BOLD, 14));
         JLabel jLabelgia1 = new JLabel("Giá từ");
@@ -406,7 +420,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panelHD2.add(lblNVLap);
         panelHD2.add(lblNgayLap);
         panelHD2.add(lblTongTien);
-        panelHD2.add(lblGhiChu);
 
         JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 0, 5));
         panelHD3.setBackground(Color.WHITE);
@@ -463,10 +476,16 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
+
+        tableAddListener();
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+        dshd = HoaDonBUS.getDanhSachHoaDon();
+        cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+
         loadData();
 
         btnXoa.addActionListener(this);
-        // btnHuy.addActionListener(this);
+        // btnXem.addActionListener(this);
         btnLuu.addActionListener(this);
         btnXuatHoaDon.addActionListener(this);
     }
@@ -474,12 +493,11 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private ArrayList<ChiTietSanPhamDTO> dssp;
     private ArrayList<HoaDonDTO> dshd;
     private ArrayList<ChiTietHoaDonDTO> cthd;
-    private ArrayList<ChiTietSanPhamDTO> dsgh;
-
+    private ArrayList<ChiTietSanPhamDTO> dsgh = new ArrayList<>();
 
     public void loadDanhSachSanPham() {
 
-        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+        sanPhamModel.setRowCount(0);
 
         for (ChiTietSanPhamDTO chiTietSanPhamDTO : dssp) {
             if (chiTietSanPhamDTO.isSold()) {
@@ -496,7 +514,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
     public void loadDanhSachHoaDon() {
 
-        dshd = HoaDonBUS.getDanhSachHoaDon();
+        dsHDModel.setRowCount(0);
 
         for (HoaDonDTO hoaDonDTO : dshd) {
             Object[] hoaDonData = { hoaDonDTO.getBillId(), hoaDonDTO.getDate(), hoaDonDTO.getTotalPrice() };
@@ -506,7 +524,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
     public void loadChiTietHoaDon() {
 
-        cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+        dsCTModel.setRowCount(0);
 
         for (ChiTietHoaDonDTO chiTietHoaDonDTO : cthd) {
             ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
@@ -520,6 +538,8 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
     public void loadDanhSachGioHang() {
 
+        gioHangModel.setRowCount(0);
+
         for (ChiTietSanPhamDTO chiTietSanPhamDTO : dsgh) {
             SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
             HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
@@ -529,90 +549,143 @@ public class BanHangGUI extends JPanel implements ActionListener {
             gioHangModel.addRow(sanPhamData);
         }
     }
+
     public void loadData() {
         loadDanhSachSanPham();
         loadDanhSachHoaDon();
         loadChiTietHoaDon();
     }
 
-
-    public void capNhatSanPhamDaBan(){
+    public void capNhatSanPhamDaBan() {
         ChiTietSanPhamBUS.danhDauDanhSachDaBan(dsgh);
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
         loadDanhSachSanPham();
     }
-    public void themVaoGioHang(){
+
+    public void themVaoGioHang() {
         int selectedIndex = tblSanPham.getSelectedRow();
         if (selectedIndex == -1) {
             return;
         }
         int serial = (int) tblSanPham.getValueAt(selectedIndex, 0);
+        for (ChiTietSanPhamDTO chiTietSanPhamDTO2 : dsgh) {
+            if (chiTietSanPhamDTO2.getProductSerialId() == serial) {
+                return;
+            }
+        }
         ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
         dsgh.add(chiTietSanPhamDTO);
         loadDanhSachGioHang();
     }
-    public void xoaKhoiGioHang(){
+
+    public void xoaKhoiGioHang() {
         int selectedIndex = tblGioHang.getSelectedRow();
-        if(selectedIndex == -1){
+        if (selectedIndex == -1) {
             return;
         }
         dsgh.remove(selectedIndex);
         loadDanhSachGioHang();
     }
-    public void xoaTatCaKhoiGioHang(){
+
+    public void xoaTatCaKhoiGioHang() {
         dsgh.clear();
         loadDanhSachGioHang();
     }
-    public HoaDonDTO taoHoaDon(){
-        HoaDonDTO hoaDonDTO = new HoaDonDTO();
-        return hoaDonDTO;
-    }
-    public ArrayList<ChiTietHoaDonDTO> taoChiTietHoaDon(){
-        ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs = new ArrayList<>();
-        return chiTietHoaDonDTOs;
-    }
-    public void muaHang(){
-        if(dsgh.size() == 0){
+
+    public void muaHang() {
+        if (dsgh.size() == 0) {
             JOptionPane.showMessageDialog(null, "Hãy thêm sản phẩm vào giỏ hàng !");
             return;
         }
-        capNhatSanPhamDaBan();
-        xoaKhoiGioHang();
+        // capNhatSanPhamDaBan();
+        xoaTatCaKhoiGioHang();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==btnLuu){
+        if (e.getSource() == btnLuu) {
             themVaoGioHang();
         }
-        if (e.getSource()==btnXoa) {
+        if (e.getSource() == btnXoa) {
             xoaKhoiGioHang();
         }
-        if (e.getSource()==btnXuatHoaDon) {
+        if (e.getSource() == btnXuatHoaDon) {
             muaHang();
         }
+        // if (e.getSource()==btnXem){}
     }
 
-    public void setThongTinSanPham(){
+    public void xemThongTinSanPham(ChiTietSanPhamDTO chiTietSanPhamDTO, SanPhamDTO sanPhamDTO, String hang,
+            String loai) {
+        lblID.setText("Serial: " + chiTietSanPhamDTO.getProductSerialId());
+        lblTen.setText("Tên sản phẩm: " + sanPhamDTO.getProduct_name());
+        lblHang.setText("Hãng: " + hang);
+        lblTheLoai.setText("Thể loại: " + loai);
+        lblXuatXu.setText("Xuất Xứ: " + sanPhamDTO.getCountry());
+        lblNamSanXuat.setText("Năm sản xuất: " + sanPhamDTO.getYear_of_product());
+        lblDonGia.setText("Đơn Giá: " + sanPhamDTO.getOutput_price());
+        ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+        Image image = icon.getImage();
+        Image newImage = image.getScaledInstance(300, 300, Image.SCALE_DEFAULT);
+        ImageIcon newIcon = new ImageIcon(newImage);
+        lblAnhSP.setIcon(newIcon);
+    }
+
+    public void xemThongTinHoaDon(HoaDonDTO hoaDonDTO) {
+        lblMaHD.setText("Mã Hóa Đơn: " + hoaDonDTO.getBillId());
+        KhachHang khachHang = KhachHangBUS.getKhachHangByID(hoaDonDTO.getCustomerId());
+        lblMaKH.setText("Khách Hàng: " + khachHang.getCustomerId_Name());
+        NhanVien nhanVien = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
+        lblNVLap.setText("Nhân Viên Lập: " + nhanVien.getStaffId_Name());
+        lblNgayLap.setText("Ngày Lập: " + hoaDonDTO.getDate());
+        lblTongTien.setText("Tổng Tiền: " + hoaDonDTO.getTotalPrice());
+        txtMaHD.setText(hoaDonDTO.getBillId() + "");
+        setChiTietHoaDonTable();
 
     }
-    public void SetThongTinHoaDon(){
-
+    public void setChiTietHoaDonTable(){
+        int maHoaDon=-1;
+        if(!txtMaHD.getText().isEmpty()){
+            maHoaDon = Integer.parseInt(txtMaHD.getText());
+        }
+        
+        if(maHoaDon == -1){
+            cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+        } else {
+            cthd = ChiTietHoaDonBUS.getChiTietHoaDonByID(maHoaDon);    
+        }
+        loadChiTietHoaDon();
     }
 
     public void tableAddListener() {
         tblSanPham.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                
+                int selectedIndex = tblSanPham.getSelectedRow();
+                int serial = (int) tblSanPham.getValueAt(selectedIndex, 0);
+                ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
+                SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+                String hang = tblSanPham.getValueAt(selectedIndex, 2).toString();
+                String theLoai = tblSanPham.getValueAt(selectedIndex, 3).toString();
+                xemThongTinSanPham(chiTietSanPhamDTO, sanPhamDTO, hang, theLoai);
             }
         });
         tblDSHD.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-
+                int selectedIndex = tblDSHD.getSelectedRow();
+                int maHoaDon = (int) tblDSHD.getValueAt(selectedIndex, 0);
+                HoaDonDTO hoaDonDTO = HoaDonBUS.getHoaDonByID(maHoaDon);
+                xemThongTinHoaDon(hoaDonDTO);
             }
         });
         tblGioHang.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-
+                int selectedIndex = tblGioHang.getSelectedRow();
+                int serial = (int) tblGioHang.getValueAt(selectedIndex, 0);
+                ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(serial);
+                SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+                String hang = tblGioHang.getValueAt(selectedIndex, 2).toString();
+                String theLoai = tblGioHang.getValueAt(selectedIndex, 3).toString();
+                xemThongTinSanPham(chiTietSanPhamDTO, sanPhamDTO, hang, theLoai);
             }
         });
     }

@@ -20,6 +20,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import java.awt.Cursor;
+
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -44,7 +46,7 @@ import java.awt.event.ActionEvent;
 public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
-    private JTextField txtTmKim;
+    private JTextField txtTmKiem;
     private JTable table;
     private final ButtonGroup buttonGroup = new ButtonGroup();
 //    private JButton btnChiTiet;
@@ -54,6 +56,12 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
 	private DefaultTableModel dtmTableModel;
+	private JComboBox comboBoxHang;
+	private JComboBox comboBoxLoai;
+	private DefaultComboBoxModel dcmHang;
+	private DefaultComboBoxModel dcmLoai;
+	private JButton btnTim;
+
 
 	private ArrayList<SanPhamDTO> dsSanPham;
     
@@ -81,20 +89,37 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
 		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
 		
-		JPanel pnlTrangThai = new JPanel();
-		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
-		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
+		JPanel panelloc = new JPanel(new FlowLayout());
+
+		JPanel pnlHang = new JPanel();
+		panelloc.add(pnlHang);
+		pnlHang.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Hãng", "SGU"}));
-		pnlTrangThai.add(comboBox);
+		comboBoxHang = new JComboBox();
+		comboBoxHang.setFocusable(false);
+		comboBoxHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBoxHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		dcmHang = new DefaultComboBoxModel();
+		comboBoxHang.setModel(dcmHang);
+		pnlHang.add(comboBoxHang);
+
+		JPanel pnlLoai = new JPanel();
+		panelloc.add(pnlLoai);
+		pnlLoai.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel pnlChucVu = new JPanel();
-		pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
-		pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
+		comboBoxLoai = new JComboBox();
+		comboBoxLoai.setFocusable(false);
+		comboBoxLoai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBoxLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		dcmLoai = new DefaultComboBoxModel();
+		comboBoxLoai.setModel(dcmLoai);
+		pnlLoai.add(comboBoxLoai);
+
+		pnlLocNangCao.add(panelloc, BorderLayout.WEST);
+		
+		// JPanel pnlChucVu = new JPanel();
+		// pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
+		// pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
 		
 //		JComboBox comboBox_1 = new JComboBox();
 //		comboBox_1.setFocusable(false);
@@ -107,18 +132,18 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		txtTmKim = new JTextField();
-		txtTmKim.setMinimumSize(new Dimension(250, 19));
-		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTmKim.setColumns(10);
-		panel_1.add(txtTmKim);
+		txtTmKiem = new JTextField();
+		txtTmKiem.setMinimumSize(new Dimension(250, 19));
+		txtTmKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtTmKiem.setColumns(10);
+		panel_1.add(txtTmKiem);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
 		pnlSearch.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnTim = new JButton("Làm mới");
+		btnTim = new JButton("Làm mới");
 		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -224,22 +249,31 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		table.getTableHeader().setBackground(new Color(36,136,203));
 		table.getTableHeader().setForeground(new Color(255,255,255));
 		table.setRowHeight(25);
-		
+
+
+		//load sữ liệu
+		dsSanPham = SanPhamBUS.getDanhSachSanPham();
+		loadComboboxHang();		
+		loadComboboxLoai();
+		loadDanhSachSanPham();
 		// Sự kiện lắng nghe click
 		// btnChiTiet.addActionListener(this);
+		comboBoxHang.addActionListener(this);
+		comboBoxLoai.addActionListener(this);
+		btnTim.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 
-		loadDanhSachSanPham();
+
 
 	}
 
 	private void loadDanhSachSanPham(){
 		// String[] s = {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái"};
-		dsSanPham = SanPhamBUS.getDanhSachSanPham();
+		
 		for (SanPhamDTO sanPhamDTO : dsSanPham) {
 			HangDTO hang = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
 			TheLoaiDTO theLoai = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
@@ -266,5 +300,43 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 			}
 			});
 		}
+		if (e.getSource()==btnTim || e.getSource()==comboBoxHang || e.getSource()==comboBoxLoai) {
+			timKiemSanPham();
+		}
     }
+
+	public void timKiemSanPham(){
+		String tenhang = comboBoxHang.getSelectedItem().toString();
+		int hangId=-1;
+		if (tenhang!="Tất cả") {
+			HangDTO hang = HangBUS.getHangByName(tenhang);
+			hangId = hang.getBrand_id();
+		}
+		String tenloai = comboBoxLoai.getSelectedItem().toString();
+		int loaiId=-1;
+		if (tenloai!="Tất cả") {
+			TheLoaiDTO loai = TheLoaiBUS.getTheLoaiByName(tenloai);
+			loaiId = loai.getCategory_id();
+		}
+		String ten = txtTmKiem.getText();
+		dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten);
+		loadDanhSachSanPham();
+	}
+
+	public void loadComboboxLoai(){
+		dcmLoai.addElement("Tất cả");
+		dcmLoai.setSelectedItem(dcmLoai.getElementAt(0));
+		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
+		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
+			dcmLoai.addElement(theLoaiDTO.getCategory_name());
+		}
+	}
+	public void loadComboboxHang(){
+		dcmHang.addElement("Tất cả");
+		dcmHang.setSelectedItem(dcmHang.getElementAt(0));
+		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
+		for (HangDTO hangDTO : hangDTOs) {
+			dcmHang.addElement(hangDTO.getBrand_name());
+		}
+	}
 }
