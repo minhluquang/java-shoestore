@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -49,7 +51,7 @@ public class NhapHangGUI extends JPanel {
 	private JTextField txtSoLuong;
 	private DefaultTableModel defaultTableModelCT;
 	private JTable tableCT;
-	private JTextField txtGiaNhap;
+	private JLabel txtGiaNhap;
 	private SanPhamDTO sp = new SanPhamDTO();
 	private JLabel lblLoai;
 	private JLabel lblTenSp;
@@ -62,6 +64,7 @@ public class NhapHangGUI extends JPanel {
 	 * Create the panel.
 	 */
 	public NhapHangGUI() {
+
 		setLayout(new GridLayout(0, 2, 0, 0));
 
 		JPanel panel = new JPanel();
@@ -72,6 +75,16 @@ public class NhapHangGUI extends JPanel {
 		panel.add(pnlTop, BorderLayout.NORTH);
 
 		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					String enteredText = textField.getText();
+					ArrayList<SanPhamDTO> arr = PhieuNhapBUS.searchObjectById(enteredText);
+					loadDanhSachSanPham(arr);
+				}
+			}
+		});
 		textField.setBorder(
 				new TitledBorder(null, "T\u00ECm ki\u1EBFm", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -79,6 +92,12 @@ public class NhapHangGUI extends JPanel {
 		textField.setColumns(12);
 
 		JButton btnNewButton = new JButton("Làm mới");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textField.setText("");
+				loadDanhSachSanPham();
+			}
+		});
 		btnNewButton.setPreferredSize(new Dimension(130, 30));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		pnlTop.add(btnNewButton);
@@ -203,10 +222,10 @@ public class NhapHangGUI extends JPanel {
 				"T\u00EAn s\u1EA3n ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_3.add(lblTenSp);
 
-		txtGiaNhap = new JTextField();
-		txtGiaNhap.setPreferredSize(new Dimension(100, 40));
+		txtGiaNhap = new JLabel();
+		txtGiaNhap.setEnabled(false);
 		txtGiaNhap.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtGiaNhap.setColumns(8);
+		txtGiaNhap.setPreferredSize(new Dimension(120, 35));
 		txtGiaNhap.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Gi\u00E1 nh\u1EADp", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -386,10 +405,21 @@ public class NhapHangGUI extends JPanel {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+
+//					============ TẠO SERI TRONG BẢNG PRODUCT_DETAIL ===============
+					for (int i = 0; i < quantity; i++) {
+						boolean success_CT = ChiTietPhieuNhapBUS.insertProductDetail(product_id);
+						if (!success_CT) {
+							JOptionPane.showMessageDialog(null, "Tạo sản phẩm trong product_detail thất bại !",
+									"Thông báo", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
 				}
 				if (PhieuNhapBUS.update_Total_Price(receipt_id)) {
 					JOptionPane.showMessageDialog(null, "Thành công !", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 				}
+
 				loadDanhSachSanPham();
 				reset();
 			}
@@ -459,7 +489,9 @@ public class NhapHangGUI extends JPanel {
 					lblMa.setText(String.valueOf(table.getValueAt(selectedRow, 0)));
 					lblLoai.setText((String) table.getValueAt(selectedRow, 1));
 					lblTenSp.setText((String) table.getValueAt(selectedRow, 2));
-					txtGiaNhap.setText("");
+					String giaBan = PhieuNhapBUS.getInPutPriceByProductId(lblMa.getText());
+					String giaNhap = PhieuNhapBUS.tinhGiaNhap(Integer.parseInt(giaBan));
+					txtGiaNhap.setText(giaNhap);
 					txtSoLuong.setText("");
 				}
 			}
@@ -479,6 +511,15 @@ public class NhapHangGUI extends JPanel {
 
 	public void loadDanhSachSanPham() {
 		ArrayList<SanPhamDTO> arr = SanPhamBUS.getDanhSachSanPham();
+		defaultTableModel.setRowCount(0);
+		for (SanPhamDTO s : arr) {
+			String tenTheLoai = TheLoaiBUS.getTheLoaiByID(s.getCategory_id()).getCategory_name();
+			Object[] row = { s.getProduct_id(), tenTheLoai, s.getProduct_name(), s.getCountry(), s.getQuantity() };
+			defaultTableModel.addRow(row);
+		}
+	}
+
+	public void loadDanhSachSanPham(ArrayList<SanPhamDTO> arr) {
 		defaultTableModel.setRowCount(0);
 		for (SanPhamDTO s : arr) {
 			String tenTheLoai = TheLoaiBUS.getTheLoaiByID(s.getCategory_id()).getCategory_name();
@@ -509,6 +550,9 @@ public class NhapHangGUI extends JPanel {
 		}
 		DefaultTableModel model = (DefaultTableModel) tableCT.getModel();
 		model.removeRow(rowSelected);
+		if (tableCT.getRowCount() == 0) {
+			lblTongTien.setText("0.0");
+		}
 	}
 
 	public void reset() {
