@@ -131,7 +131,7 @@ public class ThongKeTonKhoGUI extends JPanel {
 		tblThongKe.setIntercellSpacing(new Dimension(0, 0));
 		tblThongKe.setFocusable(false);
 		
-		dtmThongKe = new DefaultTableModel(new Object[] {"STT","Mã SP", "Tên sản phẩm","SL Nhập", "SL Xuất", "Tồn kho"}, 0);
+		dtmThongKe = new DefaultTableModel(new Object[] {"STT","Mã SP", "Tên sản phẩm","SL Nhập", "SL đã bán", "Tồn kho"}, 0);
 		tblThongKe.setModel(dtmThongKe);
 		tblThongKe.setDefaultEditor(Object.class, null);
 		pnl_right.setLayout(new BorderLayout(0, 0));

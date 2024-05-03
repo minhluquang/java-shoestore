@@ -89,7 +89,7 @@ public class KhuyenmaiDAO {
 		    connectDB.closeConnection();
 		    return isExist;
 		}
-	  public static boolean updateKhuyenMai(String discount_code, int discount_value , String type, String start_date, String end_date, int status) {
+	  public static boolean updateKhuyenMai(String discount_code, int discount_value, String type,String start_date, String end_date,int status) {
 		  connectDB.getConnection();  
 		  boolean success = false;
 		  Connection connection = null;
@@ -117,7 +117,7 @@ public class KhuyenmaiDAO {
 		    return success;
 		}
 
-		public static boolean insertKhuyenMai(String discount_code, int status, int discount_value, String start_date, String end_date, String type) {
+		public static boolean insertKhuyenMai(String discount_code, int discount_value, String type,String start_date, String end_date,int status) {
 			connectDB.getConnection();
 			boolean success = false;
 		    Connection connection = null;

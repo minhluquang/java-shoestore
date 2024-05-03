@@ -292,7 +292,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener{
             } else {
                 status = "0";
             }
-            Object[] row = new Object[]{km.getDiscount_code(),km.getStatus(), km.getDiscount_value(), km.getStart_date(), km.getEnd_date(), status};
+            Object[] row = new Object[]{km.getDiscount_code(), km.getDiscount_value(), km.getStart_date(), km.getEnd_date(), km.getStatus(),status};
             model.addRow(row);
         }
     }

@@ -261,6 +261,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	    String type = txtPhanTramGiamGia.getText();
 	    String startDate = txtStartDate.getText();
 	    String endDate = txtEndDate.getText();
+	   
 	    int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
 	    // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
 	    if (discountCode.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
@@ -299,6 +300,6 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	    txtDieuKien.setText(String.valueOf(km.getDiscount_value()));
 	    txtPhanTramGiamGia.setText(km.getType());
 	    txtStartDate.setText(km.getStart_date());
-	    txtEndDate.setText(km.getEnd_date());
+	    txtEndDate.setText(km.getEnd_date());	   
 	}
 }
