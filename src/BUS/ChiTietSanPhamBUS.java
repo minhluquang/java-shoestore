@@ -2,6 +2,8 @@ package BUS;
 
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DAO.ChiTietSanPhamDAO;
 import DTO.ChiTietSanPhamDTO;
 
@@ -27,6 +29,14 @@ public class ChiTietSanPhamBUS {
     }
 
     public static boolean suaChiTietSanPham(ChiTietSanPhamDTO productDetails) {
+        
         return ChiTietSanPhamDAO.suaProductDetails(productDetails);
+    }
+
+    public static boolean danhDauDanhSachDaBan(ArrayList<ChiTietSanPhamDTO> chiTietSanPhamDTOs){
+        return ChiTietSanPhamDAO.danhDauDanhSachDaBan(chiTietSanPhamDTOs);
+    }
+    public static boolean danhDauDaBan(int product_details_id){
+        return ChiTietSanPhamDAO.danhDauDaBan(product_details_id);
     }
 }

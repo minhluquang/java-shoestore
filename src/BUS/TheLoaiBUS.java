@@ -24,4 +24,7 @@ public class TheLoaiBUS {
     public static boolean suaTheLoai(TheLoaiDTO theLoaiDTO){
         return TheLoaiDAO.suaTheLoai(theLoaiDTO);
     }
+    public static TheLoaiDTO getTheLoaiByName(String category_name){
+        return TheLoaiDAO.getTheLoaiByName(category_name);
+    }
 }

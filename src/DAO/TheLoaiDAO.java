@@ -139,4 +139,26 @@ public class TheLoaiDAO {
         return count;
     }
 
+    public static TheLoaiDTO getTheLoaiByName(String category_name) {
+        TheLoaiDTO category = new TheLoaiDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM categories WHERE category_name = " + category_name;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int category_id = rs.getInt("category_id");
+                boolean status = rs.getBoolean("status");
+
+                category.setCategory_id(category_id);
+                category.setCategory_name(category_name);
+                category.setStatus(status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return category;
+    }
+
 }

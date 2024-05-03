@@ -62,4 +62,12 @@ public class NhanVienBUS {
 	public static int getAccountIdByStaffId(int staffId) {
 		return NhanVienDAO.getAccountIdByStaffId(staffId);
 	}
+
+	public static NhanVien getNhanVienByID(int id) {
+		return NhanVienDAO.getNhanVienByID(id);
+	}
+
+	public static NhanVien getNhanVienByAccountID(int id){
+		return NhanVienDAO.getNhanVienByAccountID(id);
+	}
 }

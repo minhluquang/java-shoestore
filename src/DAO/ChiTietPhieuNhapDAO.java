@@ -77,4 +77,24 @@ public class ChiTietPhieuNhapDAO {
 		return success;
 	}
 
+	public static boolean insertProductDetail(int product_id) {
+		connectDB.getConnection();
+		boolean success = false;
+		int sold = 0;
+		String sql = "INSERT INTO `product_details`(`product_id`, `sold`) VALUES (?,?)";
+		try {
+			PreparedStatement mystm = connectDB.prepareStatement(sql);
+			mystm.setInt(1, product_id);
+			mystm.setInt(2, sold);
+
+			int i = mystm.executeUpdate();
+			if (i > 0) {
+				success = true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return success;
+	}
 }

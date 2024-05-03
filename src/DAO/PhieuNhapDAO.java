@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import DTO.PhieuNhap;
+import DTO.SanPhamDTO;
 
 public class PhieuNhapDAO {
 
@@ -159,5 +160,80 @@ public class PhieuNhapDAO {
 		}
 		connectDB.closeConnection();
 		return success;
+	}
+
+	public static String getInPutPriceByProductId(String product_id) {
+		connectDB.getConnection();
+		String res = "";
+		String sql = "Select output_price from products where product_id = " + product_id;
+		try {
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				res = rs.getString("output_price");
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public static ArrayList<SanPhamDTO> searchObjectById(String enteredText) {
+		connectDB.getConnection();
+		ArrayList<SanPhamDTO> ds = new ArrayList<>();
+		String sql = "SELECT * FROM products WHERE product_name LIKE '%" + enteredText + "%'";
+		try {
+			ResultSet rs = connectDB.runQuery(sql);
+			while (rs.next()) {
+				int product_id = rs.getInt("product_id");
+				int category_id = rs.getInt("category_id");
+				int brand_id = rs.getInt("brand_id");
+				String product_name = rs.getString("product_name");
+				int output_price = rs.getInt("output_price");
+				String country = rs.getString("country");
+				int year_of_product = rs.getInt("year_of_product");
+				String image_path = rs.getString("image_path");
+				int quantity = rs.getInt("quantity");
+				boolean status = rs.getBoolean("status");
+
+				SanPhamDTO product = new SanPhamDTO(product_id, category_id, brand_id, product_name, output_price,
+						country, year_of_product, image_path, quantity, status);
+				ds.add(product);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		connectDB.closeConnection();
+		return ds;
+	}
+
+	public static ArrayList<PhieuNhap> searchByDays(String bd, String kt, String query) {
+		connectDB.getConnection();
+		ArrayList<PhieuNhap> arr = new ArrayList<>();
+		String sql = "SELECT * FROM `goodsreceipts` WHERE date BETWEEN " + "'" + bd + "'" + "AND" + "'" + kt + "'";
+		if (!query.equals("")) {
+			sql = "SELECT * FROM goodsreceipts INNER JOIN staffs ON goodsreceipts.staff_id = staffs.staff_id WHERE staffs.fullname LIKE "
+					+ "'%" + query + "%' AND date BETWEEN " + "'" + bd + "'" + "AND" + "'" + kt + "'" + "LIMIT 100";
+		}
+		try {
+			ResultSet rs = connectDB.runQuery(sql);
+			while (rs.next()) {
+				PhieuNhap pn = new PhieuNhap();
+				pn.setReceipt_id(rs.getInt("receipt_id"));
+				pn.setDate(rs.getString("date"));
+				pn.setTotal_price(rs.getInt("total_price"));
+				pn.setSupplier_id(rs.getInt("supplier_id"));
+				pn.setStaff_id(rs.getInt("staff_id"));
+				arr.add(pn);
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		return arr;
 	}
 }

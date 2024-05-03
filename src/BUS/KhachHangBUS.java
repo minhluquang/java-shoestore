@@ -45,4 +45,8 @@ public class KhachHangBUS {
 	public static boolean insertDanhSachKhachHang(ArrayList<KhachHang> dskh) {
 		return KhachHangDAO.insertDanhSachKhachHang(dskh);
 	}
+
+	public static KhachHang getKhachHangByID(int id) {
+		return KhachHangDAO.getKhachHangByID(id);
+	}
 }

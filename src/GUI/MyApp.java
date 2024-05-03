@@ -76,7 +76,7 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	private JPanel pnlThongKe;
 	
 	public String absolutePath = new File("").getAbsolutePath();
-	private static String username = "";
+	public static TaiKhoan user;
 
 	/**
 	 * Launch the application.
@@ -86,7 +86,7 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 			public void run() {
 				try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					MyApp frame = new MyApp(username);
+					MyApp frame = new MyApp(new TaiKhoan());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -98,8 +98,8 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	/**
 	 * Create the frame.
 	 */
-	public MyApp(String username) {
-		this.username = username;
+	public MyApp(TaiKhoan user) {
+		MyApp.user = user;
 		
 		setBackground(new Color(230, 230, 230));
 		addWindowListener(new WindowAdapter() {
@@ -551,11 +551,11 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	
 	// ========== Start: Xử lý quyền chọn tab ==========
 	public void phanQuyenChonTab() {
-		ArrayList<Quyen> dsqUser = QuyenBUS.getDanhSachQuyenByUsername(username);
+		ArrayList<Quyen> dsqUser = QuyenBUS.getDanhSachQuyenByUsername(user.getUsername());
 		JButton[] buttons = { btnTrangChu, btnThongKe, btnBanHang, btnSanPham, btnKhuyenMai, btnNhanVien, btnKhachHang,
 				btnPhieuNhap, btnReturn, btnTaiKhoan, btnPhanQuyen, btnWarranty, btnNhapHang,
 				btnNhaCungCap };
-		TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(username, true);
+		TaiKhoan tk = TaiKhoanBUS.getDetailTaiKhoanByUsername(user.getUsername(), true);
 		if (tk.getPosition().equalsIgnoreCase("admin")) {
 			for (JButton button : buttons) {
 				button.setEnabled(true);
@@ -598,6 +598,6 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
-	
+
 	
 }

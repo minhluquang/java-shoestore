@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,20 +12,31 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import BUS.NhaCungCapBUS;
 import BUS.PhieuNhapBUS;
@@ -37,14 +49,12 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 	private JTable table;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JButton btnChiTietPhieuNhap;
-	private JButton btnThem;
-	private JButton btnSua;
-	private JButton btnXoa;
 	private JButton btnNhapExcel;
 	private JButton btnXuatExcel;
 	private DefaultTableModel defaultTableModel;
 
 	private static ChiTietPhieuNhapGUI chiTietPhieuNhap;
+	private static ChiTietNhaCungCapGUI chiTietNhanVienGUI;
 
 	/**
 	 * Create the panel.
@@ -72,21 +82,57 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
 		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "Tất cả" }));
-		pnlTrangThai.add(comboBox);
-
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
-		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
+		panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		Date defaultDate = calendar.getTime();
+
+		// Tạo một SpinnerDateModel với giá trị mặc định là ngày hiện tại
+		SpinnerDateModel model = new SpinnerDateModel(defaultDate, null, null, Calendar.DAY_OF_MONTH);
+		SpinnerDateModel model_end = new SpinnerDateModel(defaultDate, null, null, Calendar.DAY_OF_MONTH);
+		JSpinner spinner = new JSpinner(model);
+		// Định dạng ngày tháng năm cho JSpinner
+		JSpinner.DateEditor editor = new JSpinner.DateEditor(spinner, "dd/MM/yyyy");
+		spinner.setEditor(editor);
+		// Đặt font và border cho spinner
+		spinner.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		spinner.setBorder(new TitledBorder(null, "Ngày bắt đầu", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		// Đặt kích thước cho spinner
+		spinner.setPreferredSize(new Dimension(100, 40));
+		// Thêm spinner vào panel
+		panel_1.add(spinner);
+
+		// Tạo một SpinnerDateModel với giá trị mặc định là ngày hiện tại
+
+		JSpinner spinner_end = new JSpinner(model_end);
+
+		// Định dạng ngày tháng năm cho JSpinner
+		JSpinner.DateEditor editor_end = new JSpinner.DateEditor(spinner_end, "dd/MM/yyyy");
+		spinner_end.setEditor(editor_end);
+
+		// Đặt font và border cho spinner
+		spinner_end.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		spinner_end
+				.setBorder(new TitledBorder(null, "Ngày kết thúc", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+		// Đặt kích thước cho spinner
+		spinner_end.setPreferredSize(new Dimension(100, 40));
+
+		// Thêm spinner vào panel
+		panel_1.add(spinner_end);
 
 		txtTmKim = new JTextField();
+		txtTmKim.setBorder(
+				new TitledBorder(null, "T\u00ECm Ki\u1EBFm", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		txtTmKim.setMinimumSize(new Dimension(250, 19));
-		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTmKim.setColumns(10);
+		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtTmKim.setColumns(20);
 		panel_1.add(txtTmKim);
 
 		JPanel panel_2 = new JPanel();
@@ -94,30 +140,53 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(0, 2, 0, 0));
 
-		JButton btnTim = new JButton("");
-		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
-		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnTim.setFocusable(false);
-		btnTim.setBackground(new Color(255, 255, 255));
-		panel_2.add(btnTim);
-
-		JButton btnLamMoi = new JButton("Làm mới");
-		btnLamMoi.addActionListener(new ActionListener() {
+		JButton btnFind = new JButton("Tìm Kiếm");
+		btnFind.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadDanhSachPhieuNhap();
+				Date start = (Date) spinner.getValue();
+				Date end = (Date) spinner_end.getValue();
+				System.out.println(start);
+				System.out.println(end);
+				int result = start.compareTo(end);
+				System.out.println(result);
+				if (result > 0) {
+					JOptionPane.showMessageDialog(null, "Ngày bắt đầu không được lớn hơn ngày kết thúc !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String formattedDate_start = sdf.format(start);
+				String formattedDate_end = sdf.format(end);
+
+				String query = txtTmKim.getText();
+				ArrayList<PhieuNhap> arr = PhieuNhapBUS.searchByDays(formattedDate_start, formattedDate_end, query);
+				loadDanhSachPhieuNhap(arr);
 			}
 		});
-		btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnLamMoi.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
-		btnLamMoi.setFocusable(false);
-		btnLamMoi.setBackground(Color.WHITE);
-		panel_2.add(btnLamMoi);
+		btnFind.setPreferredSize(new Dimension(150, 21));
+		btnFind.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnFind.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
+		btnFind.setFocusable(false);
+		btnFind.setBackground(Color.WHITE);
+		panel_2.add(btnFind);
+
+		JButton btnReset_1 = new JButton("Làm mới");
+		btnReset_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadDanhSachPhieuNhap();
+				txtTmKim.setText("");
+			}
+		});
+		btnReset_1.setPreferredSize(new Dimension(150, 21));
+		btnReset_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnReset_1.setFocusable(false);
+		btnReset_1.setBackground(Color.WHITE);
+		panel_2.add(btnReset_1);
 
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
-		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
-		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
+		pnlSearch.add(pnlTopBottom, BorderLayout.NORTH);
+		pnlTopBottom.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
 		btnChiTietPhieuNhap = new JButton("Chi Tiết");
 		btnChiTietPhieuNhap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -128,50 +197,25 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		btnChiTietPhieuNhap.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnChiTietPhieuNhap);
 
-		btnThem = new JButton("Thêm");
-		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
-		btnThem.setPreferredSize(new Dimension(0, 40));
-		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnThem.setFocusable(false);
-		btnThem.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnThem);
-
-		btnSua = new JButton("Sửa");
-		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSua.setIcon(new ImageIcon(absolutePath + "/src/images/icons/edit.png"));
-		btnSua.setPreferredSize(new Dimension(0, 40));
-		btnSua.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnSua.setFocusable(false);
-		btnSua.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnSua);
-
-		btnXoa = new JButton("Xoá");
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setPreferredSize(new Dimension(0, 40));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setFocusable(false);
-		btnXoa.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXoa);
-
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnNhapExcel.setPreferredSize(new Dimension(0, 40));
+		btnNhapExcel.setPreferredSize(new Dimension(150, 40));
 		btnNhapExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnNhapExcel.setFocusable(false);
 		btnNhapExcel.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnNhapExcel);
+		btnNhapExcel.addActionListener(this);
 
 		btnXuatExcel = new JButton("Xuất excel");
 		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnXuatExcel.setPreferredSize(new Dimension(0, 40));
+		btnXuatExcel.setPreferredSize(new Dimension(150, 40));
 		btnXuatExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnXuatExcel.setFocusable(false);
 		btnXuatExcel.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnXuatExcel);
+		btnXuatExcel.addActionListener(this);
 
 		JPanel panel_7 = new JPanel();
 		panel_7.setBackground(new Color(255, 255, 255));
@@ -234,11 +278,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		});
 
 		btnChiTietPhieuNhap.addActionListener(this);
-		btnThem.addActionListener(this);
-		btnSua.addActionListener(this);
-		btnXoa.addActionListener(this);
-		btnNhapExcel.addActionListener(this);
-		btnXuatExcel.addActionListener(this);
 	}
 
 	@Override
@@ -276,6 +315,12 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		} else if (e.getSource() == btnNhapExcel) {
 			// Xử lý khi button "Nhập excel" được nhấn
 		} else if (e.getSource() == btnXuatExcel) {
+			try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			// Xử lý khi button "Xuất excel" được nhấn
 		}
 	}
@@ -302,6 +347,19 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 
 	}
 
+	public void loadDanhSachPhieuNhap(ArrayList<PhieuNhap> dspn) {
+		defaultTableModel.setRowCount(0);
+		int rowNum = defaultTableModel.getRowCount();
+		for (PhieuNhap p : dspn) {
+			int stt = ++rowNum;
+			String TenNhanVien = PhieuNhapBUS.getTenNhanVienById(p.getStaff_id());
+			String TenNhaCungCap = NhaCungCapBUS.getTenNhaCungCapById(p.getSupplier_id());
+			Object[] row = { stt, p.getReceipt_id(), TenNhaCungCap, TenNhanVien, p.getDate(), p.getTotal_price() };
+			defaultTableModel.addRow(row);
+		}
+
+	}
+
 	public void hienThiThongTinPhieuNhap(int maPhieu) {
 		if (chiTietPhieuNhap == null || !chiTietPhieuNhap.isVisible()) {
 			chiTietPhieuNhap = new ChiTietPhieuNhapGUI(maPhieu);
@@ -310,5 +368,41 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		}
 		chiTietPhieuNhap.setVisible(true);
 		chiTietPhieuNhap.requestFocus();
+	}
+
+	public void exportExcel() throws IOException {
+		ArrayList<PhieuNhap> dsnv = PhieuNhapBUS.getDanhSachPhieuNhap();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dspn.xlsx");
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
+
+			// Ghi header
+			XSSFRow headerRow = sheet.createRow(0);
+			headerRow.createCell(0).setCellValue("receipt_id");
+			headerRow.createCell(1).setCellValue("supplier");
+			headerRow.createCell(2).setCellValue("staff_id");
+			headerRow.createCell(3).setCellValue("total_price");
+			headerRow.createCell(4).setCellValue("date");
+
+			// Ghi thông tin nhân viên
+			int rowNum = 1;
+			for (PhieuNhap nv : dsnv) {
+				XSSFRow row = sheet.createRow(rowNum++);
+				row.createCell(0).setCellValue(nv.getReceipt_id());
+				row.createCell(1).setCellValue(NhaCungCapBUS.getTenNhaCungCapById(nv.getSupplier_id()));
+				row.createCell(2).setCellValue(PhieuNhapBUS.getTenNhanVienById(nv.getStaff_id()));
+				row.createCell(3).setCellValue(nv.getTotal_price());
+				row.createCell(4).setCellValue(nv.getDate());
+			}
+
+			wb.write(fileOutputStream);
+			wb.close();
+			JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công",
+					JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
