@@ -367,7 +367,11 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         sanPhamDTO.setCategory_id(mapLoai.get(cbbLoai.getSelectedItem()).intValue());
                         
                         if (action=="add") {
-                                SanPhamBUS.themSanPham(sanPhamDTO);
+                                if (SanPhamBUS.isExistSanPham(sanPhamDTO.getProduct_name())) {
+                                        JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
+                                } else {
+                                        SanPhamBUS.themSanPham(sanPhamDTO);
+                                }
                         } else {
                                 SanPhamBUS.suaSanPham(sanPhamDTO);
                         }

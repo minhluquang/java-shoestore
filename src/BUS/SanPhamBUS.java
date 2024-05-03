@@ -31,4 +31,8 @@ public class SanPhamBUS {
 	public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name, int trangThai){
 		return SanPhamDAO.searchDanhSachSanPham(hang, loai, name, trangThai);
 	}
+
+	public static boolean isExistSanPham(String productName){
+		return SanPhamDAO.isExistSanPham(productName);
+	}
 }

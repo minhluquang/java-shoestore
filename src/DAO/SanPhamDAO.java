@@ -237,4 +237,22 @@ public class SanPhamDAO {
         return danhSachSanPham;
     }
 
+    public static boolean isExistSanPham(String productName){
+        boolean isExit=false;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM products WHERE product_name = "+productName;
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                if (rs.getInt("count")>0) {
+                    isExit=true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return isExit;
+    }
 }
