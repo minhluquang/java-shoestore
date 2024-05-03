@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -25,6 +27,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import BUS.NhaCungCapBUS;
 import DAO.NhaCungCapDAO;
@@ -256,6 +262,13 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 				loadDanhSachNhaCungCap();
 			}
 
+		} else if (e.getSource() == btnXuatExcel) {
+			try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -288,6 +301,39 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 			ncc.setSupplier_id(((int) table.getValueAt(row, 1)));
 			ncc.setSupplier_name((String) table.getValueAt(row, 2));
 			ncc.setSupplier_addresss((String) table.getValueAt(row, 3));
+		}
+	}
+
+	public void exportExcel() throws IOException {
+		ArrayList<NhaCungCap> dsnv = NhaCungCapBUS.getDanhSachNhaCungCap();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("dsncc.xlsx");
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
+
+			// Ghi header
+			XSSFRow headerRow = sheet.createRow(0);
+			headerRow.createCell(0).setCellValue("supplier_id");
+			headerRow.createCell(1).setCellValue("supplier_name");
+			headerRow.createCell(2).setCellValue("supplier_address");
+
+			// Ghi thông tin nhân viên
+			int rowNum = 1;
+			for (NhaCungCap nv : dsnv) {
+				XSSFRow row = sheet.createRow(rowNum++);
+				row.createCell(0).setCellValue(nv.getSupplier_id());
+				row.createCell(1).setCellValue(nv.getSupplier_name());
+				row.createCell(2).setCellValue(nv.getSupplier_addresss());
+
+			}
+
+			wb.write(fileOutputStream);
+			wb.close();
+			JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công",
+					JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
