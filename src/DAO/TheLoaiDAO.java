@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DTO.TheLoaiDTO;
 
 public class TheLoaiDAO {
@@ -160,5 +162,24 @@ public class TheLoaiDAO {
         }
         return category;
     }
-
+    
+    public static boolean isExistIdTheLoai(int categoryId) {
+    	boolean success = false;
+    	
+    	try {
+            connectDB.getConnection();
+            String sql = "SELECT * "
+            		+ "FROM categories "
+            		+ "WHERE category_id = " + categoryId;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return success;
+	}
 }
