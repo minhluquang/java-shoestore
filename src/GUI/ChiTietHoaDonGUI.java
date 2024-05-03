@@ -38,13 +38,17 @@ import javax.swing.table.DefaultTableModel;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import BUS.ChiTietHoaDonBUS;
+import BUS.ChiTietSanPhamBUS;
 import BUS.HoaDonBUS;
 import BUS.KhuyenMaiBUS;
+import BUS.SanPhamBUS;
 import BUS.TaiKhoanBUS;
 import DTO.ChiTietHoaDonDTO;
+import DTO.ChiTietSanPhamDTO;
 import DTO.HoaDonDTO;
 import DTO.KhachHang;
 import DTO.KhuyenMai;
+import DTO.SanPhamDTO;
 import DTO.TaiKhoan;
 
 /**
@@ -61,7 +65,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     private JTextField txtToTalPrice;
     private JTextField txtCustomerID;
     private JButton btnThemKhachHang;
-    private JComboBox<String> cmbDiscountCode;
+    private JComboBox<String> cbbDiscountCode;
     private DefaultComboBoxModel<String> dcmMaGiamGia;
     private JScrollPane spnSanPham;
     private JLabel lblDSSP;
@@ -75,8 +79,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     private final ButtonGroup buttonGroup = new ButtonGroup();
 
-    private HoaDonDTO hoaDonDTO;
-    private ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs;
+    public HoaDonDTO hoaDonDTO;
+    public BanHangGUI banHangGUI;
+    public ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs;
+    public int tamTinh;
 
     /**
      * Launch the application.
@@ -86,7 +92,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(new HoaDonDTO(), new ArrayList<>());
+                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(new HoaDonDTO(), new ArrayList<>(), new BanHangGUI());
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -98,9 +104,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public ChiTietHoaDonGUI(HoaDonDTO hoaDonDTO, ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs) {
+    public ChiTietHoaDonGUI(HoaDonDTO hoaDonDTO, ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs, BanHangGUI banHangGUI) {
         this.hoaDonDTO = hoaDonDTO;
         this.chiTietHoaDonDTOs = chiTietHoaDonDTOs;
+        this.banHangGUI = banHangGUI;
+        this.tamTinh = hoaDonDTO.getTotalPrice();
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -163,7 +171,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_2);
 
-        txtBillID = new JTextField(hoaDonDTO.getBillId());
+        txtBillID = new JTextField();
         txtBillID.setEnabled(false);
         txtBillID.setEditable(false);
         txtBillID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -179,7 +187,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtCustomerID.setColumns(10);
         txtCustomerID.setEnabled(false);
         panel_5.add(txtCustomerID);
-        
+
         btnThemKhachHang = new JButton("Thêm thông tin khách hàng");
         btnThemKhachHang.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(btnThemKhachHang);
@@ -188,8 +196,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3);
 
-        TaiKhoan taiKhoan = MyApp.user;
-        txtAccountID = new JTextField(taiKhoan.getAccountId());
+        txtAccountID = new JTextField();
         txtAccountID.setPreferredSize(new Dimension(100, 19));
         txtAccountID.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtAccountID.setColumns(10);
@@ -200,7 +207,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1);
 
-        txtDate = new JTextField(hoaDonDTO.getDate().toString());
+        txtDate = new JTextField();
         txtDate.setPreferredSize(new Dimension(100, 19));
         txtDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtDate.setColumns(10);
@@ -211,7 +218,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_1);
 
-        txtToTalPrice = new JTextField(hoaDonDTO.getTotalPrice());
+        txtToTalPrice = new JTextField();
         txtToTalPrice.setPreferredSize(new Dimension(100, 19));
         txtToTalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtToTalPrice.setColumns(10);
@@ -222,12 +229,12 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_3);
 
-        cmbDiscountCode = new JComboBox<>();
+        cbbDiscountCode = new JComboBox<>();
         dcmMaGiamGia = new DefaultComboBoxModel<>();
-        cmbDiscountCode.setModel(dcmMaGiamGia);
-        cmbDiscountCode.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        cmbDiscountCode.setFocusable(false);
-        panel_5.add(cmbDiscountCode);
+        cbbDiscountCode.setModel(dcmMaGiamGia);
+        cbbDiscountCode.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        cbbDiscountCode.setFocusable(false);
+        panel_5.add(cbbDiscountCode);
 
         JLabel lblNewLabel_7_1_1 = new JLabel("");
         panel_5.add(lblNewLabel_7_1_1);
@@ -306,55 +313,120 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
         contentPane.add(jPanelSanPham, BorderLayout.CENTER);
 
-        loadMaGiamGia();
+        loadData();
 
         btnThemKhachHang.addActionListener(this);
         btnHuy.addActionListener(this);
         btnLuu.addActionListener(this);
+        cbbDiscountCode.addActionListener(this);
     }
 
     public void loadMaGiamGia() {
         dcmMaGiamGia.addElement("Mã giảm giá");
-        dcmMaGiamGia.setSelectedItem(dcmMaGiamGia.getElementAt(0));
+        dcmMaGiamGia.setSelectedItem("Mã giảm giá");
         ArrayList<KhuyenMai> khuyenMais = KhuyenMaiBUS.getDanhSachKhuyenMai();
         for (KhuyenMai khuyenMai : khuyenMais) {
             dcmMaGiamGia.addElement(khuyenMai.getDiscount_code());
         }
     }
 
+    public void loadData() {
+        txtBillID.setText(hoaDonDTO.getBillId() + "");
+        txtDate.setText(hoaDonDTO.getDate().toString());
+        txtAccountID.setText(hoaDonDTO.getStaffId() + "");
+        txtToTalPrice.setText(hoaDonDTO.getTotalPrice() + "");
+        loadMaGiamGia();
+    }
+
+    public void loadChiTietHoaDon() {
+
+        sanPhamModel.setRowCount(0);
+
+        for (ChiTietHoaDonDTO chiTietHoaDonDTO : chiTietHoaDonDTOs) {
+            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
+                    .getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            Object[] ctHoaDonData = { chiTietHoaDonDTO.getBillId(), chiTietHoaDonDTO.getProductSerialId(),
+                    sanPhamDTO.getProduct_name(), chiTietHoaDonDTO.getPriceSingle() };
+            sanPhamModel.addRow(ctHoaDonData);
+        }
+    }
+
+    public void tinhToTalPrice() {
+        KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
+        if (khuyenMai.getType() == "AR") {
+            hoaDonDTO.setTotalPrice(hoaDonDTO.getTotalPrice() - khuyenMai.getDiscount_value());
+        } else {
+            int newtotal = hoaDonDTO.getTotalPrice() - (hoaDonDTO.getTotalPrice() * khuyenMai.getDiscount_value());
+            hoaDonDTO.setTotalPrice(newtotal);
+        }
+    }
+
+    public void addMaGiamGia(){
+        if(cbbDiscountCode.getSelectedItem().toString().equals("Mã giảm giá")){
+            hoaDonDTO.setTotalPrice(tamTinh);
+            hoaDonDTO.setDiscountCode(null);
+        } else {
+            hoaDonDTO.setDiscountCode(cbbDiscountCode.getSelectedItem().toString());
+            tinhToTalPrice();
+        }
+    }
+
+    public void danhDauDanhSachDaBanSanPham(ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs) {
+        for (ChiTietHoaDonDTO chiTietHoaDonDTO : chiTietHoaDonDTOs) {
+            ChiTietSanPhamBUS.danhDauDaBan(chiTietHoaDonDTO.getProductSerialId());
+        }
+    }
+    public void luuHoaDon(){
+        if (hoaDonDTO.getCustomerId() == -1) {
+            themKhachHang();
+        } else {
+            int op = JOptionPane.showConfirmDialog(null, "Lưu hóa đơn", "Xác nhận lưu", JOptionPane.YES_NO_OPTION);
+            if (op == JOptionPane.YES_OPTION) {
+                HoaDonBUS.themHoaDon(hoaDonDTO);
+                ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs);
+                danhDauDanhSachDaBanSanPham(chiTietHoaDonDTOs);
+                banHangGUI.reLoadData();
+                dispose();
+            }
+        }
+    }
+
+    public void themKhachHang() {
+        KhachHang khachHang = new KhachHang(-1, "", "");
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang);
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        panel_5.remove(btnThemKhachHang);
+        txtCustomerID.setText(khachHang.getCustomerId() + "");
+        hoaDonDTO.setCustomerId(khachHang.getCustomerId());
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==cbbDiscountCode){
+            addMaGiamGia();
+        }
         if (e.getSource() == btnThemKhachHang) {
-            KhachHang khachHang = new KhachHang();
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                        ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang, new KhachHangGUI());
-                        frame.setVisible(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            panel_5.remove(btnThemKhachHang);
-            panel_5.add(txtAccountID);
-            txtCustomerID.setText(khachHang.getCustomerId() + "");
+            themKhachHang();
         }
         if (e.getSource() == btnHuy) {
-            int op = JOptionPane.showConfirmDialog(null, "Bạn không muốn tạo hóa đơn", "Thoát chi tiết hóa đơn",
+            int op = JOptionPane.showConfirmDialog(null, "Hủy tạo hóa đơn", "Xác nhận hủy",
                     JOptionPane.YES_NO_OPTION);
             if (op == JOptionPane.YES_OPTION) {
                 dispose();
             }
         }
         if (e.getSource() == btnLuu) {
-            int op = JOptionPane.showConfirmDialog(null, "Lưu đơn hàng", "Lưu đơn hàng", JOptionPane.YES_NO_OPTION);
-            if (op == JOptionPane.YES_OPTION) {
-                HoaDonBUS.themHoaDon(hoaDonDTO);
-                ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs);
-                dispose();
-            }
+            luuHoaDon();
         }
     }
 }

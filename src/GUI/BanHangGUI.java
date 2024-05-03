@@ -134,8 +134,15 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private DefaultTableModel gioHangModel;
     private DefaultTableModel dsHDModel;
     private DefaultTableModel dsCTModel;
+    private ArrayList<ChiTietSanPhamDTO> dssp;
+    private ArrayList<HoaDonDTO> dshd;
+    private ArrayList<ChiTietHoaDonDTO> cthd;
+    private ArrayList<ChiTietSanPhamDTO> dsgh = new ArrayList<>();
+
+    public BanHangGUI banHangGUI;
 
     public BanHangGUI() {
+        this.banHangGUI = this;
         initComponents();
     }
 
@@ -494,10 +501,6 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnMuaHang.addActionListener(this);
     }
 
-    private ArrayList<ChiTietSanPhamDTO> dssp;
-    private ArrayList<HoaDonDTO> dshd;
-    private ArrayList<ChiTietHoaDonDTO> cthd;
-    private ArrayList<ChiTietSanPhamDTO> dsgh = new ArrayList<>();
 
     public void loadDanhSachSanPham() {
 
@@ -560,6 +563,13 @@ public class BanHangGUI extends JPanel implements ActionListener {
         loadChiTietHoaDon();
     }
 
+    public void reLoadData(){
+        dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+        dshd = HoaDonBUS.getDanhSachHoaDon();
+        cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
+        loadData();
+    }
+
     public void themVaoGioHang() {
         int selectedIndex = tblSanPham.getSelectedRow();
         if (selectedIndex == -1) {
@@ -601,6 +611,8 @@ public class BanHangGUI extends JPanel implements ActionListener {
             total += sp.getOutput_price();
         }
         hoaDonDTO.setTotalPrice(total);
+        NhanVien nv = NhanVienBUS.getNhanVienByAccountID(MyApp.user.getAccountId());
+        hoaDonDTO.setStaffId(nv.getStaffId());
         return hoaDonDTO;
     }
 
@@ -608,6 +620,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs = new ArrayList<>();
         for (ChiTietSanPhamDTO chiTietSanPhamDTO : dsgh) {
             ChiTietHoaDonDTO chiTietHoaDonDTO = new ChiTietHoaDonDTO();
+            chiTietHoaDonDTO.setBillId(billId);
             chiTietHoaDonDTO.setProductSerialId(chiTietSanPhamDTO.getProductSerialId());
             chiTietHoaDonDTO.setPriceSingle(SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId()).getOutput_price());
             chiTietHoaDonDTOs.add(chiTietHoaDonDTO);
@@ -626,7 +639,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(hoaDonDTO, chiTietHoaDonDTOs);
+                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(hoaDonDTO, chiTietHoaDonDTOs, banHangGUI);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
