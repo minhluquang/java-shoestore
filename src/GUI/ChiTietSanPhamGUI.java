@@ -82,14 +82,13 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
         public String action;
         public QuanLySanPhamGUI quanLySanPhamGUI;
 
-
         public ChiTietSanPhamGUI() {
                 initComponent();
         }
 
         public ChiTietSanPhamGUI(SanPhamDTO sanPham, String action, QuanLySanPhamGUI quanLySanPhamGUI) {
                 this.sanPhamDTO = sanPham;
-                this.action=action;
+                this.action = action;
                 this.quanLySanPhamGUI = quanLySanPhamGUI;
                 initComponent();
                 loadData();
@@ -313,7 +312,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
         }
 
         public void luuSanPham() {
-                boolean isValid=true;
+                boolean isValid = true;
                 String error = "";
                 String xuatXu = txtXuatXu.getText();
                 String giaBan = txtGiaBan.getText();
@@ -341,22 +340,22 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 }
                 if (!isValidCountry(xuatXu)) {
                         isValid = false;
-                        error+="Xuất xứ không được chứa ký tự đặt biệt và số\n";
+                        error += "Xuất xứ không được chứa ký tự đặt biệt và số\n";
                 }
                 if (!isValidOutputPrice(giaBan)) {
                         isValid = false;
-                        error+="Giá bán phải lớn hơn 0\n";
+                        error += "Giá bán phải lớn hơn 0\n";
                 }
                 if (!isValidProductName(tenSp)) {
                         isValid = false;
-                        error+="Tên sản phảm không được chứa ký tự đặt biệt\n";
+                        error += "Tên sản phảm không được chứa ký tự đặt biệt\n";
                 }
                 if (!isValidYear(Integer.parseInt(namSx))) {
                         isValid = false;
-                        error+="Năm phải là số, lớn hơn 1900\n";
+                        error += "Năm phải là số, lớn hơn 1900\n";
                 }
                 if (isValid) {
-                        if (sanPhamDTO.getImage_path()==null) {
+                        if (sanPhamDTO.getImage_path() == null) {
                                 sanPhamDTO.setImage_path("");
                         }
                         sanPhamDTO.setProduct_name(tenSp);
@@ -365,16 +364,22 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         sanPhamDTO.setYear_of_product(Integer.parseInt(namSx));
                         sanPhamDTO.setBrand_id(mapHang.get(cbbHang.getSelectedItem()).intValue());
                         sanPhamDTO.setCategory_id(mapLoai.get(cbbLoai.getSelectedItem()).intValue());
-                        
-                        if (action=="add") {
-                                if (SanPhamBUS.isExistSanPham(sanPhamDTO.getProduct_name())) {
-                                        JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
+
+                        int choice = JOptionPane.showConfirmDialog(null,
+                                        "Xác nhận lưu chi tiết sản phẩm",
+                                        "Lưu chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
+                        if (choice == JOptionPane.YES_OPTION) {
+                                if (action == "add") {
+                                        if (SanPhamBUS.isExistSanPham(sanPhamDTO.getProduct_name())) {
+                                                JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
+                                        } else {
+                                                SanPhamBUS.themSanPham(sanPhamDTO);
+                                        }
                                 } else {
-                                        SanPhamBUS.themSanPham(sanPhamDTO);
+                                        SanPhamBUS.suaSanPham(sanPhamDTO);
                                 }
-                        } else {
-                                SanPhamBUS.suaSanPham(sanPhamDTO);
                         }
+
                         quanLySanPhamGUI.reLoadData();
                         dispose();
                 } else {
@@ -384,7 +389,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
         public void thayDoiTrangThai() {
                 String trangThai = btnStatus.getText();
-                if(trangThai.equals("Ngừng kinh doanh")){
+                if (trangThai.equals("Ngừng kinh doanh")) {
                         sanPhamDTO.setStatus(true);
                         btnStatus.setText("Đang kinh doanh");
                 } else {
@@ -431,12 +436,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         }
                 }
                 if (e.getSource() == btnLuu) {
-                        int choice = JOptionPane.showConfirmDialog(null,
-                                        "Xác nhận lưu chi tiết sản phẩm",
-                                        "Lưu chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
-                        if (choice == JOptionPane.YES_OPTION) {
-                                luuSanPham();
-                        }
+                        luuSanPham();
                 }
                 if (e.getSource() == btnStatus) {
                         thayDoiTrangThai();
@@ -452,7 +452,8 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         public void run() {
                                 try {
                                         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                                        ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(new SanPhamDTO(), "add", new QuanLySanPhamGUI());
+                                        ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(new SanPhamDTO(), "add",
+                                                        new QuanLySanPhamGUI());
                                         frame.setVisible(true);
                                 } catch (Exception e) {
                                         e.printStackTrace();

@@ -270,12 +270,10 @@ public class SanPhamDAO {
         boolean isExit=false;
         try {
             connectDB.getConnection();
-            String sql = "SELECT COUNT(*) AS count FROM products WHERE product_name = "+productName;
+            String sql = "SELECT * FROM products WHERE LOWER(product_name) LIKE "+productName.toLowerCase();
             ResultSet rs= connectDB.runQuery(sql);
-            if (rs.next()) {
-                if (rs.getInt("count")>0) {
-                    isExit=true;
-                }
+            if (rs!=null&&rs.next()) {
+                isExit=true;
             }
         } catch (Exception e) {
             e.printStackTrace();

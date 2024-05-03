@@ -409,6 +409,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		sanPhamDTO.setProduct_id(productID);
 		sanPhamDTO.setQuantity(0);
 		sanPhamDTO.setStatus(true);
+		sanPhamDTO.setCountry("");
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
