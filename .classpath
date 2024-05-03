@@ -24,9 +24,6 @@
 	<classpathentry kind="lib" path="lib/io-7.1.9.jar"/>
 	<classpathentry kind="lib" path="lib/io-7.1.9-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/io-7.1.9-sources.jar"/>
-	<classpathentry kind="lib" path="lib/itextpdf-5.5.9-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/itextpdf-5.5.9-sources.jar"/>
-	<classpathentry kind="lib" path="lib/itextpdf-5.5.9.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta.activation-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta.xml.bind-api-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/kernel-7.1.9.jar"/>
