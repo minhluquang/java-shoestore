@@ -37,6 +37,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
+import BUS.ChiTietHoaDonBUS;
 import BUS.HoaDonBUS;
 import BUS.KhuyenMaiBUS;
 import BUS.TaiKhoanBUS;
@@ -347,7 +348,12 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == btnLuu) {
-
+            int op = JOptionPane.showConfirmDialog(null, "Lưu đơn hàng", "Lưu đơn hàng", JOptionPane.YES_NO_OPTION);
+            if (op == JOptionPane.YES_OPTION) {
+                HoaDonBUS.themHoaDon(hoaDonDTO);
+                ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs);
+                dispose();
+            }
         }
     }
 }
