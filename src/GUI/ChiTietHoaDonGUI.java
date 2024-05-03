@@ -72,6 +72,8 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     private JTable tblSanPham;
     private DefaultTableModel sanPhamModel;
     private JPanel jPanelSanPham;
+    private JTextField txtDiaChi;
+    private JLabel lblTongTien;
 
     private JPanel panel_5;
     private JButton btnHuy;
@@ -81,8 +83,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     public HoaDonDTO hoaDonDTO;
     public BanHangGUI banHangGUI;
+    public ChiTietHoaDonGUI chiTietHoaDonGUI;
     public ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs;
     public int tamTinh;
+    public KhachHang khachHang;
 
     /**
      * Launch the application.
@@ -104,10 +108,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public ChiTietHoaDonGUI(HoaDonDTO hoaDonDTO, ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs, BanHangGUI banHangGUI) {
-        this.hoaDonDTO = hoaDonDTO;
-        this.chiTietHoaDonDTOs = chiTietHoaDonDTOs;
-        this.banHangGUI = banHangGUI;
+    public ChiTietHoaDonGUI(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> chiTietHoaDons, BanHangGUI bHGUI) {
+        this.hoaDonDTO = hoaDon;
+        this.chiTietHoaDonDTOs = chiTietHoaDons;
+        this.chiTietHoaDonGUI=this;
+        this.banHangGUI = bHGUI;
         this.tamTinh = hoaDonDTO.getTotalPrice();
 
         addWindowListener(new WindowAdapter() {
@@ -121,7 +126,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         });
 
-        int width = 880;
+        int width = 980;
         int height = 600;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -214,9 +219,19 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtDate.setEnabled(false);
         panel_5.add(txtDate);
 
-        JLabel lblNewLabel_6_3_1_1 = new JLabel("Tổng tiền");
+        JLabel lblNewLabel_6_3_1_1 = new JLabel("Địa chỉ");
         lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_1);
+
+        txtDiaChi = new JTextField();
+        txtDiaChi.setPreferredSize(new Dimension(100, 19));
+        txtDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtDiaChi.setColumns(10);
+        panel_5.add(txtDiaChi);
+
+        JLabel lblNewLabel_6_3_1_2 = new JLabel("Tổng tiền");
+        lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1_2);
 
         txtToTalPrice = new JTextField();
         txtToTalPrice.setPreferredSize(new Dimension(100, 19));
@@ -224,6 +239,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtToTalPrice.setColumns(10);
         txtToTalPrice.setEnabled(false);
         panel_5.add(txtToTalPrice);
+
+        lblTongTien = new JLabel("Tổng tiền: "+tamTinh);
+        lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblTongTien);
 
         JLabel lblNewLabel_6_3_1_3 = new JLabel("Mã giảm giá");
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -281,8 +300,9 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         panel_1.add(lblNewLabel);
 
         jPanelSanPham = new JPanel(new BorderLayout());
-        JPanel panel1 = new JPanel(new GridLayout(0, 1));
         spnSanPham = new JScrollPane();
+
+        JPanel panel1 = new JPanel(new GridLayout(1, 0));
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
@@ -302,9 +322,14 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
         tblSanPham.setRowHeight(25);
         String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
-        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0);
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tblSanPham.setModel(sanPhamModel);
-        tblSanPham.setEnabled(false);
+        tblSanPham.setRowSelectionAllowed(true);
+        tblSanPham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnSanPham.setBorder(null);
         spnSanPham.setBackground(new Color(255, 255, 255));
         spnSanPham.setViewportView(tblSanPham);
@@ -334,8 +359,14 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtBillID.setText(hoaDonDTO.getBillId() + "");
         txtDate.setText(hoaDonDTO.getDate().toString());
         txtAccountID.setText(hoaDonDTO.getStaffId() + "");
-        txtToTalPrice.setText(hoaDonDTO.getTotalPrice() + "");
+        txtToTalPrice.setText(tamTinh + "");
+        loadChiTietHoaDon();
         loadMaGiamGia();
+    }
+
+    public void loadCustumerId(int id){
+        hoaDonDTO.setCustomerId(id);
+        txtCustomerID.setText(id+"");
     }
 
     public void loadChiTietHoaDon() {
@@ -355,10 +386,14 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     public void tinhToTalPrice() {
         KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
         if (khuyenMai.getType() == "AR") {
-            hoaDonDTO.setTotalPrice(hoaDonDTO.getTotalPrice() - khuyenMai.getDiscount_value());
-        } else {
-            int newtotal = hoaDonDTO.getTotalPrice() - (hoaDonDTO.getTotalPrice() * khuyenMai.getDiscount_value());
+            System.out.println(khuyenMai.getDiscount_value());
+            int newtotal = tamTinh - khuyenMai.getDiscount_value();
             hoaDonDTO.setTotalPrice(newtotal);
+            lblTongTien.setText("Tổng tiền: "+hoaDonDTO.getTotalPrice()+"đ");
+        } else {
+            int newtotal = tamTinh - (tamTinh * khuyenMai.getDiscount_value() / 100);
+            hoaDonDTO.setTotalPrice(newtotal);
+            lblTongTien.setText("Tổng tiền: "+hoaDonDTO.getTotalPrice()+"đ");
         }
     }
 
@@ -366,6 +401,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         if(cbbDiscountCode.getSelectedItem().toString().equals("Mã giảm giá")){
             hoaDonDTO.setTotalPrice(tamTinh);
             hoaDonDTO.setDiscountCode(null);
+            lblTongTien.setText("Tổng tiền: "+tamTinh+"đ");
         } else {
             hoaDonDTO.setDiscountCode(cbbDiscountCode.getSelectedItem().toString());
             tinhToTalPrice();
@@ -378,27 +414,32 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         }
     }
     public void luuHoaDon(){
-        if (hoaDonDTO.getCustomerId() == -1) {
+        if (hoaDonDTO.getCustomerId()==0) {
             themKhachHang();
+        } else if(txtDiaChi.getText()==""){
+            JOptionPane.showMessageDialog(null, "Địa chỉ không được bỏ trống");
         } else {
+            hoaDonDTO.setAddress(txtDiaChi.getText());
             int op = JOptionPane.showConfirmDialog(null, "Lưu hóa đơn", "Xác nhận lưu", JOptionPane.YES_NO_OPTION);
             if (op == JOptionPane.YES_OPTION) {
-                HoaDonBUS.themHoaDon(hoaDonDTO);
-                ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs);
-                danhDauDanhSachDaBanSanPham(chiTietHoaDonDTOs);
-                banHangGUI.reLoadData();
+                if (HoaDonBUS.themHoaDon(hoaDonDTO)) {
+                    if(ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs)){
+                        danhDauDanhSachDaBanSanPham(chiTietHoaDonDTOs);
+                        banHangGUI.reLoadData();
+                    }
+                }
                 dispose();
             }
         }
     }
 
     public void themKhachHang() {
-        KhachHang khachHang = new KhachHang(-1, "", "");
+        khachHang = new KhachHang(0, "", "");
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang);
+                    ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang, chiTietHoaDonGUI);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -406,8 +447,6 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         });
         panel_5.remove(btnThemKhachHang);
-        txtCustomerID.setText(khachHang.getCustomerId() + "");
-        hoaDonDTO.setCustomerId(khachHang.getCustomerId());
     }
 
     @Override

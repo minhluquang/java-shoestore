@@ -235,8 +235,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 		}
 	}
 
-	public ChiTietKhachHangGUI(KhachHang kh) {
-		this.khachhang = kh;
+	public ChiTietKhachHangGUI(KhachHang kh, ChiTietHoaDonGUI chiTietHoaDonGUI) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -345,7 +344,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 		JButton btnNewButton = new JButton("Lưu");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				xuLyLuuThongTinNhanVien2(kh);
+				xuLyLuuThongTinNhanVien(kh, chiTietHoaDonGUI);
 			}
 		});
 		// ========= Xử lý lưu thông tin khách hàng =========
@@ -394,8 +393,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("");
 		panel_1.add(lblNewLabel);
-		xuLyTuDongGanGiaTri();
-		khachhang.setCustomerId(KhachHangBUS.generateIdKhachHang());
+		xuLyTuDongGanGiaTri(kh);
 	}
 
 	public void xuLyTuDongGanGiaTri() {
@@ -470,7 +468,13 @@ public class ChiTietKhachHangGUI extends JFrame {
 		}
 	}
 
-	public void xuLyLuuThongTinNhanVien2(KhachHang kh) {
+	public void xuLyTuDongGanGiaTri(KhachHang kh) {
+		txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));
+		txtHoTen.setText(kh.getCustomerName());
+		txtSoDienThoai.setText(kh.getPhoneNumber());
+	}
+
+	public void xuLyLuuThongTinNhanVien(KhachHang kh,ChiTietHoaDonGUI chiTietHoaDonGUI) {
 		int customerId = KhachHangBUS.generateIdKhachHang();
 		txtMaKhachHang.setText(customerId + "");
 		String customerName = txtHoTen.getText().trim();
@@ -503,33 +507,15 @@ public class ChiTietKhachHangGUI extends JFrame {
 				return;
 			}
 
-			kh.setCustomerId(customerId);
-			kh.setCustomerName(customerName);
-			kh.setPhoneNumber(regexPhoneNumber);
 			if (KhachHangBUS.isExistPhoneNumber(phoneNumber, customerId)) {
-				JOptionPane.showMessageDialog(null, "Hệ thống đã có khách hàng sử dụng số điện thoại này",
-						"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-				kh = KhachHangBUS.getKhachHangByID(customerId);
+				kh = KhachHangBUS.getKhachHangByPhoneNumber(phoneNumber);
+				chiTietHoaDonGUI.loadCustumerId(kh.getCustomerId());
 				dispose();
 			} else {
-				if (KhachHangBUS.isExistKhachHang(customerId)) {
-					if (KhachHangBUS.updateKhachHang(customerId, customerName, phoneNumber)) {
-						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khách hàng",
-								"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-						dispose();
-					} else {
-						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khách hàng",
-								"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-					}
-				} else {
-					if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber, 1)) {
-						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khách hàng",
-								"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-						dispose();
-					} else {
-						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khách hàng",
-								"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-					}
+				if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber, 1)) {
+					kh = KhachHangBUS.getKhachHangByID(customerId);
+					chiTietHoaDonGUI.loadCustumerId(customerId);
+					dispose();
 				}
 			}
 		}
