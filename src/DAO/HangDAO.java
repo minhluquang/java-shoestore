@@ -160,5 +160,24 @@ public class HangDAO {
         }
         return brand;
     }
-
+    
+    public static boolean isExistIdHang(int brandId) {
+    	boolean success = false;
+    	
+    	try {
+            connectDB.getConnection();
+            String sql = "SELECT * "
+            		+ "FROM brands "
+            		+ "WHERE brand_id = " + brandId;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return success;
+	}
 }
