@@ -4,10 +4,13 @@
  */
 package GUI;
 
+import DTO.HangDTO;
 import DTO.NhanVien;
 import DTO.SanPhamDTO;
+import DTO.TheLoaiDTO;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -17,14 +20,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,14 +43,18 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FileChooserUI;
 
 import org.apache.poi.hwpf.usermodel.BorderCode;
+
+import BUS.HangBUS;
+import BUS.TheLoaiBUS;
 
 /**
  *
  * @author MSI
  */
-public class ChiTietSanPhamGUI extends JFrame {
+public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
         public String absolutePath = new File("").getAbsolutePath();
         private JTextField txtIDSP;
@@ -48,9 +62,11 @@ public class ChiTietSanPhamGUI extends JFrame {
         private JTextField txtGiaBan;
         private JTextField txtXuatXu;
         private JTextField txtNamSX;
-        private JTextField txtKhuyenMai;
-        private JComboBox cbbTheLoai;
-        private JComboBox cbbHangSX;
+        private JButton btnStatus;
+        private JComboBox<String> comboBoxHang;
+        private JComboBox<String> comboBoxLoai;
+        private Map<String, Integer> mapHang;
+        private Map<String, Integer> mapLoai;
         private JLabel lblAnhSP;
         private JButton btnThayDoiAnh;
         private JButton btnLuu;
@@ -60,13 +76,16 @@ public class ChiTietSanPhamGUI extends JFrame {
         private JLabel jLabel1;
         private ImageIcon icon;
 
+        public SanPhamDTO sanPhamDTO;
+
         public ChiTietSanPhamGUI() {
                 initComponent();
         }
 
         public ChiTietSanPhamGUI(SanPhamDTO sanPham) {
+                this.sanPhamDTO = sanPham;
                 initComponent();
-                loadData(sanPham);
+                loadData();
         }
 
         public void initComponent() {
@@ -105,64 +124,31 @@ public class ChiTietSanPhamGUI extends JFrame {
                 add(jPanel1, BorderLayout.NORTH);
 
                 txtIDSP = new JTextField();
-                // txtIDSP.setBorder(BorderFactory.createTitledBorder(null, "ID sản phẩm",
-                // TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
-                // new Font("Tahoma", Font.PLAIN, 14)));
+                txtIDSP.setEnabled(false);
+                txtIDSP.setEditable(false);
                 txtIDSP.setPreferredSize(new Dimension(200, 40));
                 txtIDSP.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 txtTenSP = new JTextField();
-                // txtTenSP.setBorder(BorderFactory.createTitledBorder(null, "Tên sản phẩm",
-                // TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
-                // new Font("Tahoma", Font.PLAIN, 14)));
-                // txtTenSP.setPreferredSize(new Dimension(200, 40));
                 txtTenSP.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 txtGiaBan = new JTextField();
-                // txtGiaBan.setBorder(
-                // BorderFactory.createTitledBorder(null, "Giá bán",
-                // TitledBorder.DEFAULT_JUSTIFICATION,
-                // TitledBorder.DEFAULT_POSITION, new Font("Tahoma", Font.PLAIN, 14)));
-                // txtGiaBan.setPreferredSize(new Dimension(200, 40));
                 txtGiaBan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 txtXuatXu = new JTextField();
-                // txtXuatXu.setBorder(
-                // BorderFactory.createTitledBorder(null, "Xuất xứ",
-                // TitledBorder.DEFAULT_JUSTIFICATION,
-                // TitledBorder.DEFAULT_POSITION, new Font("Tahoma", Font.PLAIN, 14)));
-                // txtXuatXu.setPreferredSize(new Dimension(200, 40));
                 txtXuatXu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 txtNamSX = new JTextField();
-                // txtNamSX.setBorder(BorderFactory.createTitledBorder(null, "Năm sản xuất",
-                // TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
-                // new Font("Tahoma", Font.PLAIN, 14)));
-                // txtNamSX.setPreferredSize(new Dimension(200, 40));
                 txtNamSX.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-                txtKhuyenMai = new JTextField();
-                // txtKhuyenMai.setBorder(
-                // BorderFactory.createTitledBorder(null, "Khuyến mãi",
-                // TitledBorder.DEFAULT_JUSTIFICATION,
-                // TitledBorder.DEFAULT_POSITION, new Font("Tahoma", Font.PLAIN, 14)));
-                // txtKhuyenMai.setPreferredSize(new Dimension(200, 40));
-                txtKhuyenMai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                btnStatus = new JButton();
+                btnStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-                cbbHangSX = new JComboBox();
-                // cbbHangSX.setBorder(BorderFactory.createTitledBorder(null, "Hãng sản xuất",
-                // TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
-                // new Font("Tahoma", Font.PLAIN, 14)));
-                // cbbHangSX.setPreferredSize(new Dimension(200, 40));
-                cbbHangSX.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                comboBoxHang = new JComboBox<>();
+                comboBoxHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-                cbbTheLoai = new JComboBox();
-                // cbbTheLoai.setBorder(
-                // BorderFactory.createTitledBorder(null, "Thể loại",
-                // TitledBorder.DEFAULT_JUSTIFICATION,
-                // TitledBorder.DEFAULT_POSITION, new Font("Tahoma", Font.PLAIN, 14)));
-                // cbbTheLoai.setPreferredSize(new Dimension(200, 40));
-                cbbTheLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                comboBoxLoai = new JComboBox<>();
+                comboBoxLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 lblAnhSP = new JLabel("");
                 lblAnhSP.setPreferredSize(new Dimension(200, 200));
@@ -215,7 +201,7 @@ public class ChiTietSanPhamGUI extends JFrame {
                 jPanel2.add(labelNamSX);
                 jPanel2.add(labelKhuyenMai);
                 jPanel2.add(txtNamSX);
-                jPanel2.add(txtKhuyenMai);
+                jPanel2.add(btnStatus);
 
                 JLabel labelTheLoai = new JLabel("Thể loại:");
                 labelTheLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -223,8 +209,8 @@ public class ChiTietSanPhamGUI extends JFrame {
                 labelHangSX.setFont(new Font("Tahoma", Font.PLAIN, 14));
                 jPanel2.add(labelTheLoai);
                 jPanel2.add(labelHangSX);
-                jPanel2.add(cbbTheLoai);
-                jPanel2.add(cbbHangSX);
+                jPanel2.add(comboBoxLoai);
+                jPanel2.add(comboBoxHang);
                 jPanel2.add(new JLabel(""));
 
                 jPanel3.add(lblAnhSP, BorderLayout.NORTH);
@@ -241,22 +227,140 @@ public class ChiTietSanPhamGUI extends JFrame {
                 jPanel5.add(jPanel4, BorderLayout.EAST);
 
                 add(jPanel5);
+
+                btnHuy.addActionListener(this);
+                btnLuu.addActionListener(this);
+                btnStatus.addActionListener(this);
+                btnThayDoiAnh.addActionListener(this);
         }
 
-        public void loadCombobox(){
+        public void loadComboboxLoai(int maLoai) {
+                mapLoai = new HashMap<>();
+                ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
+                for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
+                        mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+                }
+                for (String key : mapLoai.keySet()) {
+                        comboBoxLoai.addItem(key);
+                }
+                for (Map.Entry<String, Integer> entry : mapLoai.entrySet()) {
+                        if (entry.getValue() == maLoai) {
+                                comboBoxLoai.setSelectedItem(entry.getKey());
+                                break;
+                        }
+                }
+        }
+
+        public void loadComboboxHang(int maHang) {
+                mapHang = new HashMap<>();
+                ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
+                for (HangDTO hangDTO : hangDTOs) {
+                        mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+                }
+                for (String key : mapHang.keySet()) {
+                        comboBoxHang.addItem(key);
+                }
+                for (Map.Entry<String, Integer> entry : mapHang.entrySet()) {
+                        if (entry.getValue() == maHang) {
+                                comboBoxHang.setSelectedItem(entry.getKey());
+                                break;
+                        }
+                }
+        }
+
+        public void loadData() {
+                txtIDSP.setText(sanPhamDTO.getProduct_id() + "");
+                txtTenSP.setText(sanPhamDTO.getProduct_name());
+                txtGiaBan.setText(sanPhamDTO.getOutput_price() + "");
+                txtXuatXu.setText(sanPhamDTO.getCountry() + "");
+                txtNamSX.setText(sanPhamDTO.getYear_of_product() + "");
+                if (sanPhamDTO.isStatus()) {
+                        btnStatus.setText("Đang kinh doanh");
+                } else {
+                        btnStatus.setText("Ngừng kinh doanh");
+                }
+
+                loadComboboxHang(sanPhamDTO.getBrand_id());
+                loadComboboxLoai(sanPhamDTO.getCategory_id());
+
+                lblAnhSP.setIcon(icon);
+        }
+
+        private int getCurrentYear() {
+                return java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+        }
+
+        public boolean isValidProductName(String productName) {
+                return productName.matches("^[a-zA-Z0-9]+$");
+        }
+
+        public boolean isValidOutputPrice(String outputPrice) {
+                if (outputPrice.matches("^[0-9]+$")) {
+                        int price = Integer.parseInt(outputPrice);
+                        return price > 0;
+                }
+                return false;
+        }
+
+        public boolean isValidCountry(String productName) {
+                return productName.matches("^[a-zA-Z]+$");
+        }
+
+        public boolean isisValidYear(int year) {
+                if (year < 1900 || year > getCurrentYear()) {
+                        return false;
+                }
+                return true;
+        }
+
+        public void luuSanPham() {
+                
+        }
+
+        public void thayDoiTrangThai() {
 
         }
 
-        public void loadData(SanPhamDTO sanPham) {
-                txtIDSP.setText(absolutePath);
-                // txtTenSP
-                // txtGiaBan
-                // txtXuatXu
-                // txtNamSX
-                // txtKhuyenMai
-                // cbbTheLoai
-                // cbbHangSX
-                // lblAnhSP
+        public String getPathAfterSrc(String fullPath) {
+                int srcIndex = fullPath.indexOf("/src");
+                if (srcIndex != -1) {
+                    return fullPath.substring(srcIndex);
+                }
+                return "";
+            }
+
+        public void thayDoiAnh() {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File("."));
+                int response = fileChooser.showOpenDialog(null);
+                if(response == JFileChooser.APPROVE_OPTION){
+                        File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                        String imagePath = getPathAfterSrc(file.getAbsolutePath());
+                        if (!imagePath.isEmpty()) {
+                             sanPhamDTO.setImage_path(absolutePath+imagePath);   
+                        }
+                }
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == btnHuy) {
+                        int choice = JOptionPane.showConfirmDialog(null,
+                                        "Bạn có muốn đóng chi tiết sản phẩm không?",
+                                        "Xác nhận đóng chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
+                        if (choice == JOptionPane.YES_OPTION) {
+                                dispose();
+                        }
+                }
+                if (e.getSource() == btnLuu) {
+                        luuSanPham();
+                }
+                if (e.getSource() == btnStatus) {
+                        thayDoiTrangThai();
+                }
+                if (e.getSource() == btnThayDoiAnh) {
+                        thayDoiAnh();
+                }       
         }
 
         public static void main(String[] args) {

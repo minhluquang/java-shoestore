@@ -6,7 +6,9 @@ import java.awt.*;
 import javax.swing.border.LineBorder;
 
 import BUS.DangNhapBUS;
+import BUS.TaiKhoanBUS;
 import DAO.DangNhapDAO;
+import DTO.TaiKhoan;
 
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -147,7 +149,7 @@ public class DangNhapGUI extends JPanel {
                     case "success":
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
                         SwingUtilities.getWindowAncestor(DangNhapGUI.this).dispose();
-                        MyApp myApp = new MyApp(username);
+                        MyApp myApp = new MyApp(TaiKhoanBUS.getDetailTaiKhoanByUsername(username, true));
                 		myApp.setVisible(true);
                         break;
                     case "invalid_password":

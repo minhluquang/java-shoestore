@@ -61,8 +61,8 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     private JTextField txtToTalPrice;
     private JTextField txtCustomerID;
     private JButton btnThemKhachHang;
-    private JComboBox cmbDiscountCode;
-    private DefaultComboBoxModel dcmMaGiamGia;
+    private JComboBox<String> cmbDiscountCode;
+    private DefaultComboBoxModel<String> dcmMaGiamGia;
     private JScrollPane spnSanPham;
     private JLabel lblDSSP;
     private JTable tblSanPham;
@@ -174,21 +174,21 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
-        btnThemKhachHang = new JButton("Thêm thông tin khách hàng");
-        btnThemKhachHang.setFont(new Font("Tahoma", Font.BOLD, 14));
-        panel_5.add(btnThemKhachHang);
-
         txtCustomerID = new JTextField();
         txtCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtCustomerID.setColumns(10);
         txtCustomerID.setEnabled(false);
-        // panel_5.add(txtCustomerID);
+        panel_5.add(txtCustomerID);
+        
+        btnThemKhachHang = new JButton("Thêm thông tin khách hàng");
+        btnThemKhachHang.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(btnThemKhachHang);
 
         JLabel lblNewLabel_6_3 = new JLabel("Nhân viên lập");
         lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3);
 
-        TaiKhoan taiKhoan = TaiKhoanBUS.getDetailTaiKhoanByUsername(MyApp.username, true);
+        TaiKhoan taiKhoan = MyApp.user;
         txtAccountID = new JTextField(taiKhoan.getAccountId());
         txtAccountID.setPreferredSize(new Dimension(100, 19));
         txtAccountID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -222,8 +222,8 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_3);
 
-        cmbDiscountCode = new JComboBox();
-        dcmMaGiamGia = new DefaultComboBoxModel();
+        cmbDiscountCode = new JComboBox<>();
+        dcmMaGiamGia = new DefaultComboBoxModel<>();
         cmbDiscountCode.setModel(dcmMaGiamGia);
         cmbDiscountCode.setFont(new Font("Tahoma", Font.PLAIN, 14));
         cmbDiscountCode.setFocusable(false);
@@ -339,10 +339,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             });
             panel_5.remove(btnThemKhachHang);
             panel_5.add(txtAccountID);
-            txtCustomerID.setText(khachHang.getCustomerId()+"");
+            txtCustomerID.setText(khachHang.getCustomerId() + "");
         }
         if (e.getSource() == btnHuy) {
-            int op = JOptionPane.showConfirmDialog(null, "Bạn không muốn tạo hóa đơn", "Thoát chi tiết hóa đơn", JOptionPane.YES_NO_OPTION);
+            int op = JOptionPane.showConfirmDialog(null, "Bạn không muốn tạo hóa đơn", "Thoát chi tiết hóa đơn",
+                    JOptionPane.YES_NO_OPTION);
             if (op == JOptionPane.YES_OPTION) {
                 dispose();
             }
