@@ -198,7 +198,7 @@ public class SanPhamDAO {
         return count;
     }
 
-    public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name) {
+    public static ArrayList<SanPhamDTO> searchDanhSachSanPham(int hang, int loai, String name, int trangThai) {
         ArrayList<SanPhamDTO> danhSachSanPham = new ArrayList<>();
         try {
             connectDB.getConnection();
@@ -208,6 +208,9 @@ public class SanPhamDAO {
             }
             if (loai!=0) {
                 sql+=" AND category_id="+loai;
+            }
+            if (trangThai!=-1) {
+                sql+=" AND status="+trangThai;
             }
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {

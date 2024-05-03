@@ -6,6 +6,7 @@ import javax.swing.JTable;
 
 import DAO.PhieuNhapDAO;
 import DTO.PhieuNhap;
+import DTO.SanPhamDTO;
 
 public class PhieuNhapBUS {
 	private static ArrayList<PhieuNhap> dspn;
@@ -55,5 +56,23 @@ public class PhieuNhapBUS {
 
 	public static boolean update_Total_Price(int receipt_id) {
 		return PhieuNhapDAO.update_Total_Price(receipt_id);
+	}
+
+	public static String getInPutPriceByProductId(String product_id) {
+		return PhieuNhapDAO.getInPutPriceByProductId(product_id);
+	}
+
+	public static String tinhGiaNhap(int giaBan) {
+		int res = (int) (giaBan * (1 - 0.2));
+		System.out.println(res);
+		return "" + res;
+	}
+
+	public static ArrayList<SanPhamDTO> searchObjectById(String enteredText) {
+		return PhieuNhapDAO.searchObjectById(enteredText);
+	}
+
+	public static ArrayList<PhieuNhap> searchByDays(String bd, String kt, String query) {
+		return PhieuNhapDAO.searchByDays(bd, kt, query);
 	}
 }

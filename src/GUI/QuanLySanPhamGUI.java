@@ -58,13 +58,17 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	private JButton btnNhapExcel;
 	private JButton btnXuatExcel;
 	private DefaultTableModel dtmTableModel;
-	private JComboBox<String> comboBoxHang;
-	private JComboBox<String> comboBoxLoai;
-	private Map<String, Integer>  mapHang;
-	private Map<String, Integer>  mapLoai;
+	private JComboBox<String> cbbTrangthai;
+	private JComboBox<String> cbbHang;
+	private JComboBox<String> cbbLoai;
+	private Map<String, Integer> mapTrangThai;
+	private Map<String, Integer> mapHang;
+	private Map<String, Integer> mapLoai;
 	private JButton btnTim;
 
 	private ArrayList<SanPhamDTO> dsSanPham;
+
+	public QuanLySanPhamGUI quanLySanPhamGUI;
 
 	// private static ChiTienSanPhamGUI chiTienSanPhamGUI;
 
@@ -72,6 +76,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	 * Create the panel.
 	 */
 	public QuanLySanPhamGUI() {
+		this.quanLySanPhamGUI = this;
 		setBackground(new Color(230, 230, 230));
 		setLayout(new BorderLayout(10, 10));
 
@@ -88,31 +93,45 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		JPanel pnlLocNangCao = new JPanel();
 		pnlLocNangCao.setBackground(new Color(255, 255, 255));
 		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
-		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
-
-		JPanel panelloc = new JPanel(new FlowLayout());
+		pnlLocNangCao.setLayout(new GridLayout(1, 0, 2, 0));
 
 		JPanel pnlHang = new JPanel();
-		panelloc.add(pnlHang);
+		pnlLocNangCao.add(pnlHang);
 		pnlHang.setLayout(new GridLayout(0, 1, 0, 0));
 
-		comboBoxHang = new JComboBox<>();
-		comboBoxHang.setFocusable(false);
-		comboBoxHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBoxHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlHang.add(comboBoxHang);
+		cbbHang = new JComboBox<>();
+		cbbHang.setFocusable(false);
+		cbbHang.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cbbHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlHang.add(cbbHang);
 
 		JPanel pnlLoai = new JPanel();
-		panelloc.add(pnlLoai);
+		pnlLocNangCao.add(pnlLoai);
 		pnlLoai.setLayout(new GridLayout(0, 1, 0, 0));
 
-		comboBoxLoai = new JComboBox<>();
-		comboBoxLoai.setFocusable(false);
-		comboBoxLoai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBoxLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlLoai.add(comboBoxLoai);
+		cbbLoai = new JComboBox<>();
+		cbbLoai.setFocusable(false);
+		cbbLoai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cbbLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlLoai.add(cbbLoai);
 
-		pnlLocNangCao.add(panelloc, BorderLayout.WEST);
+		JPanel pnlTrangThai = new JPanel();
+		pnlLocNangCao.add(pnlTrangThai);
+		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
+
+		cbbTrangthai = new JComboBox<>();
+		cbbTrangthai.setFocusable(false);
+		cbbTrangthai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cbbTrangthai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlTrangThai.add(cbbTrangthai);
+		mapTrangThai = new HashMap<>();
+		mapTrangThai.put("Trạng thái", -1);
+		mapTrangThai.put("Đang kinh doanh", 1);
+		mapTrangThai.put("Ngừng kinh doanh", 0);
+		for (String key  : mapTrangThai.keySet()) {
+			cbbTrangthai.addItem(key);
+		}
+		cbbTrangthai.setSelectedItem("Trạng thái");
 
 		// JPanel pnlChucVu = new JPanel();
 		// pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
@@ -131,7 +150,6 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 
 		txtTmKiem = new JTextField();
-		txtTmKiem.setMinimumSize(new Dimension(250, 19));
 		txtTmKiem.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtTmKiem.setColumns(10);
 		panel_1.add(txtTmKiem);
@@ -148,6 +166,8 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		btnTim.setFocusable(false);
 		btnTim.setBackground(new Color(255, 255, 255));
 		panel_2.add(btnTim);
+
+		JPanel pnlSearchPrice = new JPanel();
 
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
@@ -251,13 +271,14 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 		// load sữ liệu
 		dsSanPham = SanPhamBUS.getDanhSachSanPham();
-		loadComboboxHang();
-		loadComboboxLoai();
+		loadcbbHang();
+		loadcbbLoai();
 		loadDanhSachSanPham();
 		// Sự kiện lắng nghe click
 		// btnChiTiet.addActionListener(this);
-		comboBoxHang.addActionListener(this);
-		comboBoxLoai.addActionListener(this);
+		cbbHang.addActionListener(this);
+		cbbLoai.addActionListener(this);
+		cbbTrangthai.addActionListener(this);
 		btnTim.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
@@ -267,7 +288,12 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 	}
 
-	private void loadDanhSachSanPham() {
+	public void reLoadData(){
+		dsSanPham = SanPhamBUS.getDanhSachSanPham();
+		loadDanhSachSanPham();
+	}
+
+	public void loadDanhSachSanPham() {
 		// String[] s = {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng",
 		// "Trạng thái"};
 
@@ -283,37 +309,38 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		}
 	}
 
-	public void loadComboboxLoai() {
+	public void loadcbbLoai() {
 		mapLoai = new HashMap<>();
-		mapLoai.put("Tất cả", 0);
+		mapLoai.put("Loại", 0);
 		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
 		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
 			mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
 		}
 		for (String key : mapLoai.keySet()) {
-			comboBoxLoai.addItem(key);
+			cbbLoai.addItem(key);
 		}
-		comboBoxLoai.setSelectedItem("Tất cả");
+		cbbLoai.setSelectedItem("Loại");
 	}
 
-	public void loadComboboxHang() {
+	public void loadcbbHang() {
 		mapHang = new HashMap<>();
-		mapHang.put("Tất cả", 0);
+		mapHang.put("Hãng", 0);
 		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
 		for (HangDTO hangDTO : hangDTOs) {
 			mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
 		}
 		for (String key : mapHang.keySet()) {
-			comboBoxHang.addItem(key);
+			cbbHang.addItem(key);
 		}
-		comboBoxHang.setSelectedItem("Tất cả");
+		cbbHang.setSelectedItem("Hãng");
 	}
 
 	public void timKiemSanPham() {
-		int hangId = mapHang.get(comboBoxHang.getSelectedItem()).intValue();
-		int loaiId = mapLoai.get(comboBoxLoai.getSelectedItem()).intValue();
+		int hangId = mapHang.get(cbbHang.getSelectedItem()).intValue();
+		int loaiId = mapLoai.get(cbbLoai.getSelectedItem()).intValue();
+		int trangThai = mapTrangThai.get(cbbTrangthai.getSelectedItem()).intValue();
 		String ten = txtTmKiem.getText().toLowerCase().strip();
-		dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten);
+		dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten, trangThai);
 		loadDanhSachSanPham();
 	}
 
@@ -326,21 +353,19 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO);
+					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO, "change", quanLySanPhamGUI);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-		dsSanPham = SanPhamBUS.getDanhSachSanPham();
-		loadDanhSachSanPham();
 	}
 
 	public void themSanPham() {
 		SanPhamDTO sanPhamDTO = new SanPhamDTO();
 		int productID = SanPhamBUS.getSoluongSanPham()+1;
-		sanPhamDTO.setBrand_id(productID);
+		sanPhamDTO.setProduct_id(productID);
 		sanPhamDTO.setQuantity(0);
 		sanPhamDTO.setStatus(true);
 		EventQueue.invokeLater(new Runnable() {
@@ -348,15 +373,13 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO);
+					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO, "add", quanLySanPhamGUI);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-		dsSanPham = SanPhamBUS.getDanhSachSanPham();
-		loadDanhSachSanPham();
 	}
 
 	public void changeStatusSanPham(int productID){
@@ -375,7 +398,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		if (e.getSource() == btnSua) {
 			suaSanPham();
 		}
-		if (e.getSource() == btnTim || e.getSource() == comboBoxHang || e.getSource() == comboBoxLoai) {
+		if (e.getSource() == btnTim || e.getSource() == cbbHang || e.getSource() == cbbLoai || e.getSource() == cbbTrangthai) {
 			timKiemSanPham();
 		}
 		if (e.getSource() == btnThem) {

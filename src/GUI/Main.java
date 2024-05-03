@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.print.Doc;
+import javax.swing.UIManager;
 
 import org.apache.poi.xddf.usermodel.BlackWhiteMode;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTAbsoluteAnchor;
@@ -33,9 +34,15 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 
 public class Main {	
     public static void main(String[] args) throws FileNotFoundException  {
-    	DangNhapDangKyGUI dangNhapDangKyGUI = new DangNhapDangKyGUI();
-    	dangNhapDangKyGUI.setVisible(true);  
-//    	xuatPdf();
+    	try {
+    		 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+    		DangNhapDangKyGUI dangNhapDangKyGUI = new DangNhapDangKyGUI();
+        	dangNhapDangKyGUI.setVisible(true);  
+        	xuatPdf();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
     }
     
     public static void xuatPdf() throws FileNotFoundException {

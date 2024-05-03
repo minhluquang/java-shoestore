@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +49,7 @@ import javax.swing.plaf.FileChooserUI;
 import org.apache.poi.hwpf.usermodel.BorderCode;
 
 import BUS.HangBUS;
+import BUS.SanPhamBUS;
 import BUS.TheLoaiBUS;
 
 /**
@@ -63,8 +65,8 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
         private JTextField txtXuatXu;
         private JTextField txtNamSX;
         private JButton btnStatus;
-        private JComboBox<String> comboBoxHang;
-        private JComboBox<String> comboBoxLoai;
+        private JComboBox<String> cbbHang;
+        private JComboBox<String> cbbLoai;
         private Map<String, Integer> mapHang;
         private Map<String, Integer> mapLoai;
         private JLabel lblAnhSP;
@@ -77,13 +79,18 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
         private ImageIcon icon;
 
         public SanPhamDTO sanPhamDTO;
+        public String action;
+        public QuanLySanPhamGUI quanLySanPhamGUI;
+
 
         public ChiTietSanPhamGUI() {
                 initComponent();
         }
 
-        public ChiTietSanPhamGUI(SanPhamDTO sanPham) {
+        public ChiTietSanPhamGUI(SanPhamDTO sanPham, String action, QuanLySanPhamGUI quanLySanPhamGUI) {
                 this.sanPhamDTO = sanPham;
+                this.action=action;
+                this.quanLySanPhamGUI = quanLySanPhamGUI;
                 initComponent();
                 loadData();
         }
@@ -144,11 +151,11 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 btnStatus = new JButton();
                 btnStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-                comboBoxHang = new JComboBox<>();
-                comboBoxHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                cbbHang = new JComboBox<>();
+                cbbHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-                comboBoxLoai = new JComboBox<>();
-                comboBoxLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                cbbLoai = new JComboBox<>();
+                cbbLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
                 lblAnhSP = new JLabel("");
                 lblAnhSP.setPreferredSize(new Dimension(200, 200));
@@ -196,10 +203,10 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
                 JLabel labelNamSX = new JLabel("Năm sản xuất:");
                 labelNamSX.setFont(new Font("Tahoma", Font.PLAIN, 14));
-                JLabel labelKhuyenMai = new JLabel("Khuyến mãi:");
-                labelKhuyenMai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+                JLabel labelStatus = new JLabel("Trạng thái:");
+                labelStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
                 jPanel2.add(labelNamSX);
-                jPanel2.add(labelKhuyenMai);
+                jPanel2.add(labelStatus);
                 jPanel2.add(txtNamSX);
                 jPanel2.add(btnStatus);
 
@@ -209,8 +216,8 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 labelHangSX.setFont(new Font("Tahoma", Font.PLAIN, 14));
                 jPanel2.add(labelTheLoai);
                 jPanel2.add(labelHangSX);
-                jPanel2.add(comboBoxLoai);
-                jPanel2.add(comboBoxHang);
+                jPanel2.add(cbbLoai);
+                jPanel2.add(cbbHang);
                 jPanel2.add(new JLabel(""));
 
                 jPanel3.add(lblAnhSP, BorderLayout.NORTH);
@@ -241,11 +248,11 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
                 }
                 for (String key : mapLoai.keySet()) {
-                        comboBoxLoai.addItem(key);
+                        cbbLoai.addItem(key);
                 }
                 for (Map.Entry<String, Integer> entry : mapLoai.entrySet()) {
                         if (entry.getValue() == maLoai) {
-                                comboBoxLoai.setSelectedItem(entry.getKey());
+                                cbbLoai.setSelectedItem(entry.getKey());
                                 break;
                         }
                 }
@@ -258,11 +265,11 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
                 }
                 for (String key : mapHang.keySet()) {
-                        comboBoxHang.addItem(key);
+                        cbbHang.addItem(key);
                 }
                 for (Map.Entry<String, Integer> entry : mapHang.entrySet()) {
                         if (entry.getValue() == maHang) {
-                                comboBoxHang.setSelectedItem(entry.getKey());
+                                cbbHang.setSelectedItem(entry.getKey());
                                 break;
                         }
                 }
@@ -283,15 +290,10 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 loadComboboxHang(sanPhamDTO.getBrand_id());
                 loadComboboxLoai(sanPhamDTO.getCategory_id());
 
-                lblAnhSP.setIcon(icon);
-        }
-
-        private int getCurrentYear() {
-                return java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
         }
 
         public boolean isValidProductName(String productName) {
-                return productName.matches("^[a-zA-Z0-9]+$");
+                return productName.matches("^[a-zA-Z0-9\\s]+$");
         }
 
         public boolean isValidOutputPrice(String outputPrice) {
@@ -302,65 +304,142 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 return false;
         }
 
-        public boolean isValidCountry(String productName) {
-                return productName.matches("^[a-zA-Z]+$");
+        public boolean isValidCountry(String country) {
+                return country.matches("^[a-zA-Z\\s]+$");
         }
 
-        public boolean isisValidYear(int year) {
-                if (year < 1900 || year > getCurrentYear()) {
-                        return false;
-                }
-                return true;
+        public boolean isValidYear(int year) {
+                return year > 1900;
         }
 
         public void luuSanPham() {
-                
+                boolean isValid=true;
+                String error = "";
+                String xuatXu = txtXuatXu.getText();
+                String giaBan = txtGiaBan.getText();
+                String tenSp = txtTenSP.getText();
+                String namSx = txtNamSX.getText();
+                if (tenSp.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Tên không được để trống");
+                        txtTenSP.setFocusable(true);
+                        return;
+                }
+                if (giaBan.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Giá bán không được để trống");
+                        txtGiaBan.setFocusable(true);
+                        return;
+                }
+                if (xuatXu.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Xuất xứ không được để trống");
+                        txtXuatXu.setFocusable(true);
+                        return;
+                }
+                if (namSx.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Năm sản xuất không được để trống");
+                        txtNamSX.setFocusable(true);
+                        return;
+                }
+                if (!isValidCountry(xuatXu)) {
+                        isValid = false;
+                        error+="Xuất xứ không được chứa ký tự đặt biệt và số\n";
+                }
+                if (!isValidOutputPrice(giaBan)) {
+                        isValid = false;
+                        error+="Giá bán phải lớn hơn 0\n";
+                }
+                if (!isValidProductName(tenSp)) {
+                        isValid = false;
+                        error+="Tên sản phảm không được chứa ký tự đặt biệt\n";
+                }
+                if (!isValidYear(Integer.parseInt(namSx))) {
+                        isValid = false;
+                        error+="Năm phải là số, lớn hơn 1900\n";
+                }
+                if (isValid) {
+                        if (sanPhamDTO.getImage_path()==null) {
+                                sanPhamDTO.setImage_path("");
+                        }
+                        sanPhamDTO.setProduct_name(tenSp);
+                        sanPhamDTO.setOutput_price(Integer.parseInt(giaBan));
+                        sanPhamDTO.setCountry(xuatXu);
+                        sanPhamDTO.setYear_of_product(Integer.parseInt(namSx));
+                        sanPhamDTO.setBrand_id(mapHang.get(cbbHang.getSelectedItem()).intValue());
+                        sanPhamDTO.setCategory_id(mapLoai.get(cbbLoai.getSelectedItem()).intValue());
+                        
+                        if (action=="add") {
+                                SanPhamBUS.themSanPham(sanPhamDTO);
+                        } else {
+                                SanPhamBUS.suaSanPham(sanPhamDTO);
+                        }
+                        quanLySanPhamGUI.reLoadData();
+                        dispose();
+                } else {
+                        JOptionPane.showMessageDialog(null, error);
+                }
         }
 
         public void thayDoiTrangThai() {
-
+                String trangThai = btnStatus.getText();
+                if(trangThai.equals("Ngừng kinh doanh")){
+                        sanPhamDTO.setStatus(true);
+                        btnStatus.setText("Đang kinh doanh");
+                } else {
+                        sanPhamDTO.setStatus(false);
+                        btnStatus.setText("Ngừng kinh doanh");
+                }
         }
 
         public String getPathAfterSrc(String fullPath) {
                 int srcIndex = fullPath.indexOf("/src");
                 if (srcIndex != -1) {
-                    return fullPath.substring(srcIndex);
+                        return fullPath.substring(srcIndex);
                 }
                 return "";
-            }
+        }
 
         public void thayDoiAnh() {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setCurrentDirectory(new File("."));
                 int response = fileChooser.showOpenDialog(null);
-                if(response == JFileChooser.APPROVE_OPTION){
+                if (response == JFileChooser.APPROVE_OPTION) {
                         File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
                         String imagePath = getPathAfterSrc(file.getAbsolutePath());
                         if (!imagePath.isEmpty()) {
-                             sanPhamDTO.setImage_path(absolutePath+imagePath);   
+                                sanPhamDTO.setImage_path(absolutePath + imagePath);
+                                System.out.println(absolutePath + imagePath);
                         }
                 }
+                ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+                Image image = icon.getImage();
+                Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+                icon = new ImageIcon(scaledImage);
+                lblAnhSP.setIcon(icon);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == btnHuy) {
                         int choice = JOptionPane.showConfirmDialog(null,
-                                        "Bạn có muốn đóng chi tiết sản phẩm không?",
-                                        "Xác nhận đóng chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
+                                        "Xác nhận đóng chi tiết sản phẩm",
+                                        "Đóng chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
                         if (choice == JOptionPane.YES_OPTION) {
                                 dispose();
                         }
                 }
                 if (e.getSource() == btnLuu) {
-                        luuSanPham();
+                        int choice = JOptionPane.showConfirmDialog(null,
+                                        "Xác nhận lưu chi tiết sản phẩm",
+                                        "Lưu chi tiết sản phẩm", JOptionPane.YES_NO_OPTION);
+                        if (choice == JOptionPane.YES_OPTION) {
+                                luuSanPham();
+                        }
                 }
                 if (e.getSource() == btnStatus) {
                         thayDoiTrangThai();
                 }
                 if (e.getSource() == btnThayDoiAnh) {
                         thayDoiAnh();
-                }       
+                }
         }
 
         public static void main(String[] args) {
@@ -369,7 +448,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         public void run() {
                                 try {
                                         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                                        ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(new SanPhamDTO());
+                                        ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(new SanPhamDTO(), "add", new QuanLySanPhamGUI());
                                         frame.setVisible(true);
                                 } catch (Exception e) {
                                         e.printStackTrace();
