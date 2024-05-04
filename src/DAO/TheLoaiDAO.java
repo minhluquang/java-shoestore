@@ -181,7 +181,7 @@ public class TheLoaiDAO {
         }
         return success;
 	}
-    public static boolean isExisNameTheLoai(String categoryName) {
+    public static boolean isExistNameTheLoai(String categoryName) {
         categoryName=categoryName.toLowerCase();
     	boolean success = false;
     	try {

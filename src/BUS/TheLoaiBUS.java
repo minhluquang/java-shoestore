@@ -27,8 +27,8 @@ public class TheLoaiBUS {
     public static TheLoaiDTO getTheLoaiByName(String category_name){
         return TheLoaiDAO.getTheLoaiByName(category_name);
     }
-    public static boolean isExisNameTheLoai(String categoryName){
-        return TheLoaiDAO.isExisNameTheLoai(categoryName);
+    public static boolean isExistNameTheLoai(String categoryName){
+        return TheLoaiDAO.isExistNameTheLoai(categoryName);
     }
     public static ArrayList<TheLoaiDTO> searchLoai(String key){
         return TheLoaiDAO.searchLoai(key);
