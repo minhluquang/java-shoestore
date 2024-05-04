@@ -828,7 +828,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
     public void xemThongTinHoaDon(HoaDonDTO hoaDonDTO) {
         lblMaHD.setText("Mã Hóa Đơn: " + hoaDonDTO.getBillId());
         KhachHang khachHang = KhachHangBUS.getKhachHangByID(hoaDonDTO.getCustomerId());
-        lblMaKH.setText("Khách Hàng: " + khachHang.getCustomerId_Name());
+        lblMaKH.setText("Khách Hàng: " + khachHang.getCustomerName());
         NhanVien nhanVien = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
         lblNVLap.setText("Nhân Viên Lập: " + nhanVien.getFull_name());
         lblNgayLap.setText("Ngày Lập: " + hoaDonDTO.getDate());
