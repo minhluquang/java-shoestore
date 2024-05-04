@@ -288,6 +288,11 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
                 loadComboboxHang(sanPhamDTO.getBrand_id());
                 loadComboboxLoai(sanPhamDTO.getCategory_id());
+                ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+                Image image = icon.getImage();
+                Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+                icon = new ImageIcon(scaledImage);
+                lblAnhSP.setIcon(icon);
 
         }
 
@@ -399,7 +404,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
         }
 
         public String getPathAfterSrc(String fullPath) {
-                int srcIndex = fullPath.indexOf("/src");
+                int srcIndex = fullPath.indexOf("\\src");
                 if (srcIndex != -1) {
                         return fullPath.substring(srcIndex);
                 }
@@ -412,6 +417,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 int response = fileChooser.showOpenDialog(null);
                 if (response == JFileChooser.APPROVE_OPTION) {
                         File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                        System.out.println(file.getAbsolutePath());
                         String imagePath = getPathAfterSrc(file.getAbsolutePath());
                         if (!imagePath.isEmpty()) {
                                 sanPhamDTO.setImage_path(absolutePath + imagePath);
