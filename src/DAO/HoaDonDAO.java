@@ -157,4 +157,45 @@ public class HoaDonDAO {
         return count;
     }
 
+    public static ArrayList<HoaDonDTO> searchDanhSachHoaDon(int totalMin, int totalMax, int MaKH, int MaNV, Date dateStart, Date dateEnd) {
+        ArrayList<HoaDonDTO> bills = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM bills WHERE date >= '"+dateStart+"' AND date <= '"+dateEnd+"'";
+            if(totalMin!=-1){
+                sql+=" AND total_price >= "+totalMin;
+            }
+            if(totalMax!=-1){
+                sql+=" AND total_price <= "+totalMax;
+            }
+            if(MaKH!=-1){
+                sql+=" AND customer_id = "+MaKH;
+            }
+            if(MaNV!=-1){
+                sql+=" AND staff_id = "+MaNV;
+            }
+            sql+=" ORDER BY bill_id DESC";
+            System.out.println(sql);
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int bill_id = rs.getInt("bill_id");
+                int staff_id = rs.getInt("staff_id");
+                Date date = rs.getDate("date");
+                int total_price = rs.getInt("total_price");
+                String address = rs.getString("address");
+                int customer_id = rs.getInt("customer_id");
+                String discount_code = rs.getString("discount_code");
+
+                HoaDonDTO bill = new HoaDonDTO(bill_id, staff_id, date, total_price, address, customer_id,
+                        discount_code);
+                bills.add(bill);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return bills;
+    }
+
 }

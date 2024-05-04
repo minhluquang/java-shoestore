@@ -27,6 +27,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -37,10 +38,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -120,8 +123,14 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JLabel lblTongTien;
     private JTextField txtGiaTu;
     private JTextField txtGiaDen;
-    private JTextField txtNgayLapTu;
-    private JTextField txtNgayLapDen;
+    private JSpinner sprDateStart;
+    private JSpinner sprDateEnd;
+    // private JTextField txtNgayLapTu;
+    // private JTextField txtNgayLapDen;
+    private JTextField txtMaKH;
+    private JTextField txtMaNVLap;
+    private JButton btnTim;
+    private JButton btnXoatim;
     private JScrollPane spnDSHD;
     private JTable tblDSHD;
     private JPanel pnlChiTietHD;
@@ -341,10 +350,43 @@ public class BanHangGUI extends JPanel implements ActionListener {
         txtGiaTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaDen = new JTextField(10);
         txtGiaDen.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtNgayLapTu = new JTextField(10);
-        txtNgayLapTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtNgayLapDen = new JTextField(10);
-        txtNgayLapDen.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        java.util.Date defaultDate = calendar.getTime();
+
+        // Tạo một SpinnerDateModel với giá trị mặc định là ngày hiện tại
+        SpinnerDateModel model = new SpinnerDateModel(defaultDate, null, null, Calendar.DAY_OF_MONTH);
+        sprDateStart = new JSpinner(model);
+        // Định dạng ngày tháng năm cho JSpinner
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(sprDateStart, "yyyy/MM/dd");
+        sprDateStart.setEditor(editor);
+        // Đặt font và border cho spinner
+        sprDateStart.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+        SpinnerDateModel model_end = new SpinnerDateModel(defaultDate, null, null, Calendar.DAY_OF_MONTH);
+        sprDateEnd = new JSpinner(model_end);
+
+        // Định dạng ngày tháng năm cho JSpinner
+        JSpinner.DateEditor editor_end = new JSpinner.DateEditor(sprDateEnd, "yyyy/MM/dd");
+        sprDateEnd.setEditor(editor_end);
+
+        sprDateEnd.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+        // txtNgayLapTu = new JTextField(10);
+        // txtNgayLapTu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        // txtNgayLapDen = new JTextField(10);
+        // txtNgayLapDen.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtMaKH = new JTextField();
+        txtMaKH.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtMaNVLap = new JTextField();
+        txtMaNVLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnTim = new JButton("Tìm");
+        btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnXoatim = new JButton("xóa");
+        btnXoatim.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
         tblDSHD = new JTable();
         tblDSHD.setBorder(null);
         tblDSHD.setSelectionBackground(new Color(232, 57, 95));
@@ -418,13 +460,17 @@ public class BanHangGUI extends JPanel implements ActionListener {
         JLabel jLabelngay2 = new JLabel("đến");
         jLabelngay2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabelngay2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        JLabel jLabelMaKh = new JLabel("Mã khách hàng: ");
+        jLabelMaKh.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        JLabel jLabelMaNv = new JLabel("Mã nhân viên: ");
+        jLabelMaNv.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
         JPanel panelHD1 = new JPanel(new GridLayout(0, 1));
         panelHD1.setBackground(new Color(36, 136, 203));
         panelHD1.add(lblThongTinHD);
         pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
 
-        JPanel panelHD2 = new JPanel(new GridLayout(0, 1, 0, 5));
+        JPanel panelHD2 = new JPanel(new GridLayout(0, 1, 3, 3));
         panelHD2.setBackground(Color.WHITE);
         panelHD2.add(lblMaHD);
         panelHD2.add(lblMaKH);
@@ -432,7 +478,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panelHD2.add(lblNgayLap);
         panelHD2.add(lblTongTien);
 
-        JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 0, 5));
+        JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 3, 3));
         panelHD3.setBackground(Color.WHITE);
         panelHD3.add(jLabeltk);
         panelHD3.add(new JLabel(""));
@@ -443,9 +489,18 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panelHD3.add(jLabelgia2);
         panelHD3.add(txtGiaDen);
         panelHD3.add(jLabelngay1);
-        panelHD3.add(txtNgayLapTu);
+        panelHD3.add(sprDateStart);
+        // panelHD3.add(txtNgayLapTu);
         panelHD3.add(jLabelngay2);
-        panelHD3.add(txtNgayLapDen);
+        panelHD3.add(sprDateEnd);
+        // panelHD3.add(txtNgayLapDen);
+        panelHD3.add(jLabelMaKh);
+        panelHD3.add(txtMaKH);
+        panelHD3.add(jLabelMaNv);
+        panelHD3.add(txtMaNVLap);
+        panelHD3.add(new JLabel());
+        panelHD3.add(btnTim);
+        panelHD3.add(btnXoatim);
 
         pnlThongTinHD.add(panelHD1, BorderLayout.NORTH);
         pnlThongTinHD.add(panelHD2, BorderLayout.CENTER);
@@ -499,8 +554,9 @@ public class BanHangGUI extends JPanel implements ActionListener {
         // btnXem.addActionListener(this);
         btnLuu.addActionListener(this);
         btnMuaHang.addActionListener(this);
+        btnTim.addActionListener(this);
+        btnXoatim.addActionListener(this);
     }
-
 
     public void loadDanhSachSanPham() {
 
@@ -563,7 +619,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         loadChiTietHoaDon();
     }
 
-    public void reLoadData(){
+    public void reLoadData() {
         dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
         dshd = HoaDonBUS.getDanhSachHoaDon();
         cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
@@ -624,7 +680,8 @@ public class BanHangGUI extends JPanel implements ActionListener {
             ChiTietHoaDonDTO chiTietHoaDonDTO = new ChiTietHoaDonDTO();
             chiTietHoaDonDTO.setBillId(billId);
             chiTietHoaDonDTO.setProductSerialId(chiTietSanPhamDTO.getProductSerialId());
-            chiTietHoaDonDTO.setPriceSingle(SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId()).getOutput_price());
+            chiTietHoaDonDTO
+                    .setPriceSingle(SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId()).getOutput_price());
             chiTietHoaDonDTOs.add(chiTietHoaDonDTO);
         }
         return chiTietHoaDonDTOs;
@@ -651,6 +708,84 @@ public class BanHangGUI extends JPanel implements ActionListener {
         xoaTatCaKhoiGioHang();
     }
 
+    public boolean ktrThongTinTimHoaDon() {
+        boolean isValid = true;
+        if (!txtGiaTu.getText().isEmpty()) {
+            try {
+                int tmp = Integer.parseInt(txtGiaTu.getText());
+            } catch (NumberFormatException e) {
+                isValid = false;
+            }
+        }
+        if (!txtGiaDen.getText().isEmpty()) {
+            try {
+                int tmp = Integer.parseInt(txtGiaDen.getText());
+            } catch (NumberFormatException e) {
+                isValid = false;
+            }
+        }
+        if (!txtMaKH.getText().isEmpty()) {
+            try {
+                int tmp = Integer.parseInt(txtMaKH.getText());
+            } catch (NumberFormatException e) {
+                isValid = false;
+            }
+        }
+        if (!txtMaNVLap.getText().isEmpty()) {
+            try {
+                int tmp = Integer.parseInt(txtMaNVLap.getText());
+            } catch (NumberFormatException e) {
+                isValid = false;
+            }
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(null, "Giá trị nhập phải là số");
+        }
+        return isValid;
+    }
+
+    public void timHoaDon() {
+        if (ktrThongTinTimHoaDon()) {
+            java.util.Date date = (java.util.Date) sprDateStart.getValue();
+            Date dateStart = new Date(date.getTime());
+            date = (java.util.Date) sprDateEnd.getValue();
+            Date dateEnd = new Date(date.getTime());
+            int totalMin=-1;
+            int totalMax=-1;
+            int MaKH=-1;
+            int MaNV=-1;
+            if (!txtGiaTu.getText().isEmpty()) {
+                totalMin = Integer.parseInt(txtGiaTu.getText());
+            }
+            if (!txtGiaDen.getText().isEmpty()) {
+                totalMax = Integer.parseInt(txtGiaDen.getText());
+            }
+            if (!txtMaKH.getText().isEmpty()) {
+                MaKH = Integer.parseInt(txtMaKH.getText());
+            }
+            if (!txtMaNVLap.getText().isEmpty()) {
+                MaNV = Integer.parseInt(txtMaNVLap.getText());
+            }
+            // System.out.println(totalMin);
+            // System.out.println(totalMax);
+            // System.out.println(MaKH);
+            // System.out.println(MaNV);
+            // System.out.println(dateStart);
+            // System.out.println(dateEnd);
+            dshd = HoaDonBUS.searchHoaDon(totalMin, totalMax, MaKH, MaNV, dateStart, dateEnd);
+            loadDanhSachHoaDon();
+        }
+    }
+
+    public void xoaTimHoaDon() {
+        txtGiaTu.setText("");
+        txtGiaDen.setText("");
+        txtMaKH.setText("");
+        txtMaNVLap.setText("");
+        dshd = HoaDonBUS.getDanhSachHoaDon();
+        loadDanhSachHoaDon();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnLuu) {
@@ -662,7 +797,12 @@ public class BanHangGUI extends JPanel implements ActionListener {
         if (e.getSource() == btnMuaHang) {
             muaHang();
         }
-        // if (e.getSource()==btnXem){}
+        if (e.getSource()==btnTim) {
+            timHoaDon();
+        }
+        if (e.getSource()==btnXoatim) {
+            xoaTimHoaDon();
+        }
     }
 
     public void xemThongTinSanPham(ChiTietSanPhamDTO chiTietSanPhamDTO, SanPhamDTO sanPhamDTO, String hang,
