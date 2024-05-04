@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import DTO.TheLoaiDTO;
 
@@ -201,5 +200,28 @@ public class TheLoaiDAO {
         }
         return success;
 	}
-    
+
+    public static ArrayList<TheLoaiDTO> searchLoai(String key) { 
+        key=key.toLowerCase();
+        ArrayList<TheLoaiDTO> theLoais = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM categories WHERE LOWER(category_name) LIKE '%"+key+"%'";
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int category_id = rs.getInt("category_id");
+                String category_name = rs.getString("category_name");
+                boolean status = rs.getBoolean("status");
+
+                TheLoaiDTO theLoai = new TheLoaiDTO(category_id, category_name, status);
+             theLoais.add(theLoai);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return theLoais;
+    }
+
 }
