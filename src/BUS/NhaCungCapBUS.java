@@ -26,11 +26,19 @@ public class NhaCungCapBUS {
 		return NhaCungCapDAO.insertPublisher(tenNcc, diachi);
 	}
 
+	public static boolean insertPublisher(ArrayList<NhaCungCap> dsncc) {
+		return NhaCungCapDAO.insertPublisher(dsncc);
+	}
+
 	public static boolean updatePublisher(int id, String tenNcc, String diachi) {
 		return NhaCungCapDAO.updatePublisher(id, tenNcc, diachi);
 	}
 
 	public static boolean deletePublisher(int id) {
 		return NhaCungCapDAO.deletePublisher(id);
+	}
+
+	public static ArrayList<NhaCungCap> getListNCCByQuery(String enteredText) {
+		return NhaCungCapDAO.getListNCCByQuery(enteredText);
 	}
 }
