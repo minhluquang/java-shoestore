@@ -153,11 +153,8 @@ public class ChiTietHang extends JFrame implements ActionListener {
         panel_5.add(panel_2);
         panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 
-        // ========= Xử lý lưu thông tin hãng =========
-        JButton btnLuu = new JButton("Lưu");
+        btnLuu = new JButton("Lưu");
         btnLuu.addActionListener(this);
-        // ========= Xử lý lưu thông tin hãng =========
-
         btnLuu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnLuu.setPreferredSize(new Dimension(100, 30));
         btnLuu.setForeground(Color.WHITE);
@@ -215,7 +212,6 @@ public class ChiTietHang extends JFrame implements ActionListener {
 
     // btnLưu
     public void xuLyLuuThongTinHang() {
-        System.out.println("vao dc dat");
         int hangID = Integer.parseInt(txtMaHang.getText());
         String hangName = txtTenHang.getText().trim();
         // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
@@ -232,8 +228,7 @@ public class ChiTietHang extends JFrame implements ActionListener {
                 if (HangBUS.themHang(new HangDTO(hangID, hangName, true))) {
                     JOptionPane.showMessageDialog(null, "Thêm thành công thông tin hãng.", "Thông báo thành công",
                             JOptionPane.INFORMATION_MESSAGE);
-                    qlHang.loadDanhSachHang();
-                    qlHang.revalidate();
+                    qlHang.reLoad();
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Thêm thất bại thông tin hãng.", "Thông báo thất bại",
@@ -244,8 +239,7 @@ public class ChiTietHang extends JFrame implements ActionListener {
                 if (HangBUS.suaHang(new HangDTO(hangID, hangName, true))) {
                     JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin hãng.",
                             "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                    qlHang.loadDanhSachHang();
-                    qlHang.revalidate();
+                    qlHang.reLoad();
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin hãng.",
