@@ -1,5 +1,6 @@
 package BUS;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 import DTO.HoaDonDTO;
@@ -28,5 +29,9 @@ public class HoaDonBUS {
 
     public static int getSoLuongHoaDon() {
         return HoaDonDAO.getSoLuongBill();
+    }
+
+    public static ArrayList<HoaDonDTO> searchHoaDon(int totalMin, int totalMax, int MaKH, int MaNV, Date dateStart, Date dateEnd){
+        return HoaDonDAO.searchDanhSachHoaDon(totalMin, totalMax, MaKH, MaNV, dateStart, dateEnd);
     }
 }

@@ -27,4 +27,10 @@ public class HangBUS {
     public static HangDTO getHangByName(String brand_name){
         return HangDAO.getHangByName(brand_name);
     }
+    public static boolean isExistTenHang(String tenHang){
+        return HangDAO.isExistTenHang(tenHang);
+    }
+    public static ArrayList<HangDTO> searchHang(String key){
+        return HangDAO.searchHang(key);
+    }
 }

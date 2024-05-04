@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -366,7 +368,9 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         dcmMaGiamGia.setSelectedItem("Mã giảm giá");
         ArrayList<KhuyenMai> khuyenMais = KhuyenMaiBUS.getDanhSachKhuyenMai();
         for (KhuyenMai khuyenMai : khuyenMais) {
-            dcmMaGiamGia.addElement(khuyenMai.getDiscount_code());
+            if(khuyenMai.getStatus()==1){
+                dcmMaGiamGia.addElement(khuyenMai.getDiscount_code());
+            }
         }
     }
 
@@ -418,8 +422,19 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             hoaDonDTO.setDiscountCode(null);
             lblTongTien.setText("Tổng tiền: " + tamTinh + "đ");
         } else {
-            hoaDonDTO.setDiscountCode(cbbDiscountCode.getSelectedItem().toString());
-            tinhToTalPrice();
+            String magg = cbbDiscountCode.getSelectedItem().toString();
+            KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(magg);
+            LocalDate localDate = LocalDate.now();
+            Date date = Date.valueOf(localDate);
+            Date startDate = Date.valueOf(khuyenMai.getStart_date());
+            Date endDate = Date.valueOf(khuyenMai.getEnd_date());
+            if (date.after(startDate) && date.before(endDate)) {
+                hoaDonDTO.setDiscountCode(cbbDiscountCode.getSelectedItem().toString());
+                tinhToTalPrice();
+            } else {
+                JOptionPane.showMessageDialog(null, "Không năm trong khoảng thời gian khuyến mãi");
+                cbbDiscountCode.setSelectedItem("Mã giảm giá");
+            }
         }
     }
 
@@ -463,7 +478,6 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
                 }
             }
         });
-        panel_5.remove(btnThemKhachHang);
     }
 
     @Override

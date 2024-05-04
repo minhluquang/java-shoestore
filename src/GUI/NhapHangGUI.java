@@ -15,12 +15,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -36,14 +38,16 @@ import javax.swing.table.DefaultTableModel;
 
 import BUS.ChiTietPhieuNhapBUS;
 import BUS.NhaCungCapBUS;
+import BUS.NhanVienBUS;
 import BUS.PhieuNhapBUS;
 import BUS.SanPhamBUS;
 import BUS.TheLoaiBUS;
 import DTO.NhaCungCap;
+import DTO.NhanVien;
 import DTO.SanPhamDTO;
 
 public class NhapHangGUI extends JPanel {
-
+	public String absolutePath = new File("").getAbsolutePath();
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private DefaultTableModel defaultTableModel;
@@ -59,6 +63,7 @@ public class NhapHangGUI extends JPanel {
 	private HashMap<String, String> nccMap = new HashMap<>();
 	private JLabel lblTongTien;
 	private JLabel lblMaPN;
+	private NhanVien staff = NhanVienBUS.getNhanVienByAccountID(MyApp.user.getAccountId());
 
 	/**
 	 * Create the panel.
@@ -92,6 +97,7 @@ public class NhapHangGUI extends JPanel {
 		textField.setColumns(12);
 
 		JButton btnNewButton = new JButton("Làm mới");
+		btnNewButton.setBackground(Color.WHITE);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textField.setText("");
@@ -100,6 +106,7 @@ public class NhapHangGUI extends JPanel {
 		});
 		btnNewButton.setPreferredSize(new Dimension(130, 30));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnNewButton.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		pnlTop.add(btnNewButton);
 
 		JPanel pnlBot = new JPanel();
@@ -173,8 +180,8 @@ public class NhapHangGUI extends JPanel {
 				values[1] = table.getValueAt(selectedRow, 2);
 				values[2] = txtSoLuong.getText();
 				values[3] = txtGiaNhap.getText();
-				values[4] = PhieuNhapBUS.getThanhTien(Integer.parseInt((String) values[2]),
-						Integer.parseInt((String) values[3]));
+				values[4] = String.format("%.0f", PhieuNhapBUS.getThanhTien(Integer.parseInt((String) values[2]),
+						Integer.parseInt((String) values[3])));
 
 				defaultTableModelCT.addRow(values);
 				table.clearSelection();
@@ -188,6 +195,7 @@ public class NhapHangGUI extends JPanel {
 		});
 		btnThem.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnThem.setPreferredSize(new Dimension(85, 35));
+		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
 		GridBagConstraints gbc_btnThem = new GridBagConstraints();
 		gbc_btnThem.fill = GridBagConstraints.BOTH;
 		gbc_btnThem.insets = new Insets(5, 5, 5, 5);
@@ -288,7 +296,7 @@ public class NhapHangGUI extends JPanel {
 		}
 		panel_8.add(cboNCC);
 
-		JLabel lblNV = new JLabel("null");
+		JLabel lblNV = new JLabel(staff.getFull_name());
 		lblNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNV.setBorder(
 				new TitledBorder(null, "Nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -317,9 +325,11 @@ public class NhapHangGUI extends JPanel {
 		});
 		btnXoa.setPreferredSize(new Dimension(100, 40));
 		btnXoa.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
 		panel_9.add(btnXoa);
 
 		JButton btnSua = new JButton("Sửa");
+		btnSua.setIcon(new ImageIcon(absolutePath + "/src/images/icons/edit.png"));
 		btnSua.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int rowSelected = tableCT.getSelectedRow();
@@ -379,10 +389,9 @@ public class NhapHangGUI extends JPanel {
 				System.out.println(formattedDate);
 				int receipt_id = PhieuNhapBUS.generate_Id();
 				int idNCC = Integer.parseInt(nccMap.get(cboNCC.getSelectedItem()));
-				int staff_id = 1;
 //		============ TẠO PHIẾU NHẬP ===============
 				boolean success_GoodsReceipt = PhieuNhapBUS.create_GoodsReceipts(receipt_id, formattedDate, idNCC,
-						staff_id);
+						staff.getStaffId());
 				if (!success_GoodsReceipt) {
 					JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thất bại !", "Thông báo",
 							JOptionPane.ERROR_MESSAGE);
@@ -468,7 +477,6 @@ public class NhapHangGUI extends JPanel {
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBorder(null);
 		scrollPane.setBackground(Color.WHITE);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
