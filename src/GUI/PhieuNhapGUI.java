@@ -165,7 +165,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		});
 		btnFind.setPreferredSize(new Dimension(150, 21));
 		btnFind.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnFind.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
+		btnFind.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
 		btnFind.setFocusable(false);
 		btnFind.setBackground(Color.WHITE);
 		panel_2.add(btnFind);
@@ -179,6 +179,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		});
 		btnReset_1.setPreferredSize(new Dimension(150, 21));
 		btnReset_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnReset_1.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
 		btnReset_1.setFocusable(false);
 		btnReset_1.setBackground(Color.WHITE);
 		panel_2.add(btnReset_1);

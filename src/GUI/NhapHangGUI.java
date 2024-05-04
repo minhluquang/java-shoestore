@@ -38,10 +38,12 @@ import javax.swing.table.DefaultTableModel;
 
 import BUS.ChiTietPhieuNhapBUS;
 import BUS.NhaCungCapBUS;
+import BUS.NhanVienBUS;
 import BUS.PhieuNhapBUS;
 import BUS.SanPhamBUS;
 import BUS.TheLoaiBUS;
 import DTO.NhaCungCap;
+import DTO.NhanVien;
 import DTO.SanPhamDTO;
 
 public class NhapHangGUI extends JPanel {
@@ -61,6 +63,7 @@ public class NhapHangGUI extends JPanel {
 	private HashMap<String, String> nccMap = new HashMap<>();
 	private JLabel lblTongTien;
 	private JLabel lblMaPN;
+	private NhanVien staff = NhanVienBUS.getNhanVienByAccountID(MyApp.user.getAccountId());
 
 	/**
 	 * Create the panel.
@@ -293,7 +296,7 @@ public class NhapHangGUI extends JPanel {
 		}
 		panel_8.add(cboNCC);
 
-		JLabel lblNV = new JLabel("null");
+		JLabel lblNV = new JLabel(staff.getFull_name());
 		lblNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNV.setBorder(
 				new TitledBorder(null, "Nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -386,10 +389,9 @@ public class NhapHangGUI extends JPanel {
 				System.out.println(formattedDate);
 				int receipt_id = PhieuNhapBUS.generate_Id();
 				int idNCC = Integer.parseInt(nccMap.get(cboNCC.getSelectedItem()));
-				int staff_id = 1;
 //		============ TẠO PHIẾU NHẬP ===============
 				boolean success_GoodsReceipt = PhieuNhapBUS.create_GoodsReceipts(receipt_id, formattedDate, idNCC,
-						staff_id);
+						staff.getStaffId());
 				if (!success_GoodsReceipt) {
 					JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thất bại !", "Thông báo",
 							JOptionPane.ERROR_MESSAGE);
