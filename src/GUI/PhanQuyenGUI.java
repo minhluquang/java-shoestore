@@ -48,9 +48,9 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
     private JTable tblRole;
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private JButton btnChiTiet;
-    private JButton btnThem;
+//    private JButton btnThem;
     private JButton btnSua;
-    private JButton btnXoa;
+//    private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     private DefaultTableModel dtmRole;
@@ -129,14 +129,14 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
 
 		
-		btnThem = new JButton("Thêm");
-		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
-		btnThem.setPreferredSize(new Dimension(0, 40));
-		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnThem.setFocusable(false);
-		btnThem.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnThem);
+//		btnThem = new JButton("Thêm");
+//		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnThem.setIcon(new ImageIcon(absolutePath + "/src/images/icons/add.png"));
+//		btnThem.setPreferredSize(new Dimension(0, 40));
+//		btnThem.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnThem.setFocusable(false);
+//		btnThem.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnThem);
 		
 		btnSua = new JButton("Sửa");
 		btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -147,24 +147,24 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
-		btnXoa = new JButton("Xoá");
-		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
-		btnXoa.setPreferredSize(new Dimension(0, 40));
-		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXoa.setFocusable(false);
-		btnXoa.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXoa);
+//		btnXoa = new JButton("Xoá");
+//		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+//		btnXoa.setPreferredSize(new Dimension(0, 40));
+//		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnXoa.setFocusable(false);
+//		btnXoa.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnXoa);
 		
 		
-		btnNhapExcel = new JButton("Nhập excel");
-		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnNhapExcel.setPreferredSize(new Dimension(0, 40));
-		btnNhapExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnNhapExcel.setFocusable(false);
-		btnNhapExcel.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnNhapExcel);
+//		btnNhapExcel = new JButton("Nhập excel");
+//		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
+//		btnNhapExcel.setPreferredSize(new Dimension(0, 40));
+//		btnNhapExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		btnNhapExcel.setFocusable(false);
+//		btnNhapExcel.setBackground(Color.WHITE);
+//		pnlTopBottom.add(btnNhapExcel);
 		
 		btnXuatExcel = new JButton("Xuất excel");
 		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -224,10 +224,10 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		
 		
 		// Sự kiện lắng nghe click
-		btnThem.addActionListener(this);
+//		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-		btnXoa.addActionListener(this);
-		btnNhapExcel.addActionListener(this);
+//		btnXoa.addActionListener(this);
+//		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
 
@@ -274,33 +274,34 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) { 
-			if (e.getSource() == btnThem) {
-	        	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
-	        		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);
-	            } else {
-	            	chiTietPhanQuyenGUI.toFront();
-	            }
-	        	chiTietPhanQuyenGUI.setVisible(true);
-	        	chiTietPhanQuyenGUI.requestFocus();
-	        } else if (e.getSource() == btnSua) {
+//			if (e.getSource() == btnThem) {
+//	        	if (chiTietPhanQuyenGUI == null || !chiTietPhanQuyenGUI.isVisible()) {
+//	        		chiTietPhanQuyenGUI = new ChiTietPhanQuyenGUI(new Role(), this);
+//	            } else {
+//	            	chiTietPhanQuyenGUI.toFront();
+//	            }
+//	        	chiTietPhanQuyenGUI.setVisible(true);
+//	        	chiTietPhanQuyenGUI.requestFocus();
+//	        } else 
+			if (e.getSource() == btnSua) {
 	        	 hienThiGiaoDienSua();
-	        } else if (e.getSource() == btnXoa) {
-	            int selectedRow = tblRole.getSelectedRow();
-	            if (selectedRow != -1) {
-	                int role_id = (int) tblRole.getValueAt(selectedRow, 0); // Lấy role_id từ hàng được chọn
-	                int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
-	                if (choice == JOptionPane.YES_OPTION) {
-	                    boolean success = RoleBUS.deleteRole(role_id); // Gọi phương thức xóa từ RoleBUS hoặc RoleDAO
-	                    if (success) {
-	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
-	                        loadDanhSachRole(); 
-	                    } else {
-	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
-	                    }
-	                }
-	            } else {
-	                JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	            }
+//	        } else if (e.getSource() == btnXoa) {
+//	            int selectedRow = tblRole.getSelectedRow();
+//	            if (selectedRow != -1) {
+//	                int role_id = (int) tblRole.getValueAt(selectedRow, 0); // Lấy role_id từ hàng được chọn
+//	                int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
+//	                if (choice == JOptionPane.YES_OPTION) {
+//	                    boolean success = RoleBUS.deleteRole(role_id); // Gọi phương thức xóa từ RoleBUS hoặc RoleDAO
+//	                    if (success) {
+//	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
+//	                        loadDanhSachRole(); 
+//	                    } else {
+//	                        JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
+//	                    }
+//	                }
+//	            } else {
+//	                JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//	            }
 	        }
 	        else if (e.getSource() == btnNhapExcel) {
 	            // Xử lý khi button "Nhập excel" được nhấn

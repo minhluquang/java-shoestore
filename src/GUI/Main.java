@@ -1,35 +1,21 @@
 package GUI;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Set;
 
-import javax.print.Doc;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.text.Document;
 
-import org.apache.poi.xddf.usermodel.BlackWhiteMode;
-import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTAbsoluteAnchor;
+import org.apache.poi.hwpf.usermodel.Paragraph;
 
-import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.geom.Line;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.draw.DashedLine;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
-import com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer;
-import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.LineSeparator;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.mysql.cj.xdevapi.Table;
 
 
 public class Main {	
