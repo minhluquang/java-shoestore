@@ -87,6 +87,21 @@ public class NhaCungCapDAO {
 		return success;
 	}
 
+	public static boolean insertPublisher(ArrayList<NhaCungCap> dsncc) {
+		connectDB.getConnection();
+		boolean success = true;
+		for (NhaCungCap nv : dsncc) {
+			String name = nv.getSupplier_name();
+			String address = nv.getSupplier_addresss();
+			success = insertPublisher(name, address);
+			if (!success) {
+				return success;
+			}
+		}
+
+		return success;
+	}
+
 	public static boolean updatePublisher(int id, String tenNcc, String diachi) {
 		connectDB.getConnection();
 		boolean success = false;
@@ -125,5 +140,28 @@ public class NhaCungCapDAO {
 		}
 		connectDB.closeConnection();
 		return success;
+	}
+
+	public static ArrayList<NhaCungCap> getListNCCByQuery(String enteredText) {
+		connectDB.getConnection();
+		ArrayList<NhaCungCap> ds = new ArrayList<>();
+		String sql = "SELECT * FROM suppliers WHERE supplier_name LIKE '%" + enteredText
+				+ "%' or supplier_address LIKE '%" + enteredText + "%'";
+		try {
+			ResultSet rs = connectDB.runQuery(sql);
+			while (rs.next()) {
+				NhaCungCap ncc = new NhaCungCap();
+				ncc.setSupplier_id(rs.getInt("supplier_id"));
+				ncc.setSupplier_name(rs.getString("supplier_name"));
+				ncc.setSupplier_addresss(rs.getString("supplier_address"));
+				ncc.setStatus(rs.getInt("status"));
+				ds.add(ncc);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		connectDB.closeConnection();
+		return ds;
 	}
 }
