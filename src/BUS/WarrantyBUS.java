@@ -2,6 +2,8 @@ package BUS;
 
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DAO.WarrantyDAO;
 import DTO.Warranty;
 
@@ -23,8 +25,8 @@ public class WarrantyBUS {
 		boolean isExist = WarrantyDAO.isExitWar(id);
 		return isExist;
 	}
-	public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status) {
-		boolean success = WarrantyDAO.insertWar(warranty_detail_id,product_serial_id,warranty_date,reason,active,status);
+	public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status, boolean noJOption) {
+		boolean success = WarrantyDAO.insertWar(warranty_detail_id,product_serial_id,warranty_date,reason,active,status, noJOption);
 		return success;
 	}
 	public static boolean updateWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status) {
@@ -38,4 +40,8 @@ public class WarrantyBUS {
 	public static Warranty getWarById(int warranty_detail_id) {
 		return WarrantyDAO.getWarById(warranty_detail_id);
 	}
+	
+    public static boolean insertDanhSachBaoHanh(ArrayList<Warranty> dsbh) {
+    	return WarrantyDAO.insertDanhSachBaoHanh(dsbh);
+    }
 }

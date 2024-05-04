@@ -36,7 +36,6 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	    private JTextField txtidProduct;
 	    private JTextField txtDateReturn;
 	    private JTextField txtReason;
-//	    private JTextField txtActive;
 	    private JComboBox cmbTrangThai;
 	    private Return rt;
 	    private ReturnGUI parentGUI;
@@ -121,7 +120,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         
 	         
 	         
-	         JLabel lblNewLabel_6_2 = new JLabel("Return_ID");
+	         JLabel lblNewLabel_6_2 = new JLabel("Mã Đổi Trả");
 	         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 	         panel_5.add(lblNewLabel_6_2);
 	         txtIdBaoHanh = new JTextField();
@@ -131,7 +130,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         txtIdBaoHanh.setColumns(10);
 	         panel_5.add(txtIdBaoHanh);
 	         
-	         JLabel lblNewLabel_6 = new JLabel("Product_Serial_ID");
+	         JLabel lblNewLabel_6 = new JLabel("Mã Seri Sản Phẩm");
 	         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
 	         panel_5.add(lblNewLabel_6);
 
@@ -139,28 +138,20 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         txtidProduct.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	         panel_5.add(txtidProduct);
 	    	
-	         JLabel lblNewLabel_5 = new JLabel("Date_Return");
+	         JLabel lblNewLabel_5 = new JLabel("Ngày Bảo Hành");
 	         panel_5.add(lblNewLabel_5);
 	         txtDateReturn= new JTextField();
 	         txtDateReturn.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	         txtDateReturn.setColumns(10);
 	         panel_5.add(txtDateReturn);
 	         
-	         JLabel lblNewLabel_5_1 = new JLabel("Reason");
+	         JLabel lblNewLabel_5_1 = new JLabel("Lý do");
 	         panel_5.add(lblNewLabel_5_1);
 	         txtReason =  new JTextField();
 	         txtReason.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	         txtReason.setColumns(10);
 	         panel_5.add(txtReason);
-	         
-//	         JLabel lblNewLabel_5_2 = new JLabel("Active");
-//	         panel_5.add(lblNewLabel_5_2);
-//	         txtActive = new JTextField();
-//	         txtActive.setFont(new Font("Tahoma", Font.PLAIN, 14));
-//	         txtActive.setColumns(10);
-//	         panel_5.add(txtActive);
-
-	         
+	     
 	         
 	         JLabel lblNewLabel_5_1_2 = new JLabel("Status");
 	         lblNewLabel_5_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -301,15 +292,9 @@ public class ChiTietBaoHanhGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Vui lòng nhập lý do", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
-//            if (!active.equals("OK") && !active.equals("NO")) {
-//                JOptionPane.showMessageDialog(null, "Trường Active chỉ được nhập 'OK' hoặc 'NO'", "Lỗi", JOptionPane.ERROR_MESSAGE);
-//                return;
-//            }
-            
             // Thực hiện lưu hoặc cập nhật thông tin
             if (!ReturnBUS.isExistReturn(return_id)) {
-                if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason,"OK", status)) {
+                if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason,"OK", status, false)) {
                     JOptionPane.showMessageDialog(null, "Lưu thông tin đổi trả thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     parentGUI.loadDanhSachBaoHanh();
                     parentGUI.revalidate();

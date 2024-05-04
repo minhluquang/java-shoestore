@@ -8,9 +8,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,6 +27,7 @@ import java.awt.GridBagLayout;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,6 +36,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -39,7 +53,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import BUS.ReturnBUS;
 import BUS.WarrantyBUS;
+import DTO.Return;
 import DTO.Warranty;
 
 public class WarrantyGUI extends JPanel implements ActionListener {
@@ -234,7 +251,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason","Active", "Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Mã Bảo Hành", "Mã Seri Sản Phẩm"," Ngày Bảo Hành" ,"Lý do","Trạng thái", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -344,6 +361,140 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 	    	}  else {
 		        JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		    }
+		} else if (e.getSource() == btnNhapExcel) {
+			importExcel();
+		}
+		else if (e.getSource() == btnXuatExcel) {
+			try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
    	}
+    
+    public void importExcel() {
+		try {
+			ArrayList<Warranty> dsbh = new ArrayList<>();
+			
+    		JFileChooser fileChooser = new JFileChooser();
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+    		fileChooser.setFileFilter(filter);
+
+    		int result = fileChooser.showOpenDialog(null);
+    		if (result == JFileChooser.APPROVE_OPTION) {
+    		    File selectedFile = fileChooser.getSelectedFile();
+    		    
+    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
+    		    
+    		    // Duyệt qua từng hàng trong sheet
+                for (Row row : sheet) {
+                	if (row.getRowNum()==0) {
+                		if (!checkHeaderImportExcel(row)) {
+                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+                			return;
+                		}
+                		continue;
+                	}
+                	
+                	// Duyệt qua từng ô trong 1 hàng
+                	Warranty wt = new Warranty();
+                    for (Cell cell : row) { 
+                    	int columnIndex = cell.getColumnIndex();
+                        try {
+                        	switch (columnIndex) {
+	                         case 0:
+	                        	
+	                        	wt.setProduct_serial_id((int) cell.getNumericCellValue());
+	                            break;
+	                         case 1:
+	                        	 wt.setWarrantyDate(cell.getStringCellValue());
+	                             break;
+	                         case 2:
+	                        	 wt.setReason(cell.getStringCellValue());
+	                             break;
+                           }
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+						}
+                    }
+                    dsbh.add(wt);
+                }
+                
+                
+//                 Ghi dữ liệu vào db
+					if (WarrantyBUS.insertDanhSachBaoHanh(dsbh)) {
+						loadDanhSachWarranty();
+						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+						message += "\nNgoại trừ: ";
+						message += "\n - Mã sản phẩm đã bảo hành";
+						message += "\n - Ngày bảo hành không hợp lệ";
+						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						return;
+					} 
+					 else {
+							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+				
+    		}
+    	} catch (Exception e2) {
+    	    // Xử lý ngoại lệ ở đây nếu cần
+    	}
+	}
+    
+    public boolean checkHeaderImportExcel (Row row) {
+        String[] expectedHeaders = {"product_serial_id", "warranty_date", "reason"};
+        boolean headerMatched = true;
+        
+        for (int i = 0; i < expectedHeaders.length; i++) {
+            Cell cell = row.getCell(i);
+            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+            	System.out.println(cell.getStringCellValue());
+                headerMatched = false;
+                break;
+            }
+        }
+        
+        return headerMatched;
+	}
+    
+    public void exportExcel() throws IOException {
+		ArrayList<Warranty> dsbh= WarrantyBUS.getDanhSachWarranty();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsbh.xlsx");
+		    XSSFWorkbook wb = new XSSFWorkbook();
+		    XSSFSheet sheet = wb.createSheet("Danh sách bảo hành");
+		    
+		    // Ghi header
+		    XSSFRow headerRow = sheet.createRow(0);
+		    headerRow.createCell(0).setCellValue("warranty_detail_id");
+		    headerRow.createCell(1).setCellValue("product_serial_id");
+		    headerRow.createCell(2).setCellValue("warranty_date");
+		    headerRow.createCell(3).setCellValue("reason");
+		    headerRow.createCell(4).setCellValue("active");
+		    
+		    // Ghi thông tin bảo hành
+		    int rowNum = 1;
+		    for (Warranty bh: dsbh) {
+		    	XSSFRow row = sheet.createRow(rowNum++);
+		    	row.createCell(0).setCellValue(bh.getWarrantyid());
+		    	row.createCell(1).setCellValue(bh.getProduct_serial_id());
+		    	row.createCell(2).setCellValue(bh.getWarrantyDate());
+		    	row.createCell(3).setCellValue(bh.getReason());
+		    	row.createCell(4).setCellValue(bh.getActive());
+		    }
+		    
+		    wb.write(fileOutputStream);
+		    wb.close();
+		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 }

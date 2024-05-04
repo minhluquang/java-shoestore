@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,6 +77,7 @@ public class NhapHangGUI extends JPanel {
 	private SanPhamDTO sp = new SanPhamDTO();
 	private JLabel lblLoai;
 	private JLabel lblTenSp;
+	private JLabel lblAnh;
 	private JLabel lblMa;
 	private HashMap<String, String> nccMap = new HashMap<>();
 	private JLabel lblTongTien;
@@ -151,14 +153,17 @@ public class NhapHangGUI extends JPanel {
 		panel_2.setBackground(Color.WHITE);
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
-		gbc_panel_2.insets = new Insets(5, 0, 0, 5);
+		gbc_panel_2.insets = new Insets(5, 0, 0, 0);
 //		gbc_panel_2.gridheight = 2;
 		gbc_panel_2.gridheight = 1;
 		gbc_panel_2.gridx = 0;
-		gbc_panel_2.weightx = 0.5;
+		gbc_panel_2.weightx = 2.0;
 		gbc_panel_2.gridy = 0;
 		pnlBot.add(panel_2, gbc_panel_2);
-		panel_2.setLayout(new GridLayout(1, 1, 0, 0));
+		panel_2.setLayout(new GridLayout(1, 0, 0, 0));
+
+		lblAnh = new JLabel("");
+		panel_2.add(lblAnh);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setPreferredSize(new Dimension(300, 100));
@@ -535,6 +540,13 @@ public class NhapHangGUI extends JPanel {
 					String giaNhap = PhieuNhapBUS.tinhGiaNhap(Integer.parseInt(giaBan));
 					txtGiaNhap.setText(giaNhap);
 					txtSoLuong.setText("");
+
+					ImageIcon icon = new ImageIcon(absolutePath
+							+ SanPhamBUS.getSanPhamByID(Integer.parseInt(lblMa.getText())).getImage_path());
+					Image image = icon.getImage();
+					Image newImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+					ImageIcon newIcon = new ImageIcon(newImage);
+					lblAnh.setIcon(newIcon);
 				}
 			}
 		});

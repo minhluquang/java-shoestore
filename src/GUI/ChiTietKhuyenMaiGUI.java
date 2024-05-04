@@ -131,7 +131,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		panel_4.add(panel_5);
 		panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 		
-		JLabel lblNewLabel_6_2 = new JLabel("Name");
+		JLabel lblNewLabel_6_2 = new JLabel("Tên KM");
 		lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_2);
 		
@@ -140,7 +140,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtTen.setColumns(10);
 		panel_5.add(txtTen);
 		
-		JLabel lblNewLabel_6 = new JLabel("Discount_Value");
+		JLabel lblNewLabel_6 = new JLabel("Giá trị KM");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6);
 		
@@ -150,7 +150,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		panel_5.add(txtDieuKien);
 		
 		
-		JLabel lblNewLabel_6_3 = new JLabel("Type");
+		JLabel lblNewLabel_6_3 = new JLabel("Dạng KM");
 		lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3);
 		
@@ -160,7 +160,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtPhanTramGiamGia.setColumns(10);
 		panel_5.add(txtPhanTramGiamGia);
 		
-		JLabel lblNewLabel_6_3_1 = new JLabel("Start_Date");
+		JLabel lblNewLabel_6_3_1 = new JLabel("Ngày BD");
 		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1);
 		
@@ -170,7 +170,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 		txtStartDate.setColumns(10);
 		panel_5.add(txtStartDate);
 		
-		JLabel lblNewLabel_6_3_1_2 = new JLabel("End_Date");
+		JLabel lblNewLabel_6_3_1_2 = new JLabel("Ngày KT");
 		lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel_5.add(lblNewLabel_6_3_1_2);
 		

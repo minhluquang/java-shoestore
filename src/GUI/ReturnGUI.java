@@ -5,9 +5,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,6 +25,7 @@ import java.awt.GridBagLayout;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +34,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -41,8 +56,10 @@ import java.awt.event.ActionEvent;
 
 import BUS.ReturnBUS;
 import BUS.RoleBUS;
+import BUS.TaiKhoanBUS;
 import DTO.Return;
 import DTO.Role;
+import DTO.TaiKhoan;
 public class ReturnGUI extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
     public String absolutePath = new File("").getAbsolutePath();
@@ -88,7 +105,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","1" ,"0"}));
-		
+		pnlChucVu.add(comboBox_1);
 		// ========== Start: Xử lý search trạng thái ==========
 		comboBox_1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -105,7 +122,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 			}				
 		});
 		// ========== End: Xử lý search trạng thái ==========
-		pnlChucVu.add(comboBox_1);
+		
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -238,7 +255,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmReturn = new DefaultTableModel(new Object[]{"Return_ID", "Product_ID", "Date_Return", "Reason","Active" ,"Status"}, 0);
+		dtmReturn = new DefaultTableModel(new Object[]{"Mã Đổi Trả", "Mã Seri Sản Phẩm", "Ngày Bảo Hành", "Lý do","Trạng thái" ,"Status"}, 0);
 		table.setModel(dtmReturn);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -272,6 +289,17 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		btnXuatExcel.addActionListener(this);
     }
     
+
+    // load
+    public void loadDanhSachBaoHanh() {
+    	dtmReturn.setRowCount(0);
+    	ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
+		for (Return returnItem : danhSachBaoHanh) {
+		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getActive(), returnItem.getStatus()};
+		    dtmReturn.addRow(rowData);
+		}
+    }
+    
     // search
     public void xuLyTimKiem(String keyword, int searchStatus) {
     	DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -290,16 +318,6 @@ public class ReturnGUI extends JPanel implements ActionListener{
     	}
     }
     
-    // load
-    public void loadDanhSachBaoHanh() {
-    	dtmReturn.setRowCount(0);
-    	ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
-		for (Return returnItem : danhSachBaoHanh) {
-		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getActive(), returnItem.getStatus()};
-		    dtmReturn.addRow(rowData);
-		}
-    }
-  
     public void hienThiGiaoDienSua() {
 	    int selectedRow = table.getSelectedRow();
 	    if (selectedRow != -1) {
@@ -356,8 +374,139 @@ public class ReturnGUI extends JPanel implements ActionListener{
         }
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
+        	importExcel();
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn
+        	try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 	}
+    
+    public void importExcel() {
+		try {
+			ArrayList<Return> dsdt = new ArrayList<>();
+			
+    		JFileChooser fileChooser = new JFileChooser();
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+    		fileChooser.setFileFilter(filter);
+
+    		int result = fileChooser.showOpenDialog(null);
+    		if (result == JFileChooser.APPROVE_OPTION) {
+    		    File selectedFile = fileChooser.getSelectedFile();
+    		    
+    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
+    		    
+    		    // Duyệt qua từng hàng trong sheet
+                for (Row row : sheet) {
+                	if (row.getRowNum()==0) {
+                		if (!checkHeaderImportExcel(row)) {
+                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+                			return;
+                		}
+                		continue;
+                	}
+                	
+                	// Duyệt qua từng ô trong 1 hàng
+                	Return rt = new Return();
+                    for (Cell cell : row) { 
+                    	int columnIndex = cell.getColumnIndex();
+                        try {
+                        	switch (columnIndex) {
+	                         case 0:
+	                        	rt.setProduct_serial_id((int) cell.getNumericCellValue());
+	                            break;
+	                         case 1:
+	                        	 rt.setDate_return(cell.getStringCellValue());
+	                             break;
+	                         case 2:
+	                        	 rt.setReason(cell.getStringCellValue());
+	                             break;
+                           }
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+						}
+                    }
+                    dsdt.add(rt);
+                }
+                
+            
+
+                
+//                 Ghi dữ liệu vào db
+					if (ReturnBUS.insertDanhSachDoiTra(dsdt)) {
+						loadDanhSachBaoHanh();
+						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+						message += "\nNgoại trừ: ";
+						message += "\n - Mã sản phẩm đã đổi trả";
+						message += "\n - Ngày đổi trả vượt quá 7 ngày";
+						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						return;
+					} 
+					 else {
+							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+				
+    		}
+    	} catch (Exception e2) {
+    	    // Xử lý ngoại lệ ở đây nếu cần
+    	}
+	}
+    
+    public boolean checkHeaderImportExcel (Row row) {
+        String[] expectedHeaders = {"product_serial_id", "date_return", "reason"};
+        boolean headerMatched = true;
+        
+        for (int i = 0; i < expectedHeaders.length; i++) {
+            Cell cell = row.getCell(i);
+            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+            	System.out.println(cell.getStringCellValue());
+                headerMatched = false;
+                break;
+            }
+        }
+        
+        return headerMatched;
+	}
+
+    public void exportExcel() throws IOException {
+		ArrayList<Return> dsdt= ReturnBUS.getDanhSachReturn();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsdt.xlsx");
+		    XSSFWorkbook wb = new XSSFWorkbook();
+		    XSSFSheet sheet = wb.createSheet("Danh sách tài khoản");
+		    
+		    // Ghi header
+		    XSSFRow headerRow = sheet.createRow(0);
+		    headerRow.createCell(0).setCellValue("return_id");
+		    headerRow.createCell(1).setCellValue("product_serial_id");
+		    headerRow.createCell(2).setCellValue("date_return");
+		    headerRow.createCell(3).setCellValue("reason");
+		    headerRow.createCell(4).setCellValue("return_status");
+		    
+		    // Ghi thông tin đổi trả
+		    int rowNum = 1;
+		    for (Return dt: dsdt) {
+		    	XSSFRow row = sheet.createRow(rowNum++);
+		    	row.createCell(0).setCellValue(dt.getReturn_id());
+		    	row.createCell(1).setCellValue(dt.getProduct_serial_id());
+		    	row.createCell(2).setCellValue(dt.getDate_return());
+		    	row.createCell(3).setCellValue(dt.getReason());
+		    }
+		    
+		    wb.write(fileOutputStream);
+		    wb.close();
+		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 }

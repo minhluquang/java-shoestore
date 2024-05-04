@@ -1,6 +1,9 @@
 package BUS;
 
 import java.util.ArrayList;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import java.sql.ResultSet;
 import DAO.connectDB;
 import DAO.ReturnDAO;
@@ -29,8 +32,8 @@ private static ArrayList<Return> dsbh ;
 		return isExist;
 	}
 	// insert
-	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason, String active, int status) {
-		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason,active,status);
+	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason, String active, int status, boolean noJOption) {
+		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason,active,status, noJOption);
 		return success;
 	}
 	// update
@@ -47,4 +50,9 @@ private static ArrayList<Return> dsbh ;
 	public static Return getReturnById(int return_id) {
 	    return ReturnDAO.getReturnById(return_id);
 	}
+	
+	//insert list
+    public static boolean insertDanhSachDoiTra(ArrayList<Return> dsdt) {
+    	return ReturnDAO.insertDanhSachDoiTra(dsdt);
+    }
 }
