@@ -163,7 +163,7 @@ public class ReturnDAO {
               ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(product_serial_id);
               if(!SanPhamBUS.kiemTraTonKhoByID(chiTietSanPhamDTO.getProductId())) {
             	  JOptionPane.showMessageDialog(null, "Hiện tại đã hết sản phẩm đổi trả", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                  return false;
+            	  active = "NO";
               }
               // Tiến hành insert vào CSDL
               String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "','" + active + "', " + status + ")";
