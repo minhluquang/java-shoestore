@@ -188,7 +188,7 @@ public class HangDAO {
             connectDB.getConnection();
             String sql = "SELECT * "
             		+ "FROM brands "
-            		+ "WHERE brand_name = " + tenHang;
+            		+ "WHERE brand_name LIKE '"+tenHang+"'";
             ResultSet rs = connectDB.runQuery(sql);
             if (rs!=null && rs.next()) {
                 success = true;
@@ -206,7 +206,7 @@ public class HangDAO {
         ArrayList<HangDTO> brands = new ArrayList<>();
         try {
             connectDB.getConnection();
-            String sql = "SELECT * FROM brands WHERE LOWER(brand_name) LIKE %"+key+"%";
+            String sql = "SELECT * FROM brands WHERE LOWER(brand_name) LIKE '%"+key+"%'";
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int brand_id = rs.getInt("brand_id");
