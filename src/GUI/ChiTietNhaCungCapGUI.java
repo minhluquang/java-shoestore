@@ -131,6 +131,7 @@ public class ChiTietNhaCungCapGUI extends JFrame implements ActionListener {
 		txtMaNCC.setEditable(false);
 		txtMaNCC.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtMaNCC.setColumns(10);
+		txtMaNCC.setText(NhaCungCapBUS.generrate_Id() + "");
 
 		panel_5.add(txtMaNCC);
 
