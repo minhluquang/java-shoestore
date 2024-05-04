@@ -177,7 +177,7 @@ public class ReturnDAO {
                   ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
                   ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
                   SanPhamBUS.suaSanPham(sanPhamDTO);
-                  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                 JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
               } else {
                   JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
               }      

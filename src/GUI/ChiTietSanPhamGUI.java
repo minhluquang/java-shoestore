@@ -288,7 +288,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
                 loadComboboxHang(sanPhamDTO.getBrand_id());
                 loadComboboxLoai(sanPhamDTO.getCategory_id());
-                ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+                ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
                 Image image = icon.getImage();
                 Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
                 icon = new ImageIcon(scaledImage);
@@ -378,10 +378,18 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                                         if (SanPhamBUS.isExistSanPham(sanPhamDTO.getProduct_name())) {
                                                 JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
                                         } else {
-                                                SanPhamBUS.themSanPham(sanPhamDTO);
+                                                if(SanPhamBUS.themSanPham(sanPhamDTO)){
+                                                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm thành công");
+                                                } else {
+                                                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm thất bại");
+                                                }
                                         }
                                 } else {
-                                        SanPhamBUS.suaSanPham(sanPhamDTO);
+                                        if(SanPhamBUS.suaSanPham(sanPhamDTO)){
+                                                JOptionPane.showMessageDialog(null, "Sửa sản phẩm thành công");
+                                        } else {
+                                                JOptionPane.showMessageDialog(null, "Sửa sản phẩm thất bại");
+                                        }
                                 }
                         }
 
