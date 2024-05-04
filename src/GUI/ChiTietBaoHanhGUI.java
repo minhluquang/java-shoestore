@@ -301,12 +301,6 @@ public class ChiTietBaoHanhGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Vui lòng nhập lý do", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
-//            if (!active.equals("OK") && !active.equals("NO")) {
-//                JOptionPane.showMessageDialog(null, "Trường Active chỉ được nhập 'OK' hoặc 'NO'", "Lỗi", JOptionPane.ERROR_MESSAGE);
-//                return;
-//            }
-            
             // Thực hiện lưu hoặc cập nhật thông tin
             if (!ReturnBUS.isExistReturn(return_id)) {
                 if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason,"OK", status)) {

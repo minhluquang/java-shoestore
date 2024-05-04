@@ -88,7 +88,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","1" ,"0"}));
-		
+		pnlChucVu.add(comboBox_1);
 		// ========== Start: Xử lý search trạng thái ==========
 		comboBox_1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -105,7 +105,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 			}				
 		});
 		// ========== End: Xử lý search trạng thái ==========
-		pnlChucVu.add(comboBox_1);
+		
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -272,6 +272,17 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		btnXuatExcel.addActionListener(this);
     }
     
+
+    // load
+    public void loadDanhSachBaoHanh() {
+    	dtmReturn.setRowCount(0);
+    	ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
+		for (Return returnItem : danhSachBaoHanh) {
+		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getActive(), returnItem.getStatus()};
+		    dtmReturn.addRow(rowData);
+		}
+    }
+    
     // search
     public void xuLyTimKiem(String keyword, int searchStatus) {
     	DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -290,16 +301,6 @@ public class ReturnGUI extends JPanel implements ActionListener{
     	}
     }
     
-    // load
-    public void loadDanhSachBaoHanh() {
-    	dtmReturn.setRowCount(0);
-    	ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
-		for (Return returnItem : danhSachBaoHanh) {
-		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getActive(), returnItem.getStatus()};
-		    dtmReturn.addRow(rowData);
-		}
-    }
-  
     public void hienThiGiaoDienSua() {
 	    int selectedRow = table.getSelectedRow();
 	    if (selectedRow != -1) {

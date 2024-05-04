@@ -43,11 +43,9 @@ public class WarrantyDAO {
         connectDB.getConnection();
         ArrayList<Warranty> dswt = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM `warranty_details` WHERE (warranty_detail_id LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%' OR warranty_date LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%')";
-            sql += " OR active LIKE '%" + keyword + "%'";
+            String sql = "SELECT * FROM `warranty_details` WHERE (warranty_detail_id LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%' OR warranty_date LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR active LIKE '%" + keyword + "%')";
             if (status != -1) {
-                // Thêm khoảng trắng sau phần điều kiện trước khi thêm phần điều kiện về trạng thái
-                sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
+                sql += " AND status = " +status;
             }
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
