@@ -244,7 +244,10 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 mapLoai = new HashMap<>();
                 ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
                 for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
-                        mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+                        if (theLoaiDTO.isStatus()) {
+                                mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+
+                        }
                 }
                 for (String key : mapLoai.keySet()) {
                         cbbLoai.addItem(key);
@@ -261,7 +264,10 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                 mapHang = new HashMap<>();
                 ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
                 for (HangDTO hangDTO : hangDTOs) {
-                        mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+                        if (hangDTO.isStatus()) {
+                                mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+
+                        }
                 }
                 for (String key : mapHang.keySet()) {
                         cbbHang.addItem(key);
@@ -288,7 +294,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
 
                 loadComboboxHang(sanPhamDTO.getBrand_id());
                 loadComboboxLoai(sanPhamDTO.getCategory_id());
-                ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
+                ImageIcon icon = new ImageIcon(absolutePath + sanPhamDTO.getImage_path());
                 Image image = icon.getImage();
                 Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
                 icon = new ImageIcon(scaledImage);
@@ -378,14 +384,14 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                                         if (SanPhamBUS.isExistSanPham(sanPhamDTO.getProduct_name())) {
                                                 JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
                                         } else {
-                                                if(SanPhamBUS.themSanPham(sanPhamDTO)){
+                                                if (SanPhamBUS.themSanPham(sanPhamDTO)) {
                                                         JOptionPane.showMessageDialog(null, "Thêm sản phẩm thành công");
                                                 } else {
                                                         JOptionPane.showMessageDialog(null, "Thêm sản phẩm thất bại");
                                                 }
                                         }
                                 } else {
-                                        if(SanPhamBUS.suaSanPham(sanPhamDTO)){
+                                        if (SanPhamBUS.suaSanPham(sanPhamDTO)) {
                                                 JOptionPane.showMessageDialog(null, "Sửa sản phẩm thành công");
                                         } else {
                                                 JOptionPane.showMessageDialog(null, "Sửa sản phẩm thất bại");
@@ -431,7 +437,7 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                                 sanPhamDTO.setImage_path(imagePath);
                         }
                 }
-                ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
+                ImageIcon icon = new ImageIcon(absolutePath + sanPhamDTO.getImage_path());
                 Image image = icon.getImage();
                 Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
                 icon = new ImageIcon(scaledImage);

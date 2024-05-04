@@ -360,7 +360,10 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		mapLoai.put("Loại", 0);
 		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
 		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
+			if (theLoaiDTO.isStatus()) {
 			mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+				
+			}
 		}
 		for (String key : mapLoai.keySet()) {
 			cbbLoai.addItem(key);
@@ -373,7 +376,10 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		mapHang.put("Hãng", 0);
 		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
 		for (HangDTO hangDTO : hangDTOs) {
+			if (hangDTO.isStatus()) {
 			mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+				
+			}
 		}
 		for (String key : mapHang.keySet()) {
 			cbbHang.addItem(key);

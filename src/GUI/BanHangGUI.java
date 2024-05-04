@@ -97,7 +97,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JComboBox<String> cbbHang;
     private JComboBox<String> cbbTheLoai;
     private Map<String, Integer> mapHang;
-	private Map<String, Integer> mapLoai;
+    private Map<String, Integer> mapLoai;
     private JButton btnReset;
     private JTable tblSanPham;
     private JScrollPane spnGioHang;
@@ -187,16 +187,16 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panel1.setBackground(new Color(36, 136, 203));
         panel1.add(lblDSSP, BorderLayout.NORTH);
 
-        JPanel panel1_TimKiem = new JPanel(new GridLayout(1,0));
+        JPanel panel1_TimKiem = new JPanel(new GridLayout(1, 0));
         txtTenSP = new JTextField();
         txtTenSP.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtTenSP.setPreferredSize(new Dimension(0, 30));
         txtTenSP.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				timSanPham();
-			}
-		});
+            @Override
+            public void keyReleased(KeyEvent e) {
+                timSanPham();
+            }
+        });
         panel1_TimKiem.add(txtTenSP);
         JPanel pnlTmp = new JPanel(new GridLayout(1, 0));
         cbbHang = new JComboBox<>();
@@ -608,30 +608,34 @@ public class BanHangGUI extends JPanel implements ActionListener {
     }
 
     public void loadcbbLoai() {
-		mapLoai = new HashMap<>();
-		mapLoai.put("Loại", 0);
-		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
-		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
-			mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
-		}
-		for (String key : mapLoai.keySet()) {
-			cbbTheLoai.addItem(key);
-		}
-		cbbTheLoai.setSelectedItem("Loại");
-	}
+        mapLoai = new HashMap<>();
+        mapLoai.put("Loại", 0);
+        ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
+        for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
+            if (theLoaiDTO.isStatus()) {
+                mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+            }
+        }
+        for (String key : mapLoai.keySet()) {
+            cbbTheLoai.addItem(key);
+        }
+        cbbTheLoai.setSelectedItem("Loại");
+    }
 
-	public void loadcbbHang() {
-		mapHang = new HashMap<>();
-		mapHang.put("Hãng", 0);
-		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
-		for (HangDTO hangDTO : hangDTOs) {
-			mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
-		}
-		for (String key : mapHang.keySet()) {
-			cbbHang.addItem(key);
-		}
-		cbbHang.setSelectedItem("Hãng");
-	}
+    public void loadcbbHang() {
+        mapHang = new HashMap<>();
+        mapHang.put("Hãng", 0);
+        ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
+        for (HangDTO hangDTO : hangDTOs) {
+            if (hangDTO.isStatus()) {
+                mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+            }
+        }
+        for (String key : mapHang.keySet()) {
+            cbbHang.addItem(key);
+        }
+        cbbHang.setSelectedItem("Hãng");
+    }
 
     public void loadDanhSachSanPham() {
 
@@ -688,11 +692,11 @@ public class BanHangGUI extends JPanel implements ActionListener {
         }
     }
 
-    public void timSanPham(){
+    public void timSanPham() {
         int hangId = mapHang.get(cbbHang.getSelectedItem()).intValue();
-		int loaiId = mapLoai.get(cbbTheLoai.getSelectedItem()).intValue();
-		String ten = txtTenSP.getText().toLowerCase().strip();
-		ArrayList<SanPhamDTO> dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten, 1);
+        int loaiId = mapLoai.get(cbbTheLoai.getSelectedItem()).intValue();
+        String ten = txtTenSP.getText().toLowerCase().strip();
+        ArrayList<SanPhamDTO> dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten, 1);
         ArrayList<ChiTietSanPhamDTO> danhSachMoi = new ArrayList<>();
         for (SanPhamDTO sanPhamDTO : dsSanPham) {
             ArrayList<ChiTietSanPhamDTO> dsTmp = ChiTietSanPhamBUS.getChiTietSanPhamByID(sanPhamDTO.getProduct_id());
@@ -839,10 +843,10 @@ public class BanHangGUI extends JPanel implements ActionListener {
             Date dateStart = new Date(date.getTime());
             date = (java.util.Date) sprDateEnd.getValue();
             Date dateEnd = new Date(date.getTime());
-            int totalMin=-1;
-            int totalMax=-1;
-            int MaKH=-1;
-            int MaNV=-1;
+            int totalMin = -1;
+            int totalMax = -1;
+            int MaKH = -1;
+            int MaNV = -1;
             if (!txtGiaTu.getText().isEmpty()) {
                 totalMin = Integer.parseInt(txtGiaTu.getText());
             }
@@ -879,27 +883,20 @@ public class BanHangGUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnLuu) {
             themVaoGioHang();
-        }
-        else if (e.getSource() == btnXoa) {
+        } else if (e.getSource() == btnXoa) {
             xoaKhoiGioHang();
-        }
-        else if (e.getSource() == btnMuaHang) {
+        } else if (e.getSource() == btnMuaHang) {
             muaHang();
-        }
-        else if (e.getSource() == btnTim) {
+        } else if (e.getSource() == btnTim) {
             timHoaDon();
-        }
-        else if (e.getSource() == btnXoatim) {
+        } else if (e.getSource() == btnXoatim) {
             xoaTimHoaDon();
-        }
-        else if (e.getSource() == btnReset) {
+        } else if (e.getSource() == btnReset) {
             dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
             loadDanhSachSanPham();
-        }
-        else if (e.getSource() == cbbHang) {
+        } else if (e.getSource() == cbbHang) {
             timSanPham();
-        }
-        else if(e.getSource() == cbbTheLoai){
+        } else if (e.getSource() == cbbTheLoai) {
             timSanPham();
         }
     }
@@ -913,7 +910,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblXuatXu.setText("Xuất Xứ: " + sanPhamDTO.getCountry());
         lblNamSanXuat.setText("Năm sản xuất: " + sanPhamDTO.getYear_of_product());
         lblDonGia.setText("Đơn Giá: " + sanPhamDTO.getOutput_price());
-        ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
+        ImageIcon icon = new ImageIcon(absolutePath + sanPhamDTO.getImage_path());
         Image image = icon.getImage();
         Image newImage = image.getScaledInstance(300, 300, Image.SCALE_DEFAULT);
         ImageIcon newIcon = new ImageIcon(newImage);
@@ -927,7 +924,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         NhanVien nhanVien = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
         lblNVLap.setText("Nhân Viên Lập: " + nhanVien.getFull_name());
         lblNgayLap.setText("Ngày Lập: " + hoaDonDTO.getDate());
-        lblDiaChi.setText("Địa chỉ: "+hoaDonDTO.getAddress());
+        lblDiaChi.setText("Địa chỉ: " + hoaDonDTO.getAddress());
         lblTongTien.setText("Tổng Tiền: " + hoaDonDTO.getTotalPrice());
         txtMaHD.setText(hoaDonDTO.getBillId() + "");
         setChiTietHoaDonTable();

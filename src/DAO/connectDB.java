@@ -7,13 +7,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class connectDB {
-<<<<<<< HEAD
-    static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
-    static final String USER = "root";
-    static final String PASS = "20112004";
-    
-=======
->>>>>>> fba59d063c94f0569e4790a10cc8f3499a2dc330
 
 	static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
 	static final String USER = "root";
