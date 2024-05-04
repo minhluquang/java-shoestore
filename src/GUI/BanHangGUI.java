@@ -613,6 +613,8 @@ public class BanHangGUI extends JPanel implements ActionListener {
         hoaDonDTO.setTotalPrice(total);
         NhanVien nv = NhanVienBUS.getNhanVienByAccountID(MyApp.user.getAccountId());
         hoaDonDTO.setStaffId(nv.getStaffId());
+        hoaDonDTO.setCustomerId(0);
+        System.out.println(hoaDonDTO.getBillId());
         return hoaDonDTO;
     }
 

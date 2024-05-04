@@ -49,4 +49,7 @@ public class KhachHangBUS {
 	public static KhachHang getKhachHangByID(int id) {
 		return KhachHangDAO.getKhachHangByID(id);
 	}
+	public static KhachHang getKhachHangByPhoneNumber(String phoneNumber){
+		return KhachHangDAO.getKhachHangByPhoneNumber(phoneNumber);
+	}
 }

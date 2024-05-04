@@ -91,7 +91,7 @@ public class HoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO bills (staff_id, date, total_price, address, customer_id, discount_code) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO bills (staff_id, date, total_price, address, customer_id, discount_code, bill_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
             pstmt.setInt(1, bill.getStaffId());
             pstmt.setString(2, bill.getDate().toString());
@@ -99,6 +99,7 @@ public class HoaDonDAO {
             pstmt.setString(4, bill.getAddress());
             pstmt.setInt(5, bill.getCustomerId());
             pstmt.setString(6, bill.getDiscountCode());
+            pstmt.setInt(7, bill.getBillId());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
                 flag = false;

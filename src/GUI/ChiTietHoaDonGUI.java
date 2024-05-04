@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -35,19 +36,33 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.LineSeparator;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import BUS.ChiTietHoaDonBUS;
 import BUS.ChiTietSanPhamBUS;
 import BUS.HoaDonBUS;
 import BUS.KhuyenMaiBUS;
+import BUS.NhanVienBUS;
 import BUS.SanPhamBUS;
 import BUS.TaiKhoanBUS;
+import DAO.SanPhamDAO;
 import DTO.ChiTietHoaDonDTO;
 import DTO.ChiTietSanPhamDTO;
 import DTO.HoaDonDTO;
 import DTO.KhachHang;
 import DTO.KhuyenMai;
+import DTO.NhanVien;
 import DTO.SanPhamDTO;
 import DTO.TaiKhoan;
 
@@ -72,6 +87,8 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     private JTable tblSanPham;
     private DefaultTableModel sanPhamModel;
     private JPanel jPanelSanPham;
+    private JTextField txtDiaChi;
+    private JLabel lblTongTien;
 
     private JPanel panel_5;
     private JButton btnHuy;
@@ -81,8 +98,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     public HoaDonDTO hoaDonDTO;
     public BanHangGUI banHangGUI;
+    public ChiTietHoaDonGUI chiTietHoaDonGUI;
     public ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs;
     public int tamTinh;
+    public KhachHang khachHang;
 
     /**
      * Launch the application.
@@ -104,10 +123,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public ChiTietHoaDonGUI(HoaDonDTO hoaDonDTO, ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs, BanHangGUI banHangGUI) {
-        this.hoaDonDTO = hoaDonDTO;
-        this.chiTietHoaDonDTOs = chiTietHoaDonDTOs;
-        this.banHangGUI = banHangGUI;
+    public ChiTietHoaDonGUI(HoaDonDTO hoaDon, ArrayList<ChiTietHoaDonDTO> chiTietHoaDons, BanHangGUI bHGUI) {
+        this.hoaDonDTO = hoaDon;
+        this.chiTietHoaDonDTOs = chiTietHoaDons;
+        this.chiTietHoaDonGUI = this;
+        this.banHangGUI = bHGUI;
         this.tamTinh = hoaDonDTO.getTotalPrice();
 
         addWindowListener(new WindowAdapter() {
@@ -121,7 +141,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         });
 
-        int width = 880;
+        int width = 980;
         int height = 600;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -214,9 +234,19 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtDate.setEnabled(false);
         panel_5.add(txtDate);
 
-        JLabel lblNewLabel_6_3_1_1 = new JLabel("Tổng tiền");
+        JLabel lblNewLabel_6_3_1_1 = new JLabel("Địa chỉ");
         lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_1);
+
+        txtDiaChi = new JTextField();
+        txtDiaChi.setPreferredSize(new Dimension(100, 19));
+        txtDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtDiaChi.setColumns(10);
+        panel_5.add(txtDiaChi);
+
+        JLabel lblNewLabel_6_3_1_2 = new JLabel("Tổng tiền");
+        lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblNewLabel_6_3_1_2);
 
         txtToTalPrice = new JTextField();
         txtToTalPrice.setPreferredSize(new Dimension(100, 19));
@@ -224,6 +254,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtToTalPrice.setColumns(10);
         txtToTalPrice.setEnabled(false);
         panel_5.add(txtToTalPrice);
+
+        lblTongTien = new JLabel("Tổng tiền: " + tamTinh);
+        lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 14));
+        panel_5.add(lblTongTien);
 
         JLabel lblNewLabel_6_3_1_3 = new JLabel("Mã giảm giá");
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -281,8 +315,9 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         panel_1.add(lblNewLabel);
 
         jPanelSanPham = new JPanel(new BorderLayout());
-        JPanel panel1 = new JPanel(new GridLayout(0, 1));
         spnSanPham = new JScrollPane();
+
+        JPanel panel1 = new JPanel(new GridLayout(1, 0));
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
@@ -302,9 +337,14 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         tblSanPham.getTableHeader().setForeground(new Color(255, 255, 255));
         tblSanPham.setRowHeight(25);
         String[] sanPhamColumns = { "Serial", "Tên", "Hãng", "Loại", "Đơn giá" };
-        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0);
+        sanPhamModel = new DefaultTableModel(sanPhamColumns, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tblSanPham.setModel(sanPhamModel);
-        tblSanPham.setEnabled(false);
+        tblSanPham.setRowSelectionAllowed(true);
+        tblSanPham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         spnSanPham.setBorder(null);
         spnSanPham.setBackground(new Color(255, 255, 255));
         spnSanPham.setViewportView(tblSanPham);
@@ -334,8 +374,14 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtBillID.setText(hoaDonDTO.getBillId() + "");
         txtDate.setText(hoaDonDTO.getDate().toString());
         txtAccountID.setText(hoaDonDTO.getStaffId() + "");
-        txtToTalPrice.setText(hoaDonDTO.getTotalPrice() + "");
+        txtToTalPrice.setText(tamTinh + "");
+        loadChiTietHoaDon();
         loadMaGiamGia();
+    }
+
+    public void loadCustumerId(int id) {
+        hoaDonDTO.setCustomerId(id);
+        txtCustomerID.setText(id + "");
     }
 
     public void loadChiTietHoaDon() {
@@ -355,50 +401,62 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     public void tinhToTalPrice() {
         KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
         if (khuyenMai.getType() == "AR") {
-            hoaDonDTO.setTotalPrice(hoaDonDTO.getTotalPrice() - khuyenMai.getDiscount_value());
-        } else {
-            int newtotal = hoaDonDTO.getTotalPrice() - (hoaDonDTO.getTotalPrice() * khuyenMai.getDiscount_value());
+            System.out.println(khuyenMai.getDiscount_value());
+            int newtotal = tamTinh - khuyenMai.getDiscount_value();
             hoaDonDTO.setTotalPrice(newtotal);
+            lblTongTien.setText("Tổng tiền: " + hoaDonDTO.getTotalPrice() + "đ");
+        } else {
+            int newtotal = tamTinh - (tamTinh * khuyenMai.getDiscount_value() / 100);
+            hoaDonDTO.setTotalPrice(newtotal);
+            lblTongTien.setText("Tổng tiền: " + hoaDonDTO.getTotalPrice() + "đ");
         }
     }
 
-    public void addMaGiamGia(){
-        if(cbbDiscountCode.getSelectedItem().toString().equals("Mã giảm giá")){
+    public void addMaGiamGia() {
+        if (cbbDiscountCode.getSelectedItem().toString().equals("Mã giảm giá")) {
             hoaDonDTO.setTotalPrice(tamTinh);
             hoaDonDTO.setDiscountCode(null);
+            lblTongTien.setText("Tổng tiền: " + tamTinh + "đ");
         } else {
             hoaDonDTO.setDiscountCode(cbbDiscountCode.getSelectedItem().toString());
             tinhToTalPrice();
         }
     }
 
-    public void danhDauDanhSachDaBanSanPham(ArrayList<ChiTietHoaDonDTO> chiTietHoaDonDTOs) {
+    public void danhDauDanhSachDaBanSanPham() {
         for (ChiTietHoaDonDTO chiTietHoaDonDTO : chiTietHoaDonDTOs) {
             ChiTietSanPhamBUS.danhDauDaBan(chiTietHoaDonDTO.getProductSerialId());
         }
     }
-    public void luuHoaDon(){
-        if (hoaDonDTO.getCustomerId() == -1) {
+
+    public void luuHoaDon() throws FileNotFoundException {
+        if (hoaDonDTO.getCustomerId() == 0) {
             themKhachHang();
+        } else if (txtDiaChi.getText() == "") {
+            JOptionPane.showMessageDialog(null, "Địa chỉ không được bỏ trống");
         } else {
+            hoaDonDTO.setAddress(txtDiaChi.getText());
             int op = JOptionPane.showConfirmDialog(null, "Lưu hóa đơn", "Xác nhận lưu", JOptionPane.YES_NO_OPTION);
             if (op == JOptionPane.YES_OPTION) {
-                HoaDonBUS.themHoaDon(hoaDonDTO);
-                ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs);
-                danhDauDanhSachDaBanSanPham(chiTietHoaDonDTOs);
-                banHangGUI.reLoadData();
+                if (HoaDonBUS.themHoaDon(hoaDonDTO)) {
+                    if (ChiTietHoaDonBUS.themDSChiTietHoaDon(chiTietHoaDonDTOs)) {
+                        danhDauDanhSachDaBanSanPham();
+                        xuatPdf();
+                        banHangGUI.reLoadData();
+                    }
+                }
                 dispose();
             }
         }
     }
 
     public void themKhachHang() {
-        KhachHang khachHang = new KhachHang(-1, "", "");
+        khachHang = new KhachHang(0, "", "");
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang);
+                    ChiTietKhachHangGUI frame = new ChiTietKhachHangGUI(khachHang, chiTietHoaDonGUI);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -406,13 +464,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         });
         panel_5.remove(btnThemKhachHang);
-        txtCustomerID.setText(khachHang.getCustomerId() + "");
-        hoaDonDTO.setCustomerId(khachHang.getCustomerId());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==cbbDiscountCode){
+        if (e.getSource() == cbbDiscountCode) {
             addMaGiamGia();
         }
         if (e.getSource() == btnThemKhachHang) {
@@ -426,7 +482,128 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == btnLuu) {
-            luuHoaDon();
+            try {
+                luuHoaDon();
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
         }
+    }
+
+    public boolean isIn(ArrayList<SanPhamDTO> sanPhams, ChiTietSanPhamDTO chiTietSP) {
+        for (SanPhamDTO e : sanPhams) {
+            if (chiTietSP.getProductId() == e.getProduct_id()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void xuatPdf() throws FileNotFoundException {
+        String path = "invoice" + hoaDonDTO.getBillId() + ".pdf";
+        PdfWriter pdfWriter = new PdfWriter(path);
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        pdfDocument.setDefaultPageSize(PageSize.A4);
+        Document document = new Document(pdfDocument);
+
+        Paragraph storeTitle = new Paragraph("Cua hang ban giay Shopgiay88").setBold().setFontSize(16);
+        storeTitle.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+        Paragraph storeAddress = new Paragraph("DC: 273 An Duong Vuong, P.3, Q.5, Tp. HCM");
+        storeAddress.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+        Paragraph phoneNumberAddress = new Paragraph("SDT: 028.392.44.690");
+        phoneNumberAddress.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+
+        Paragraph invoiceTitle = new Paragraph("HOA DON BAN HANG").setBold().setFontSize(16).setMarginTop(20);
+        invoiceTitle.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+
+        document.add(storeTitle);
+        document.add(storeAddress);
+        document.add(phoneNumberAddress);
+        document.add(invoiceTitle);
+
+        // bill info
+        float twocol = 285f;
+        float twocol150 = twocol + 150f;
+        float twocolumnWidth[] = { twocol150, twocol };
+
+        Table table = new Table(twocolumnWidth);
+        table.setMarginTop(20);
+        table.addCell(new Cell().add(new Paragraph("Ngay tao: "+hoaDonDTO.getDate())).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph("Ma so: "+hoaDonDTO.getBillId())).setBorder(Border.NO_BORDER));
+        NhanVien nv = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
+        table.addCell(new Cell().add(new Paragraph("Thu ngan: "+nv.getFull_name())).setBorder(Border.NO_BORDER));
+
+        document.add(table);
+
+        // bill detail
+        float threecol = 190f;
+        float threeColumnWidth[] = { threecol, threecol, threecol };
+        Table tableBillDetail = new Table(threeColumnWidth);
+        tableBillDetail.setMarginTop(20);
+
+        // header
+        Cell cellHeader1 = new Cell().add(new Paragraph("Ten san pham")).setBorder(new SolidBorder(1));
+        Cell cellHeader2 = new Cell().add(new Paragraph("So luong")).setBorder(new SolidBorder(1));
+        Cell cellHeader3 = new Cell().add(new Paragraph("Don gia")).setBorder(new SolidBorder(1));
+
+        tableBillDetail.addCell(cellHeader1);
+        tableBillDetail.addCell(cellHeader2);
+        tableBillDetail.addCell(cellHeader3);
+
+        // body
+        ArrayList<SanPhamDTO> sanPhams = new ArrayList<>();
+        for (ChiTietHoaDonDTO chiTietHD : chiTietHoaDonDTOs) {
+            ChiTietSanPhamDTO chiTietSP = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(chiTietHD.getProductSerialId());
+            if (isIn(sanPhams, chiTietSP)) {
+                for (SanPhamDTO sanPhamDTO : sanPhams) {
+                    if (sanPhamDTO.getProduct_id() == chiTietSP.getProductId()) {
+                        sanPhamDTO.setQuantity(sanPhamDTO.getQuantity() + 1);
+                    }
+                }
+            } else {
+                SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSP.getProductId());
+                sanPhamDTO.setQuantity(1);
+                sanPhams.add(sanPhamDTO);
+            }
+        }
+
+        for (SanPhamDTO sanPhamDTO : sanPhams) {
+            Cell cellBody1 = new Cell().add(new Paragraph(sanPhamDTO.getProduct_name())).setBorder(new SolidBorder(1));
+            Cell cellBody2 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getQuantity()))).setBorder(new SolidBorder(1));
+            Cell cellBody3 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getOutput_price()))).setBorder(new SolidBorder(1));
+
+            cellBody2.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
+            cellBody3.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
+
+            tableBillDetail.addCell(cellBody1);
+            tableBillDetail.addCell(cellBody2);
+            tableBillDetail.addCell(cellBody3);
+        }
+
+        document.add(tableBillDetail);
+
+        // Phan bottom
+        Table tableBottom = new Table(twocolumnWidth);
+        tableBottom.setMarginTop(20);
+        tableBottom.addCell(new Cell().add(new Paragraph("Tien hang: "+tamTinh+"đ")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
+        KhuyenMai km = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
+        int giamGia;
+        if (km.getType()=="AR") {
+            giamGia = km.getDiscount_value();
+        } else {
+            giamGia = tamTinh*km.getDiscount_value()/100;
+        }
+        tableBottom.addCell(new Cell().add(new Paragraph("Giam gia: "+giamGia+"đ")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
+
+        tableBottom.addCell(new Cell(1, 2).add(new LineSeparator(new DottedLine())));
+
+        tableBottom.addCell(new Cell().add(new Paragraph("TONG TIEN "+hoaDonDTO.getTotalPrice()+"")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
+
+        document.add(tableBottom);
+
+        document.close();
     }
 }

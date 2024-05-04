@@ -58,8 +58,8 @@ public class SanPhamDTO {
         return brand_id;
     }
 
-    public void setBrand_id(int brand_id) {
-        this.brand_id = brand_id;
+    public void setBrand_id(int d) {
+        this.brand_id = d;
     }
 
     public String getProduct_name() {

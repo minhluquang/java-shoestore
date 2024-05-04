@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DTO.SanPhamDTO;
 
 public class SanPhamDAO {
@@ -121,6 +123,33 @@ public class SanPhamDAO {
             connectDB.closeConnection();
         }
         return flag;
+    }
+    
+    public static boolean themDanhSachSanPham(ArrayList<SanPhamDTO> dssp) {
+    	boolean success = true;
+    	
+    	try {
+			for (SanPhamDTO sp : dssp) {
+				int brandId = sp.getBrand_id();
+				int categoryId = sp.getCategory_id();
+				sp.setQuantity(0);
+				sp.setStatus(true);
+				sp.setImage_path("");
+				
+				if (!TheLoaiDAO.isExistIdTheLoai(categoryId) || !HangDAO.isExistIdHang(brandId)) {
+					continue;
+				}
+				
+				success = themSanPham(sp);
+				if (!success) {
+					return success;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	return success;
     }
 
     public static boolean xoaSanPham(int product_id) {
@@ -241,12 +270,10 @@ public class SanPhamDAO {
         boolean isExit=false;
         try {
             connectDB.getConnection();
-            String sql = "SELECT COUNT(*) AS count FROM products WHERE product_name = "+productName;
+            String sql = "SELECT * FROM products WHERE LOWER(product_name) LIKE "+productName.toLowerCase();
             ResultSet rs= connectDB.runQuery(sql);
-            if (rs.next()) {
-                if (rs.getInt("count")>0) {
-                    isExit=true;
-                }
+            if (rs!=null&&rs.next()) {
+                isExit=true;
             }
         } catch (Exception e) {
             e.printStackTrace();

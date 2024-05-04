@@ -35,4 +35,8 @@ public class SanPhamBUS {
 	public static boolean isExistSanPham(String productName){
 		return SanPhamDAO.isExistSanPham(productName);
 	}
+	
+    public static boolean themDanhSachSanPham(ArrayList<SanPhamDTO> dssp) {
+    	return SanPhamDAO.themDanhSachSanPham(dssp);
+    }
 }
