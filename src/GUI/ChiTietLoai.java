@@ -2,7 +2,6 @@ package GUI;
 
 import java.awt.EventQueue;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -28,14 +27,14 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import DTO.HangDTO;
 import DTO.Role;
 import DTO.TheLoaiDTO;
+import BUS.HangBUS;
 import BUS.RoleBUS;
 import BUS.TheLoaiBUS;
 import DAO.TheLoaiDAO;
 import GUI.PhanQuyenGUI;
-
-
 
 public class ChiTietLoai extends JFrame {
 
@@ -43,7 +42,7 @@ public class ChiTietLoai extends JFrame {
     private JPanel contentPane;
     private JTextField txtcateid;
     private JTextField txtcatename;
-    
+
     private TheLoaiDTO tl;
     private QLLoai parentGUI;
 
@@ -74,7 +73,8 @@ public class ChiTietLoai extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết phân quyền không?", "Xác nhận đóng chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết Thể loại không?",
+                        "Xác nhận đóng chi tiết Thể loại", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -82,7 +82,7 @@ public class ChiTietLoai extends JFrame {
         });
 
         int width = 600;
-        int height = 500;
+        int height = 400;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, width, height);
@@ -105,7 +105,7 @@ public class ChiTietLoai extends JFrame {
         pnlRight.add(panel, BorderLayout.NORTH);
         panel.setLayout(new GridLayout(0, 1, 0, 0));
 
-        JLabel lblNewLabel_4 = new JLabel("Thông tin phân quyền");
+        JLabel lblNewLabel_4 = new JLabel("Thông tin Thể loại");
         lblNewLabel_4.setForeground(new Color(255, 255, 255));
         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -126,7 +126,7 @@ public class ChiTietLoai extends JFrame {
         panel_4.add(panel_5);
         panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 
-        JLabel lblNewLabel_6_2 = new JLabel("Category_Id");
+        JLabel lblNewLabel_6_2 = new JLabel("Mã loại");
         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_2);
 
@@ -137,7 +137,7 @@ public class ChiTietLoai extends JFrame {
         txtcateid.setColumns(10);
         panel_5.add(txtcateid);
 
-        JLabel lblNewLabel_6 = new JLabel("Category_name");
+        JLabel lblNewLabel_6 = new JLabel("Tên loại");
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
@@ -150,15 +150,13 @@ public class ChiTietLoai extends JFrame {
         panel_5.add(panel_2);
         panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 
-
-
         // ========= Xử lý lưu thông tin =========
         JButton btnNewButton = new JButton("Lưu");
         btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				xuLyLuuThongTinTheLoai();
-			}
-		});
+            public void actionPerformed(ActionEvent e) {
+                xuLyLuuThongTinTheLoai();
+            }
+        });
         // ========= Xử lý lưu thông tin =========
 
         btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -173,7 +171,9 @@ public class ChiTietLoai extends JFrame {
         JButton btnNewButton_1 = new JButton("Huỷ bỏ");
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết thể loại không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết thể loại", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null,
+                        "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết thể loại không?",
+                        "Xác nhận huỷ bỏ chỉnh sửa chi tiết thể loại", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -212,45 +212,57 @@ public class ChiTietLoai extends JFrame {
 
     public void xuLyTuDongGanGiaTri() {
         int cateId = tl.getCategory_id();
-        if (cateId != 0) {
+        if (cateId == 0) {
+            txtcateid.setText(Integer.toString(TheLoaiBUS.generateIdCate()));
+        } else {
             txtcateid.setText(Integer.toString(cateId));
         }
         txtcatename.setText(tl.getCategory_name());
-        txtcatename.setEditable(true);
     }
 
-    
- // btnLưu
+    // btnLưu
     public void xuLyLuuThongTinTheLoai() {
-        String categoryName = txtcatename.getText().trim(); 
+        int cate_id = Integer.parseInt(txtcateid.getText());
+        String categoryName = txtcatename.getText().trim();
         // Kiểm tra xem tên thể loại có trống không
         if (categoryName.isEmpty()) {
             String message = "Vui lòng nhập tên thể loại.";
             JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
         } else {
             // Tạo đối tượng TheLoaiDTO từ thông tin nhập liệu
-            TheLoaiDTO newCategory = new TheLoaiDTO();
-            newCategory.setCategory_name(categoryName);
-            newCategory.setStatus(true); // Mặc định là true khi thêm mới
-
-            // Thực hiện thêm thể loại mới vào cơ sở dữ liệu
-            boolean result = TheLoaiDAO.themTheLoai(newCategory);
-            // Hiển thị thông báo thành công hoặc thất bại
-            if (result) {
-                JOptionPane.showMessageDialog(null, "Thêm thể loại thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                parentGUI.loadDanhSachTheLoai();
-                dispose(); // Đóng cửa sổ ChiTietLoai sau khi thêm thành công
+            boolean isExistCateId = TheLoaiBUS.isExistIdTheLoai(cate_id);
+            if (!isExistCateId) {
+                boolean isExistCateName = TheLoaiBUS.isExistNameTheLoai(categoryName);
+                if (!isExistCateName) {
+                    if (TheLoaiBUS.themTheLoai(new TheLoaiDTO(cate_id, categoryName, true))) {
+                        JOptionPane.showMessageDialog(null, "Thêm thành công.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        parentGUI.loadDanhSachTheLoai();
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Thêm thất bại.", "Thông báo",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    int choice = JOptionPane.showConfirmDialog(null, "Thể loại đã tồn tại",
+                            "Thông báo", JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Thêm thể loại thất bại.", "Thông báo", JOptionPane.ERROR_MESSAGE);
+                if (TheLoaiBUS.suaTheLoai(new TheLoaiDTO(cate_id, categoryName, true))) {
+                    JOptionPane.showMessageDialog(null, "Sửa thành công.", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    parentGUI.loadDanhSachTheLoai();
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Sửa thất bại.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
+                }
             }
+
         }
     }
-
-
-    // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
-    private boolean isAlpha(String str) {
-    	 return str.matches("[\\p{L}\\s]+");
-    }
-
 
 }

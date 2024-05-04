@@ -36,7 +36,6 @@ public class ChiTietHang extends JFrame implements ActionListener {
     private JPanel contentPane;
     private JTextField txtMaHang;
     private JTextField txtTenHang;
-    private JButton btnTrangThai;
     private JButton btnHuy;
     private JButton btnLuu;
 
@@ -142,12 +141,6 @@ public class ChiTietHang extends JFrame implements ActionListener {
         txtTenHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_5.add(txtTenHang);
 
-        btnTrangThai = new JButton();
-        btnTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        btnTrangThai.setBackground(Color.WHITE);
-        btnTrangThai.addActionListener(this);
-        panel_5.add(btnTrangThai);
-
         JPanel panel_2 = new JPanel();
         panel_2.setBackground(Color.WHITE);
         panel_5.add(panel_2);
@@ -203,11 +196,6 @@ public class ChiTietHang extends JFrame implements ActionListener {
         }
 
         txtTenHang.setText(hang.getBrand_name());
-        if (hang.isStatus()) {
-            btnTrangThai.setText("Hoạt động");
-        } else {
-            btnTrangThai.setText("Ngừng hoạt động");
-        }
     }
 
     // btnLưu
@@ -218,50 +206,41 @@ public class ChiTietHang extends JFrame implements ActionListener {
         if (hangName.isEmpty()) {
             String message = "Vui lòng nhập Tên hãng.";
             JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
-        } else if (!isAlpha(hangName)) { // Kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
-            String message = "Tên hãng chỉ được chứa kí tự chữ và khoảng trắng.";
-            JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
         } else {
-            // Nếu không tồn tại hangID (tức: không có Mã hãng đó rồi thì insert)
-            boolean isExistHang = HangBUS.isExistTenHang(hangName);
-            if (!isExistHang) {
-                if (HangBUS.themHang(new HangDTO(hangID, hangName, true))) {
-                    JOptionPane.showMessageDialog(null, "Thêm thành công thông tin hãng.", "Thông báo thành công",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    qlHang.reLoad();
-                    dispose();
+            // Nếu không tồn tại hangName (tức: không có Mã hãng đó rồi thì insert)
+            boolean isExistHangId = HangBUS.isExistIdHang(hangID);
+            if (!isExistHangId) {
+                boolean isExistHangName = HangBUS.isExistTenHang(hangName);
+                if (!isExistHangName) {
+                    if (HangBUS.themHang(new HangDTO(hangID, hangName, true))) {
+                        JOptionPane.showMessageDialog(null, "Thêm thành công.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        qlHang.reLoad();
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Thêm thất bại.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Thêm thất bại thông tin hãng.", "Thông báo thất bại",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    int choice = JOptionPane.showConfirmDialog(null, "Hãng đã tồn tại",
+                            "Thông báo", JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
                 }
             } else {
-                // Nếu tồn tại hangID (tức: có Mã hãng đó rồi thì update)
                 if (HangBUS.suaHang(new HangDTO(hangID, hangName, true))) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin hãng.",
-                            "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Sửa thành công.", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
                     qlHang.reLoad();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin hãng.",
-                            "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Sửa thất bại.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-        }
-    }
 
-    public void xulyTrangThai() {
-        if (btnTrangThai.getText() == "Hoạt động") {
-            btnTrangThai.setText("Ngừng hoạt động");
-            hang.setStatus(false);
-        } else {
-            btnTrangThai.setText("Hoạt động");
-            hang.setStatus(true);
         }
-    }
-
-    // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
-    private boolean isAlpha(String str) {
-        return str.matches("[\\p{L}\\s]+");
     }
 
     @Override
@@ -275,11 +254,6 @@ public class ChiTietHang extends JFrame implements ActionListener {
         }
         if (e.getSource() == btnLuu) {
             xuLyLuuThongTinHang();
-
         }
-        if (e.getSource() == btnTrangThai) {
-            xulyTrangThai();
-        }
-
     }
 }
