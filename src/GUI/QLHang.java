@@ -240,9 +240,10 @@ public class QLHang extends JPanel implements ActionListener {
         dtmHang.setRowCount(0);
         // dsHang = HangBUS.getDanhSachHang();
 
-        String status = "Hoạt động";
+        
 
         for (HangDTO hang : dsHang) {
+            String status = "Hoạt động";
             if (!hang.isStatus()) {
                 status = "Không hoạt động";
             }

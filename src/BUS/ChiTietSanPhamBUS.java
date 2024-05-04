@@ -37,4 +37,8 @@ public class ChiTietSanPhamBUS {
     public static boolean danhDauDaBan(int product_details_id){
         return ChiTietSanPhamDAO.danhDauDaBan(product_details_id);
     }
+
+    public static ChiTietSanPhamDTO getChiTietSanPhamByProductIDLimit1(int id){
+        return ChiTietSanPhamDAO.getChiTietSanPhamByProductIDLimit1(id);
+    }
 }

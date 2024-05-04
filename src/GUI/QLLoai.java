@@ -233,8 +233,9 @@ public class QLLoai extends JPanel implements ActionListener {
 	public void loadDanhSachTheLoai() {
 		dtmLoai.setRowCount(0);
 		ArrayList<TheLoaiDTO> dsl = TheLoaiBUS.getDanhSachTheLoai();
-		String status = "Hoạt động";
+		
 		for (TheLoaiDTO tl : dsl) {
+			String status = "Hoạt động";
 			if (!tl.isStatus()) {
 				status = "Không hoạt động";
 			}
@@ -247,8 +248,8 @@ public class QLLoai extends JPanel implements ActionListener {
 	public void xuLyTimKiem(String keyword) {
 		dtmLoai.setRowCount(0);
 		ArrayList<TheLoaiDTO> dsl = TheLoaiBUS.searchLoai(keyword);
-		String status = "Hoạt động";
 		for (TheLoaiDTO tl : dsl) {
+			String status = "Hoạt động";
 			if (!tl.isStatus()) {
 				status = "Không hoạt động";
 			}

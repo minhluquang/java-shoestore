@@ -280,4 +280,24 @@ public class SanPhamDAO {
         }
         return isExit;
     }
+
+    public static boolean kiemTraTonKhoByID(int id){
+        boolean ok=false;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM products WHERE product_id = "+id;
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                int quantity = rs.getInt("quantity");
+                if (quantity>0) {
+                    ok=true;   
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return ok;
+    }
 }

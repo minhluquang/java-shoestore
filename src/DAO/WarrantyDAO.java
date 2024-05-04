@@ -1,5 +1,7 @@
 package DAO;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +11,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import BUS.ReturnBUS;
+import DTO.Return;
 import DTO.Warranty;
 
 public class WarrantyDAO {
@@ -29,6 +41,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 wt.setWarrantyDate(resultSet.getString("warranty_date"));
                 wt.setReason(resultSet.getString("reason"));
+                wt.setActive(resultSet.getString("active"));
                 wt.setStatus(resultSet.getInt("status"));
                 dswt.add(wt);
             }
@@ -43,6 +56,7 @@ public class WarrantyDAO {
         ArrayList<Warranty> dswt = new ArrayList<>();
         try {
             String sql = "SELECT * FROM `warranty_details` WHERE (warranty_detail_id LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%' OR warranty_date LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%')";
+            sql += " OR active LIKE '%" + keyword + "%'";
             if (status != -1) {
                 // Thêm khoảng trắng sau phần điều kiện trước khi thêm phần điều kiện về trạng thái
                 sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
@@ -54,6 +68,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(rs.getInt("product_serial_id"));
                 wt.setWarrantyDate(rs.getString("warranty_date"));
                 wt.setReason(rs.getString("reason"));
+                wt.setActive(rs.getString("active"));
                 wt.setStatus(rs.getInt("status"));
                 dswt.add(wt);
             }
@@ -96,7 +111,7 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return isExist;
     }
-    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,int status) {
+    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status) {
         connectDB.getConnection();
         boolean success = false;
         try {
@@ -131,7 +146,7 @@ public class WarrantyDAO {
                   return false;
               }
               // Tiến hành insert vào CSDL
-              String sql = "INSERT INTO `warranty_details` (warranty_detail_id,product_serial_id,warranty_date,reason,status) VALUES (" + warranty_detail_id + ", '" + product_serial_id + "' , '" + warranty_date + "', '" + reason + "', '" + status + "')";
+              String sql = "INSERT INTO `warranty_details` (warranty_detail_id,product_serial_id,warranty_date,reason,active,status) VALUES (" + warranty_detail_id + ", '" + product_serial_id + "' , '" + warranty_date + "', '" + reason + "', '" + active + "', '" + status + "')";
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
@@ -146,7 +161,7 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return success;
     }  
-    public static boolean updateWar(int warranty_detail_id, int product_serial_id, String warranty_date, String reason, int status) {
+    public static boolean updateWar(int warranty_detail_id, int product_serial_id, String warranty_date, String reason,String active, int status) {
         connectDB.getConnection();
         boolean success = false;
         try {
@@ -205,13 +220,14 @@ public class WarrantyDAO {
             }
 
             // Tiến hành cập nhật dữ liệu
-            String sql = "UPDATE `warranty_details` SET product_serial_id = ?, warranty_date = ?, reason = ?, status = ? WHERE warranty_detail_id = ?";
+            String sql = "UPDATE `warranty_details` SET product_serial_id = ?, warranty_date = ?, reason = ?,active  = ?, status = ? WHERE warranty_detail_id = ?";
             PreparedStatement statement = connectDB.prepareStatement(sql);
             statement.setInt(1, product_serial_id);
             statement.setString(2, warranty_date);
             statement.setString(3, reason);
-            statement.setInt(4, status);
-            statement.setInt(5, warranty_detail_id);
+            statement.setString(4, active);
+            statement.setInt(5, status);
+            statement.setInt(6, warranty_detail_id);
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
@@ -233,7 +249,7 @@ public class WarrantyDAO {
         connectDB.getConnection();
         boolean success = false;
         try {
-            String sql = "DELETE FROM `warranty_details` WHERE warranty_detail_id = ?";
+        	String sql = "UPDATE warranty_details SET status = 0 WHERE warranty_detail_id = ?";
             PreparedStatement statement = connectDB.prepareStatement(sql);
             statement.setInt(1,warranty_detail_id);
             int rowsDeleted = statement.executeUpdate();
@@ -249,6 +265,9 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return success;
     }
+    
+    
+    
     public static void updateNextWarId(int deleteWarId) {
         connectDB.getConnection();
         try {
@@ -288,6 +307,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 wt.setWarrantyDate(resultSet.getString("warranty_date"));
                 wt.setReason(resultSet.getString("reason"));
+                wt.setActive(resultSet.getString("active"));
                 wt.setStatus(resultSet.getInt("status"));
           }
        } catch (SQLException e) {
@@ -296,4 +316,96 @@ public class WarrantyDAO {
        connectDB.closeConnection();
        return wt;
     }
+    
+    
+    public void importExcel() {
+		try {
+			ArrayList<Return> dsdt = new ArrayList<>();
+			
+    		JFileChooser fileChooser = new JFileChooser();
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+    		fileChooser.setFileFilter(filter);
+
+    		int result = fileChooser.showOpenDialog(null);
+    		if (result == JFileChooser.APPROVE_OPTION) {
+    		    File selectedFile = fileChooser.getSelectedFile();
+    		    
+    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
+    		    
+    		    // Duyệt qua từng hàng trong sheet
+                for (Row row : sheet) {
+                	if (row.getRowNum()==0) {
+                		if (!checkHeaderImportExcel(row)) {
+                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+                			return;
+                		}
+                		continue;
+                	}
+                	
+                	// Duyệt qua từng ô trong 1 hàng
+                	Return rt = new Return();
+                    for (Cell cell : row) { 
+                    	int columnIndex = cell.getColumnIndex();
+                        try {
+                        	switch (columnIndex) {
+	                         case 0:
+	                        	rt.setProduct_serial_id((int) cell.getNumericCellValue());
+	                            break;
+	                         case 1:
+	                        	 rt.setDate_return(cell.getStringCellValue());
+	                             break;
+	                         case 2:
+	                        	 rt.setReason(cell.getStringCellValue());
+	                             break;
+                           }
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+						}
+                    }
+                    dsdt.add(rt);
+                }
+                
+            
+
+                
+//                 Ghi dữ liệu vào db
+//					if (ReturnBUS.insertDanhSachDoiTra(dsdt)) {
+////						loadDanhSachBaoHanh();
+//						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+//						message += "\nNgoại trừ: ";
+//						message += "\n - Mã sản phẩm không tồn tại trong đơn hàng";
+//						message += "\n - Ngày đổi trả vượt quá 7 ngày";
+//						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+//						return;
+//					} 
+//					 else {
+//							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+//							return;
+//						}
+				
+    		}
+    	} catch (Exception e2) {
+    	    // Xử lý ngoại lệ ở đây nếu cần
+    	}
+	}
+    
+    public boolean checkHeaderImportExcel (Row row) {
+        String[] expectedHeaders = {"product_serial_id", "date_return", "reason"};
+        boolean headerMatched = true;
+        
+        for (int i = 0; i < expectedHeaders.length; i++) {
+            Cell cell = row.getCell(i);
+            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+            	System.out.println(cell.getStringCellValue());
+                headerMatched = false;
+                break;
+            }
+        }
+        
+        return headerMatched;
+	}
 }

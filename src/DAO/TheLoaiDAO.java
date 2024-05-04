@@ -101,8 +101,9 @@ public class TheLoaiDAO {
 
     public static boolean suaTheLoai(TheLoaiDTO theLoai) {
         boolean flag = true;
+        connectDB.getConnection();
         try {
-            connectDB.getConnection();
+            
             String sql = "UPDATE categories SET category_name = ?, status = ? WHERE category_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
@@ -223,6 +224,7 @@ public class TheLoaiDAO {
         }
         return theLoais;
     }
+
 
     public static int generateIdCate(){
         int count=0;

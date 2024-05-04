@@ -11,6 +11,8 @@ import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -30,6 +32,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -39,7 +46,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import BUS.ReturnBUS;
 import BUS.WarrantyBUS;
+import DTO.Return;
 import DTO.Warranty;
 
 public class WarrantyGUI extends JPanel implements ActionListener {
@@ -234,7 +244,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason", "Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason","Active", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -273,7 +283,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     	dtmWarranty.setRowCount(0);
     	ArrayList<Warranty> dswt = WarrantyBUS.getDanhSachWarranty();
     	for(Warranty wt: dswt) {
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus()};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getActive(),wt.getStatus()};
     		dtmWarranty.addRow(rowData);
     	}
     }
@@ -290,7 +300,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     		} else {
     			status = "0";
     		}
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus(),status};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getActive(),wt.getStatus(),status};
     		model.addRow(rowData);
     	}
     }
@@ -344,6 +354,47 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 	    	}  else {
 		        JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		    }
+		} else if (e.getSource() == btnXuatExcel) {
+			try {
+				exportExcel();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
    	}
+    
+    public void exportExcel() throws IOException {
+		ArrayList<Warranty> dsbh= WarrantyBUS.getDanhSachWarranty();
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsbh.xlsx");
+		    XSSFWorkbook wb = new XSSFWorkbook();
+		    XSSFSheet sheet = wb.createSheet("Danh sách bảo hành");
+		    
+		    // Ghi header
+		    XSSFRow headerRow = sheet.createRow(0);
+		    headerRow.createCell(0).setCellValue("warranty_detail_id");
+		    headerRow.createCell(1).setCellValue("product_serial_id");
+		    headerRow.createCell(2).setCellValue("warranty_date");
+		    headerRow.createCell(3).setCellValue("reason");
+		    headerRow.createCell(4).setCellValue("active");
+		    
+		    // Ghi thông tin bảo hành
+		    int rowNum = 1;
+		    for (Warranty bh: dsbh) {
+		    	XSSFRow row = sheet.createRow(rowNum++);
+		    	row.createCell(0).setCellValue(bh.getWarrantyid());
+		    	row.createCell(1).setCellValue(bh.getProduct_serial_id());
+		    	row.createCell(2).setCellValue(bh.getWarrantyDate());
+		    	row.createCell(3).setCellValue(bh.getReason());
+		    	row.createCell(4).setCellValue(bh.getActive());
+		    }
+		    
+		    wb.write(fileOutputStream);
+		    wb.close();
+		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception e) {
+		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 }

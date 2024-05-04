@@ -5,6 +5,7 @@ public class Warranty {
 	private int product_serial_id;
 	private String warrantyDate;
 	private String reason;
+	private String active;
 	private int status;
 	
 	public Warranty() {
@@ -13,12 +14,13 @@ public class Warranty {
 	
 	
 	public Warranty(int warrantyid, int product_serial_id, String warrantyDate,
-	String reason, int status) {
+	String reason,String active, int status) {
 		this.warrantyid = warrantyid;
 		this.product_serial_id = product_serial_id;
 		this.warrantyDate = warrantyDate;
 		this.reason = reason;
 		this.status = status;
+		this.active = active;
 	}
 
 
@@ -62,5 +64,16 @@ public class Warranty {
 		this.status = status;
 	}
 
+
+	public String getActive() {
+		return active;
+	}
+
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+	
+	
 	
 }

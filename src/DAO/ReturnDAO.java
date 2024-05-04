@@ -7,15 +7,16 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
+import BUS.ChiTietSanPhamBUS;
+import BUS.SanPhamBUS;
+import DTO.ChiTietSanPhamDTO;
 import DTO.Return;
-
+import DTO.SanPhamDTO;
 
 
 public class ReturnDAO {
@@ -26,7 +27,7 @@ public class ReturnDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            String sql = "SELECT return_id, product_serial_id, date_return, reason , status FROM `returns`";
+            String sql = "SELECT return_id, product_serial_id, date_return, reason, active , status FROM `returns`";
             statement = connectDB.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -35,6 +36,7 @@ public class ReturnDAO {
                 rt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 rt.setDate_return(resultSet.getString("date_return"));
                 rt.setReason(resultSet.getString("reason"));
+                rt.setActive(resultSet.getString("active"));
                 rt.setStatus(resultSet.getInt("status"));
                 dsReturn.add(rt);
             }
@@ -99,6 +101,8 @@ public class ReturnDAO {
         ArrayList<Return> dsReturn = new ArrayList<>();
         try {
             String sql = "SELECT * FROM `returns` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%'";
+            // Thêm điều kiện cho trường active
+            sql += " OR active LIKE '%" + keyword + "%'";
             if (status != -1) {
                 sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
             }
@@ -110,6 +114,7 @@ public class ReturnDAO {
                 rt.setProduct_serial_id(rs.getInt("product_serial_id"));
                 rt.setDate_return(rs.getString("date_return"));
                 rt.setReason(rs.getString("reason"));
+                rt.setActive(rs.getString("active"));
                 rt.setStatus(rs.getInt("status"));
                 dsReturn.add(rt);
             }
@@ -120,9 +125,8 @@ public class ReturnDAO {
         return dsReturn;
     }
 
-    
     // insert
-    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, int status) {
+    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
         connectDB.getConnection();
         boolean success = false;
         try {     
@@ -156,11 +160,23 @@ public class ReturnDAO {
                   JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
                   return false;
               }
+              ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(product_serial_id);
+              if(!SanPhamBUS.kiemTraTonKhoByID(chiTietSanPhamDTO.getProductId())) {
+            	  JOptionPane.showMessageDialog(null, "Hiện tại đã hết sản phẩm đổi trả", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                  return false;
+              }
               // Tiến hành insert vào CSDL
-              String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "', " + status + ")";
+              String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "','" + active + "', " + status + ")";
+              System.out.println(sql); 
+              connectDB.getConnection();
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
+                  SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());                 
+                  sanPhamDTO.setQuantity(sanPhamDTO.getQuantity()-1);
+                  ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
+                  ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
+                  SanPhamBUS.suaSanPham(sanPhamDTO);
                   JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
               } else {
                   JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -172,6 +188,7 @@ public class ReturnDAO {
         connectDB.closeConnection();
         return success;
     }
+    
     
     public static boolean insertDanhSachDoiTra(ArrayList<Return> dsdt) {
     	connectDB.getConnection();
@@ -188,7 +205,8 @@ public class ReturnDAO {
 					continue;
 				}
 				
-				insertReturn(returnId, productSerialId, dateReturn, reason, 1);
+				
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,6 +214,7 @@ public class ReturnDAO {
         connectDB.closeConnection();
         return success;
     }
+
 
     
 	// tìm id sau khi click
@@ -217,6 +236,7 @@ public class ReturnDAO {
 	        	 rt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
 	             rt.setDate_return(resultSet.getString("date_return"));
 	             rt.setReason(resultSet.getString("reason"));
+	             rt.setActive(resultSet.getString("active"));
 	             rt.setStatus(resultSet.getInt("status"));
 	        }
 	    } catch (SQLException e) {
@@ -238,8 +258,7 @@ public class ReturnDAO {
 		connectDB.getConnection();
 	    boolean success = false;
 	    try {	       
-	        String sql = "DELETE FROM `returns` WHERE return_id = ?";   	        
-	        connectDB.getConnection();
+	        String sql = "UPDATE returns SET status = 0 WHERE return_id = ?";   	        
 	        PreparedStatement statement = connectDB.prepareStatement(sql);   	        	       
 	        statement.setInt(1, return_id);    	        
 	        // Thực thi câu lệnh SQL
@@ -285,32 +304,80 @@ public class ReturnDAO {
 	        e.printStackTrace();
 	    }
 	}
-	public static boolean updateReturn(int return_id, int product_serial_id, String date_return, String reason, int status) {
-		connectDB.getConnection();
-		boolean success = false;
+	public static boolean updateReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
+	    connectDB.getConnection();
+	    boolean success = false;
 	    try {
-	        String sql = "UPDATE `returns` SET product_serial_id = ?, date_return = ?, reason = ?, status = ? WHERE return_id = ?";
-	        PreparedStatement statement = connectDB.prepareStatement(sql);
-	        // Set the parameters for the PreparedStatement
-	        statement.setInt(1, product_serial_id);
-	        statement.setString(2, date_return);
-	        statement.setString(3, reason);
-	        statement.setInt(4, status);
-	        statement.setInt(5, return_id);	        
-	        // Execute the update query
-	        int rowsUpdated = statement.executeUpdate();	        
-	        // Check if the update was successful
+
+	        // Lấy ngày bảo hành hiện tại từ CSDL
+	        String sqlCurrentDate = "SELECT date_return FROM `returns` WHERE return_id = ?";
+	        PreparedStatement psCurrentDate = connectDB.prepareStatement(sqlCurrentDate);
+	        psCurrentDate.setInt(1, return_id);
+	        ResultSet rsCurrentDate = psCurrentDate.executeQuery();
+	        String currentWarrantyDate = "";
+	        if (rsCurrentDate.next()) {
+	            currentWarrantyDate = rsCurrentDate.getString("date_return");
+	        }
+
+	        // Chuyển đổi chuỗi thành đối tượng Date
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        Date currentDate = sdf.parse(currentWarrantyDate);
+	        Date newDate = sdf.parse(date_return);
+
+	        // Kiểm tra nếu warranty_date mới bé hơn giá trị hiện tại
+	        if (newDate.compareTo(currentDate) < 0) {
+	            JOptionPane.showMessageDialog(null, "Ngày bảo hành mới không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            return false;
+	        }
+
+	        // Kiểm tra xem ngày bảo hành mới có vượt quá thời gian bảo hành đã quy định hay không
+	        String sqlBillDetails = "SELECT bill_id FROM bills_details WHERE product_serial_id = ?";
+	        PreparedStatement psBillDetails = connectDB.prepareStatement(sqlBillDetails);
+	        psBillDetails.setInt(1, product_serial_id);
+	        ResultSet rsBillDetails = psBillDetails.executeQuery();
+	        
+	        if (rsBillDetails.next()) {             
+	            int bill_id = rsBillDetails.getInt("bill_id");
+
+	            String sqlBillDate = "SELECT date FROM bills WHERE bill_id = ?";
+	            PreparedStatement psBillDate = connectDB.prepareStatement(sqlBillDate);
+	            psBillDate.setInt(1, bill_id);
+	            ResultSet rsBillDate = psBillDate.executeQuery();
+	            
+	            if (rsBillDate.next()) {
+	                String date_created = rsBillDate.getString("date");
+	                Date createDate = sdf.parse(date_created);
+	                Date returnDate = newDate; // Đây là ngày bảo hành mới
+
+	                long diffInMillies = Math.abs(returnDate.getTime() - createDate.getTime());
+	                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	                
+	                if (diffInDays > 7) {
+	                    JOptionPane.showMessageDialog(null, "Ngày đổi trả mới vượt quá thời gian bảo hành đã quy định.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                    return false;
+	                }
+	            }
+	        }
+
+	        // Cập nhật thông tin trả hàng
+	        String sqlUpdateReturn = "UPDATE `returns` SET product_serial_id = ?, date_return = ?, reason = ?, active = ?, status = ? WHERE return_id = ?";
+	        PreparedStatement psUpdateReturn = connectDB.prepareStatement(sqlUpdateReturn);
+	        psUpdateReturn.setInt(1, product_serial_id);
+	        psUpdateReturn.setString(2, date_return);
+	        psUpdateReturn.setString(3, reason);
+	        psUpdateReturn.setString(4, active);
+	        psUpdateReturn.setInt(5, status);
+	        psUpdateReturn.setInt(6, return_id);
+	        
+	        int rowsUpdated = psUpdateReturn.executeUpdate();
+	        
 	        if (rowsUpdated > 0) {
 	            success = true;
-	        }	        
-	        // Close the PreparedStatement and connection
-	        statement.close();
-	        connectDB.closeConnection();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    connectDB.closeConnection();
-	    return success;
+	        }
+	    }catch (Exception e) {
+            e.printStackTrace();
+        }
+        connectDB.closeConnection();
+        return success;
 	}
-
 }

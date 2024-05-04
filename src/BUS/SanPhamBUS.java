@@ -39,4 +39,8 @@ public class SanPhamBUS {
     public static boolean themDanhSachSanPham(ArrayList<SanPhamDTO> dssp) {
     	return SanPhamDAO.themDanhSachSanPham(dssp);
     }
+
+	public static boolean kiemTraTonKhoByID(int id){
+		return	SanPhamDAO.kiemTraTonKhoByID(id);
+	}
 }

@@ -216,6 +216,7 @@ public class ChiTietLoai extends JFrame {
             txtcateid.setText(Integer.toString(TheLoaiBUS.generateIdCate()));
         } else {
             txtcateid.setText(Integer.toString(cateId));
+
         }
         txtcatename.setText(tl.getCategory_name());
     }
