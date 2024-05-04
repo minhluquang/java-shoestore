@@ -404,9 +404,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     public void tinhToTalPrice() {
         KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
-        if (khuyenMai.getType() == "AR") {
+        
+        if (khuyenMai.getType().equals("AR")) {
             System.out.println(khuyenMai.getDiscount_value());
-            int newtotal = tamTinh - khuyenMai.getDiscount_value();
+            int km = khuyenMai.getDiscount_value();
+            int newtotal = tamTinh - km;
             hoaDonDTO.setTotalPrice(newtotal);
             lblTongTien.setText("Tổng tiền: " + hoaDonDTO.getTotalPrice() + "đ");
         } else {
@@ -518,7 +520,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     }
 
     public void xuatPdf() throws FileNotFoundException {
-        String path = "invoice" + hoaDonDTO.getBillId() + ".pdf";
+        String path = "pdf/invoice" + hoaDonDTO.getBillId() + ".pdf";
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.setDefaultPageSize(PageSize.A4);
