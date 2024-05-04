@@ -182,4 +182,24 @@ public class TheLoaiDAO {
         }
         return success;
 	}
+    public static boolean isExisNameTheLoai(String categoryName) {
+        categoryName=categoryName.toLowerCase();
+    	boolean success = false;
+    	try {
+            connectDB.getConnection();
+            String sql = "SELECT * "
+            		+ "FROM categories "
+            		+ "WHERE category_name LIKE '"+categoryName+"'";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return success;
+	}
+    
 }
