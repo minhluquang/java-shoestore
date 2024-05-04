@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import DTO.Return;
 
@@ -163,11 +164,35 @@ public class ReturnDAO {
                   JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
               } else {
                   JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-              }      
+              }   
         }
    	   } catch (Exception e) {
             e.printStackTrace();
         }
+        connectDB.closeConnection();
+        return success;
+    }
+    
+    public static boolean insertDanhSachDoiTra(ArrayList<Return> dsdt) {
+    	connectDB.getConnection();
+        boolean success = false;
+        try {
+			for (Return dt : dsdt) {
+				int returnId = generateIdReturn(true);
+				int productSerialId = dt.getProduct_serial_id();
+				String dateReturn = dt.getDate_return();
+				String reason = dt.getReason();
+				
+				
+				if (isExistReturn(returnId)) {
+					continue;
+				}
+				
+				insertReturn(returnId, productSerialId, dateReturn, reason, 1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         connectDB.closeConnection();
         return success;
     }
