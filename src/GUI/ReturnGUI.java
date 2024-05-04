@@ -444,7 +444,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 						loadDanhSachBaoHanh();
 						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
 						message += "\nNgoại trừ: ";
-						message += "\n - Mã sản phẩm không tồn tại trong đơn hàng";
+						message += "\n - Mã sản phẩm đã đổi trả";
 						message += "\n - Ngày đổi trả vượt quá 7 ngày";
 						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						return;
@@ -491,7 +491,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		    headerRow.createCell(3).setCellValue("reason");
 		    headerRow.createCell(4).setCellValue("return_status");
 		    
-		    // Ghi thông tin nhân viên
+		    // Ghi thông tin đổi trả
 		    int rowNum = 1;
 		    for (Return dt: dsdt) {
 		    	XSSFRow row = sheet.createRow(rowNum++);

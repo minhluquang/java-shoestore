@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFileChooser;
@@ -20,6 +21,8 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import BUS.ReturnBUS;
 import DTO.Return;
@@ -111,7 +114,7 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return isExist;
     }
-    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status) {
+    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status, boolean noJOption) {
         connectDB.getConnection();
         boolean success = false;
         try {
@@ -142,7 +145,9 @@ public class WarrantyDAO {
               
               // Kiểm tra nếu số ngày giữa date_return và date_created lớn hơn 30 ngày
               if (diffInDays > 30) {
-                  JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 30 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  if (!noJOption) {            		  
+            		  JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 30 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  }
                   return false;
               }
               // Tiến hành insert vào CSDL
@@ -150,9 +155,13 @@ public class WarrantyDAO {
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
-                  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                  if (!noJOption) {                	  
+                	  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                  }
               } else {
-                  JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  if (!noJOption) {
+            		  JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);            		  
+            	  }
               }      
         }
         } catch (Exception e) {
@@ -161,6 +170,55 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return success;
     }  
+    
+    public static boolean isExistProductSerialId(int productSerialId) {
+    	connectDB.getConnection();
+    	boolean success = false;
+    	
+    	try {
+			String sql = "SELECT * "
+					+ "FROM warranty_details "
+					+ "WHERE product_serial_id = " + productSerialId;
+			ResultSet rs= connectDB.runQuery(sql);
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+    	
+    	connectDB.closeConnection();
+    	return success;
+    }
+    
+    public static boolean insertDanhSachBaoHanh(ArrayList<Warranty> dsbh) {
+    	connectDB.getConnection();
+    	boolean success =  true;
+    	
+    	try {
+			for (Warranty wt : dsbh) {
+				int warrantyDetailId = generateIdWar(false);
+				int productSerialId = wt.getProduct_serial_id();
+				String warrantyDate = wt.getWarrantyDate();
+				String reason = wt.getReason();
+				
+				if (isExistProductSerialId(productSerialId)) {
+					continue;
+				}
+				
+				insertWar(warrantyDetailId, productSerialId, warrantyDate, reason, "OK", 1, true);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+    	
+    	return success;
+    	
+    }
+    
+    
     public static boolean updateWar(int warranty_detail_id, int product_serial_id, String warranty_date, String reason,String active, int status) {
         connectDB.getConnection();
         boolean success = false;

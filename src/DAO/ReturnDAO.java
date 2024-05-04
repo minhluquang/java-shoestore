@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import BUS.ChiTietSanPhamBUS;
 import BUS.SanPhamBUS;
@@ -126,7 +127,7 @@ public class ReturnDAO {
     }
 
     // insert
-    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
+    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status, boolean noJOption) {
         connectDB.getConnection();
         boolean success = false;
         try {     
@@ -150,20 +151,23 @@ public class ReturnDAO {
   	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
   	            Date createDate = sdf.parse(date_created);
   	            Date returnDate = sdf.parse(date_return);
-  	            System.out.println(date_return);
-  	            System.out.println(date_created);
+
   	          long diffInMillies = Math.abs(returnDate.getTime() - createDate.getTime());
               long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
               
               // Kiểm tra nếu số ngày giữa date_return và date_created lớn hơn 7 ngày
               if (diffInDays > 7) {
-                  JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  if (!noJOption) {
+            		  JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);            		  
+            	  }
                   return false;
               }
               ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(product_serial_id);
               if(!SanPhamBUS.kiemTraTonKhoByID(chiTietSanPhamDTO.getProductId())) {
-            	  JOptionPane.showMessageDialog(null, "Hiện tại đã hết sản phẩm đổi trả", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                  return false;
+            	  if (!noJOption) {            		  
+            		  JOptionPane.showMessageDialog(null, "Hiện tại đã hết sản phẩm đổi trả", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  }
+            	  active = "NO";
               }
               // Tiến hành insert vào CSDL
               String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "','" + active + "', " + status + ")";
@@ -177,9 +181,13 @@ public class ReturnDAO {
                   ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
                   ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
                   SanPhamBUS.suaSanPham(sanPhamDTO);
-                  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                  if (!noJOption) {                	  
+                	  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                  }
               } else {
-                  JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            	  if (!noJOption) {
+            		  JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);            		  
+            	  }
               }   
         }
    	   } catch (Exception e) {
@@ -189,10 +197,31 @@ public class ReturnDAO {
         return success;
     }
     
+    public static boolean isExistProductSerialId(int productSerialId) {
+    	connectDB.getConnection();
+    	boolean success = false;
+    	
+    	try {
+			String sql = "SELECT * "
+					+ "FROM returns "
+					+ "WHERE product_serial_id = " + productSerialId;
+			ResultSet rs= connectDB.runQuery(sql);
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+    	
+    	connectDB.closeConnection();
+    	return success;
+    }
+    
     
     public static boolean insertDanhSachDoiTra(ArrayList<Return> dsdt) {
     	connectDB.getConnection();
-        boolean success = false;
+        boolean success = true;
         try {
 			for (Return dt : dsdt) {
 				int returnId = generateIdReturn(true);
@@ -200,13 +229,11 @@ public class ReturnDAO {
 				String dateReturn = dt.getDate_return();
 				String reason = dt.getReason();
 				
-				
-				if (isExistReturn(returnId)) {
+				if (isExistProductSerialId(productSerialId)) {
 					continue;
 				}
 				
-				
-				
+				insertReturn(returnId, productSerialId, dateReturn, reason, "OK", 1, true);	
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

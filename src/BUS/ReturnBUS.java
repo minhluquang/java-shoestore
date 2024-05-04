@@ -32,8 +32,8 @@ private static ArrayList<Return> dsbh ;
 		return isExist;
 	}
 	// insert
-	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason, String active, int status) {
-		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason,active,status);
+	public static boolean insertReturn(int return_id, int product_id, String date_return,String reason, String active, int status, boolean noJOption) {
+		boolean success = ReturnDAO.insertReturn(return_id,product_id,date_return,reason,active,status, noJOption);
 		return success;
 	}
 	// update
