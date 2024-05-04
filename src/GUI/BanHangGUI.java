@@ -28,11 +28,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -88,6 +91,11 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JPanel pnlBHPhai;
     private JScrollPane spnSanPham;
     private JLabel lblDSSP;
+    private JTextField txtTenSP;
+    private JComboBox<String> cbbHang;
+    private JComboBox<String> cbbTheLoai;
+    private Map<String, Integer> mapHang;
+	private Map<String, Integer> mapLoai;
     private JTable tblSanPham;
     private JScrollPane spnGioHang;
     private JLabel lblGH;
@@ -168,13 +176,19 @@ public class BanHangGUI extends JPanel implements ActionListener {
         jPanelSanPham = new JPanel(new BorderLayout());
         spnSanPham = new JScrollPane();
 
-        JPanel panel1 = new JPanel(new GridLayout(1, 0));
+        JPanel panel1 = new JPanel(new BorderLayout());
         lblDSSP = new JLabel("Danh sách sản phẩm");
         lblDSSP.setForeground(new Color(255, 255, 255));
         lblDSSP.setHorizontalAlignment(SwingConstants.CENTER);
         lblDSSP.setFont(new Font("Tahoma", Font.BOLD, 18));
         panel1.setBackground(new Color(36, 136, 203));
-        panel1.add(lblDSSP);
+        panel1.add(lblDSSP, BorderLayout.NORTH);
+
+        JPanel panel1_TimKiem = new JPanel();
+        txtTenSP = new JTextField();
+        cbbHang = new JComboBox<>();
+        cbbTheLoai = new JComboBox<>();
+
         tblSanPham = new JTable();
         tblSanPham.setBorder(null);
         tblSanPham.setSelectionBackground(new Color(232, 57, 95));
@@ -561,6 +575,32 @@ public class BanHangGUI extends JPanel implements ActionListener {
         btnTim.addActionListener(this);
         btnXoatim.addActionListener(this);
     }
+
+    public void loadcbbLoai() {
+		mapLoai = new HashMap<>();
+		mapLoai.put("Loại", 0);
+		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
+		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
+			mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+		}
+		for (String key : mapLoai.keySet()) {
+			cbbTheLoai.addItem(key);
+		}
+		cbbTheLoai.setSelectedItem("Loại");
+	}
+
+	public void loadcbbHang() {
+		mapHang = new HashMap<>();
+		mapHang.put("Hãng", 0);
+		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
+		for (HangDTO hangDTO : hangDTOs) {
+			mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+		}
+		for (String key : mapHang.keySet()) {
+			cbbHang.addItem(key);
+		}
+		cbbHang.setSelectedItem("Hãng");
+	}
 
     public void loadDanhSachSanPham() {
 

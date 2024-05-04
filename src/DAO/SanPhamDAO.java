@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 import DTO.SanPhamDTO;
 
 public class SanPhamDAO {

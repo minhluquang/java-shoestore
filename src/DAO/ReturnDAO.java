@@ -124,7 +124,7 @@ public class ReturnDAO {
 
     
     // insert
-    /*
+   
     public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
         connectDB.getConnection();
         boolean success = false;
@@ -159,7 +159,6 @@ public class ReturnDAO {
                   JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
                   return false;
               }
-              
               // Tiến hành insert vào CSDL
               String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "','" + active + "', " + status + ")";
               int i = connectDB.runUpdate(sql);
@@ -176,75 +175,9 @@ public class ReturnDAO {
         connectDB.closeConnection();
         return success;
     }
-    */
+   
     
-    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
-        connectDB.getConnection();
-        boolean success = false;
-        try {     
-            String sqlBill_id = "SELECT bill_id FROM bills_details WHERE product_serial_id = ?";
-            PreparedStatement ps_bill_id = connectDB.prepareStatement(sqlBill_id);
-            ps_bill_id.setInt(1, product_serial_id);
-            ResultSet rs_bill_id = ps_bill_id.executeQuery();
-            
-            if (rs_bill_id.next()) {              
-                // Lấy thông tin hóa đơn
-                int bill_id = rs_bill_id.getInt("bill_id");
-                
-                String sql_bill_date = "SELECT date FROM bills WHERE bill_id = ?";
-                PreparedStatement ps_bill_date = connectDB.prepareStatement(sql_bill_date);
-                ps_bill_date.setInt(1, bill_id);
-                ResultSet rs_bill_date = ps_bill_date.executeQuery();
-                
-                if (rs_bill_date.next()) {
-                    String date_created = rs_bill_date.getString("date");
-                    
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    Date createDate = sdf.parse(date_created);
-                    Date returnDate = sdf.parse(date_return);
-                    
-                    long diffInMillies = Math.abs(returnDate.getTime() - createDate.getTime());
-                    long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    
-                    // Kiểm tra nếu số ngày giữa date_return và date_created lớn hơn 7 ngày
-                    if (diffInDays > 7) {
-                        JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return false;
-                    }
-                    
-                    // Tiến hành insert vào CSDL
-                    String sqlInsertReturn = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (?, ?, ?, ?, ?, ?)";
-                    PreparedStatement ps_insert_return = connectDB.prepareStatement(sqlInsertReturn);
-                    ps_insert_return.setInt(1, return_id);
-                    ps_insert_return.setInt(2, product_serial_id);
-                    ps_insert_return.setString(3, date_return);
-                    ps_insert_return.setString(4, reason);
-                    ps_insert_return.setString(5, active);
-                    ps_insert_return.setInt(6, status);
-                    
-                    int i = ps_insert_return.executeUpdate();
-                    
-                    if (i > 0) {
-                        success = true;
-                        JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                        
-                        // Cập nhật số lượng sản phẩm
-                        String sqlUpdateProductDetails = "UPDATE product_details SET quantity = quantity - 1 WHERE product_id = (SELECT product_id FROM product_details WHERE product_serial_id = ?)";
-                        PreparedStatement ps_update_product_details = connectDB.prepareStatement(sqlUpdateProductDetails);
-                        ps_update_product_details.setInt(1, product_serial_id);
-                        ps_update_product_details.executeUpdate();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            connectDB.closeConnection();
-        }
-        return success;
-    }
+  
 
 
     

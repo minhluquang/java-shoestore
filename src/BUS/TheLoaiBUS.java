@@ -34,9 +34,12 @@ public class TheLoaiBUS {
     public static ArrayList<TheLoaiDTO> searchLoai(String key){
         return TheLoaiDAO.searchLoai(key);
     }   
- // write id
- 	public static int generateIdCate(boolean closeDatabase) {
- 		int idtl = TheLoaiDAO.generateIdCate(closeDatabase);
- 		    return idtl;
- 		}
+
+    public static int generateIdCate(){
+        return TheLoaiDAO.generateIdCate();
+    }
+    public static boolean isExistIdTheLoai(int id){
+        return TheLoaiDAO.isExistIdTheLoai(id);
+    }
+
 }

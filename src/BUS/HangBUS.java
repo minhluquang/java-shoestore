@@ -33,4 +33,7 @@ public class HangBUS {
     public static ArrayList<HangDTO> searchHang(String key){
         return HangDAO.searchHang(key);
     }
+    public static boolean isExistIdHang(int brandId){
+        return HangDAO.isExistIdHang(brandId);
+    }
 }
