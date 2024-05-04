@@ -8,17 +8,19 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,8 +28,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -76,18 +83,21 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		pnlLocNangCao.add(pnlTrangThai, BorderLayout.WEST);
 		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFocusable(false);
-		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "Tất cả" }));
-		pnlTrangThai.add(comboBox);
-
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 
 		txtTmKim = new JTextField();
+		txtTmKim.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String str = txtTmKim.getText();
+				ArrayList<NhaCungCap> arr = NhaCungCapBUS.getListNCCByQuery(str);
+				loadDanhSachNhaCungCap(arr);
+			}
+		});
+		txtTmKim.setBorder(
+				new TitledBorder(null, "T\u00ECm Ki\u1EBFm", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		txtTmKim.setMinimumSize(new Dimension(250, 19));
 		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtTmKim.setColumns(10);
@@ -98,13 +108,19 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		pnlSearch.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JButton btnTim = new JButton("");
-		btnTim.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnTim.setIcon(new ImageIcon(absolutePath + "/src/images/icons/search.png"));
-		btnTim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnTim.setFocusable(false);
-		btnTim.setBackground(new Color(255, 255, 255));
-		panel_2.add(btnTim);
+		JButton btnReload = new JButton("Làm mới ");
+		btnReload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txtTmKim.setText("");
+				loadDanhSachNhaCungCap();
+			}
+		});
+		btnReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnReload.setIcon(new ImageIcon(absolutePath + "/src/images/icons/reload.png"));
+		btnReload.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnReload.setFocusable(false);
+		btnReload.setBackground(new Color(255, 255, 255));
+		panel_2.add(btnReload);
 
 		JPanel pnlTopBottom = new JPanel();
 		pnlTopBottom.setBackground(Color.WHITE);
@@ -269,6 +285,8 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		} else if (e.getSource() == btnNhapExcel) {
+			importExcel();
 		}
 	}
 
@@ -295,6 +313,20 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 
 	}
 
+	public void loadDanhSachNhaCungCap(ArrayList<NhaCungCap> dsncc) {
+		defaultTableModel.setRowCount(0);
+		int rowNum = defaultTableModel.getRowCount();
+		for (NhaCungCap n : dsncc) {
+			if (n.getStatus() == 0) {
+				continue;
+			}
+			int stt = ++rowNum;
+			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss() };
+			defaultTableModel.addRow(row);
+		}
+
+	}
+
 	public void xuLyClickTable() {
 		int row = table.getSelectedRow();
 		if (row > -1) {
@@ -307,7 +339,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 	public void exportExcel() throws IOException {
 		ArrayList<NhaCungCap> dsnv = NhaCungCapBUS.getDanhSachNhaCungCap();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("dsncc.xlsx");
+			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsncc.xlsx");
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
 
@@ -335,5 +367,99 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại",
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public void importExcel() {
+		try {
+			ArrayList<NhaCungCap> dsnv = new ArrayList<>();
+
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+
+			int result = fileChooser.showOpenDialog(null);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+
+				FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+				XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+				XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+				FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các
+																										// cột
+
+				// Duyệt qua từng hàng trong sheet
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						if (!checkHeaderImportExcel(row)) {
+							JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!",
+									"Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						continue;
+					}
+
+					// Duyệt qua từng ô trong 1 hàng
+					NhaCungCap km = new NhaCungCap();
+					for (Cell cell : row) {
+						int columnIndex = cell.getColumnIndex();
+						try {
+							switch (columnIndex) {
+							case 0:
+								System.out.println(0);
+								km.setSupplier_id((int) cell.getNumericCellValue());
+								break;
+							case 1:
+								System.out.println(1);
+								km.setSupplier_name(cell.getStringCellValue());
+								break;
+							case 2:
+								System.out.println(2);
+								km.setSupplier_addresss(cell.getStringCellValue());
+								;
+								break;
+							}
+
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null,
+									"Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					dsnv.add(km);
+				}
+
+				// Ghi dữ liệu vào db
+				if (NhaCungCapBUS.insertPublisher(dsnv)) {
+					loadDanhSachNhaCungCap();
+					JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!",
+							"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				} else {
+					JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!",
+							"Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+			}
+		} catch (Exception e2) {
+			// Xử lý ngoại lệ ở đây nếu cần
+		}
+	}
+
+	public boolean checkHeaderImportExcel(Row row) {
+		String[] expectedHeaders = { "supplier_id", "supplier_name", "supplier_email" };
+		boolean headerMatched = true;
+
+		for (int i = 0; i < expectedHeaders.length; i++) {
+			Cell cell = row.getCell(i);
+			if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+				System.out.println(cell);
+				headerMatched = false;
+				break;
+			}
+		}
+
+		return headerMatched;
 	}
 }
