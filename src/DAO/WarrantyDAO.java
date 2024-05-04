@@ -29,6 +29,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 wt.setWarrantyDate(resultSet.getString("warranty_date"));
                 wt.setReason(resultSet.getString("reason"));
+                wt.setActive(resultSet.getString("active"));
                 wt.setStatus(resultSet.getInt("status"));
                 dswt.add(wt);
             }
@@ -43,6 +44,7 @@ public class WarrantyDAO {
         ArrayList<Warranty> dswt = new ArrayList<>();
         try {
             String sql = "SELECT * FROM `warranty_details` WHERE (warranty_detail_id LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%' OR warranty_date LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%')";
+            sql += " OR active LIKE '%" + keyword + "%'";
             if (status != -1) {
                 // Thêm khoảng trắng sau phần điều kiện trước khi thêm phần điều kiện về trạng thái
                 sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
@@ -54,6 +56,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(rs.getInt("product_serial_id"));
                 wt.setWarrantyDate(rs.getString("warranty_date"));
                 wt.setReason(rs.getString("reason"));
+                wt.setActive(rs.getString("active"));
                 wt.setStatus(rs.getInt("status"));
                 dswt.add(wt);
             }
@@ -96,7 +99,7 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return isExist;
     }
-    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,int status) {
+    public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,String active,int status) {
         connectDB.getConnection();
         boolean success = false;
         try {
@@ -131,7 +134,7 @@ public class WarrantyDAO {
                   return false;
               }
               // Tiến hành insert vào CSDL
-              String sql = "INSERT INTO `warranty_details` (warranty_detail_id,product_serial_id,warranty_date,reason,status) VALUES (" + warranty_detail_id + ", '" + product_serial_id + "' , '" + warranty_date + "', '" + reason + "', '" + status + "')";
+              String sql = "INSERT INTO `warranty_details` (warranty_detail_id,product_serial_id,warranty_date,reason,active,status) VALUES (" + warranty_detail_id + ", '" + product_serial_id + "' , '" + warranty_date + "', '" + reason + "', '" + active + "', '" + status + "')";
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
@@ -146,7 +149,7 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return success;
     }  
-    public static boolean updateWar(int warranty_detail_id, int product_serial_id, String warranty_date, String reason, int status) {
+    public static boolean updateWar(int warranty_detail_id, int product_serial_id, String warranty_date, String reason,String active, int status) {
         connectDB.getConnection();
         boolean success = false;
         try {
@@ -205,13 +208,14 @@ public class WarrantyDAO {
             }
 
             // Tiến hành cập nhật dữ liệu
-            String sql = "UPDATE `warranty_details` SET product_serial_id = ?, warranty_date = ?, reason = ?, status = ? WHERE warranty_detail_id = ?";
+            String sql = "UPDATE `warranty_details` SET product_serial_id = ?, warranty_date = ?, reason = ?,active  = ?, status = ? WHERE warranty_detail_id = ?";
             PreparedStatement statement = connectDB.prepareStatement(sql);
             statement.setInt(1, product_serial_id);
             statement.setString(2, warranty_date);
             statement.setString(3, reason);
-            statement.setInt(4, status);
-            statement.setInt(5, warranty_detail_id);
+            statement.setString(4, active);
+            statement.setInt(5, status);
+            statement.setInt(6, warranty_detail_id);
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
@@ -233,7 +237,7 @@ public class WarrantyDAO {
         connectDB.getConnection();
         boolean success = false;
         try {
-            String sql = "DELETE FROM `warranty_details` WHERE warranty_detail_id = ?";
+        	String sql = "UPDATE warranty_details SET status = 0 WHERE warranty_detail_id = ?";
             PreparedStatement statement = connectDB.prepareStatement(sql);
             statement.setInt(1,warranty_detail_id);
             int rowsDeleted = statement.executeUpdate();
@@ -249,6 +253,9 @@ public class WarrantyDAO {
         connectDB.closeConnection();
         return success;
     }
+    
+    
+    
     public static void updateNextWarId(int deleteWarId) {
         connectDB.getConnection();
         try {
@@ -288,6 +295,7 @@ public class WarrantyDAO {
                 wt.setProduct_serial_id(resultSet.getInt("product_serial_id"));
                 wt.setWarrantyDate(resultSet.getString("warranty_date"));
                 wt.setReason(resultSet.getString("reason"));
+                wt.setActive(resultSet.getString("active"));
                 wt.setStatus(resultSet.getInt("status"));
           }
        } catch (SQLException e) {

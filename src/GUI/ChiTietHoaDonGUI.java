@@ -440,7 +440,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     public void danhDauDanhSachDaBanSanPham() {
         for (ChiTietHoaDonDTO chiTietHoaDonDTO : chiTietHoaDonDTOs) {
+            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
             ChiTietSanPhamBUS.danhDauDaBan(chiTietHoaDonDTO.getProductSerialId());
+            SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            sanPhamDTO.setQuantity(sanPhamDTO.getQuantity()-1);
+            SanPhamBUS.suaSanPham(sanPhamDTO);
         }
     }
 

@@ -36,6 +36,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	    private JTextField txtidProduct;
 	    private JTextField txtDateReturn;
 	    private JTextField txtReason;
+//	    private JTextField txtActive;
 	    private JComboBox cmbTrangThai;
 	    private Return rt;
 	    private ReturnGUI parentGUI;
@@ -152,6 +153,15 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         txtReason.setColumns(10);
 	         panel_5.add(txtReason);
 	         
+//	         JLabel lblNewLabel_5_2 = new JLabel("Active");
+//	         panel_5.add(lblNewLabel_5_2);
+//	         txtActive = new JTextField();
+//	         txtActive.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//	         txtActive.setColumns(10);
+//	         panel_5.add(txtActive);
+
+	         
+	         
 	         JLabel lblNewLabel_5_1_2 = new JLabel("Status");
 	         lblNewLabel_5_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 	 		 panel_5.add(lblNewLabel_5_1_2);
@@ -239,6 +249,8 @@ public class ChiTietBaoHanhGUI extends JFrame {
        	txtDateReturn.setEditable(true);
        	txtReason.setText(rt.getReason());
        	txtReason.setEditable(true);
+//       	txtActive.setText(rt.getActive());
+//       	txtActive.setEditable(true);
        }
         // luu
         public void xuLyLuuThongTinBaoHanh() {
@@ -246,6 +258,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
             int product_serial_id;
             String date_return = txtDateReturn.getText();
             String reason = txtReason.getText();  
+//            String active = txtActive.getText();
             int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
             
             // Kiểm tra định dạng ngày tháng
@@ -289,9 +302,14 @@ public class ChiTietBaoHanhGUI extends JFrame {
                 return;
             }
             
+//            if (!active.equals("OK") && !active.equals("NO")) {
+//                JOptionPane.showMessageDialog(null, "Trường Active chỉ được nhập 'OK' hoặc 'NO'", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+            
             // Thực hiện lưu hoặc cập nhật thông tin
             if (!ReturnBUS.isExistReturn(return_id)) {
-                if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason, status)) {
+                if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason,"OK", status)) {
                     JOptionPane.showMessageDialog(null, "Lưu thông tin đổi trả thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     parentGUI.loadDanhSachBaoHanh();
                     parentGUI.revalidate();
@@ -300,7 +318,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Lưu thông tin đổi trả thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                if (ReturnBUS.updateReturn(return_id, product_serial_id, date_return, reason, status)) {
+                if (ReturnBUS.updateReturn(return_id, product_serial_id, date_return, reason,"OK", status)) {
                     JOptionPane.showMessageDialog(null, "Cập nhật thông tin đổi trả thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     parentGUI.loadDanhSachBaoHanh();
                     parentGUI.revalidate();

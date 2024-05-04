@@ -225,6 +225,7 @@ public class TheLoaiDAO {
         return theLoais;
     }
 
+
     public static int generateIdCate(){
         int count=0;
         try {

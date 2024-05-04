@@ -208,4 +208,27 @@ public class ChiTietSanPhamDAO {
         return flag;
     }
 
+    public static ChiTietSanPhamDTO getChiTietSanPhamByProductIDLimit1(int id){
+        ChiTietSanPhamDTO productDetails = new ChiTietSanPhamDTO();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM product_details WHERE product_id = " + id +" AND sold = 0 LIMIT 1";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                int product_serial_id = rs.getInt("product_serial_id");
+                boolean sold = rs.getBoolean("sold");
+
+                productDetails.setProductSerialId(product_serial_id);
+                productDetails.setProductId(id);
+                productDetails.setSold(sold);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return productDetails;
+    }
+
 }
