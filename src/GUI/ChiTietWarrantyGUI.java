@@ -36,6 +36,7 @@ public class ChiTietWarrantyGUI extends JFrame {
     private JTextField txtProductId;
     private JTextField txtWarrantyDate;
     private JTextField txtReason;
+    private JTextField txtActive;
     private JComboBox cmbTrangThai;
     private Warranty wt;
     private WarrantyGUI parentGUI;
@@ -158,6 +159,14 @@ public class ChiTietWarrantyGUI extends JFrame {
         txtReason.setColumns(10);
         panel_5.add(txtReason);
         
+        JLabel lblNewLabel_5_2 = new JLabel("Active");
+        panel_5.add(lblNewLabel_5_2);
+        txtActive = new JTextField();
+        txtActive.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtActive.setColumns(10);
+        panel_5.add(txtActive);
+        
+        
         JLabel lblNewLabel_6_3_1_3 = new JLabel("Status");
         lblNewLabel_6_3_1_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_3);
@@ -243,6 +252,8 @@ public class ChiTietWarrantyGUI extends JFrame {
         txtWarrantyDate.setEditable(true);
         txtReason.setText(wt.getReason());
         txtReason.setEditable(true);
+    	txtActive.setText(wt.getActive());
+       	txtActive.setEditable(true);
     }
     
     public void xuLyLuuThongTinBaoHanh() {
@@ -250,6 +261,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         int product_id;
         String wardate = txtWarrantyDate.getText().trim();
         String reason = txtReason.getText().trim();
+        String active = txtActive.getText().trim();
         int warstatus = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
 
         // Kiểm tra trường ProductID
@@ -292,10 +304,14 @@ public class ChiTietWarrantyGUI extends JFrame {
             JOptionPane.showMessageDialog(null, "Lý do không được để trống", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        if (!active.equals("OK") && !active.equals("NO")) {
+            JOptionPane.showMessageDialog(null, "Trường Active chỉ được nhập 'OK' hoặc 'NO'", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         // Xử lý lưu thông tin bảo hành
         boolean isExistWarId = WarrantyBUS.isExitWar(warranty_id);
         if (!isExistWarId) {
-            if (WarrantyBUS.insertWar(warranty_id, product_id, wardate, reason, warstatus)) {
+            if (WarrantyBUS.insertWar(warranty_id, product_id, wardate, reason,active, warstatus)) {
                 JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin bảo hành", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                 parentGUI.loadDanhSachWarranty();
                 dispose();
@@ -303,7 +319,7 @@ public class ChiTietWarrantyGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin bảo hành", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            if (WarrantyBUS.updateWar(warranty_id, product_id, wardate, reason, warstatus)) {
+            if (WarrantyBUS.updateWar(warranty_id, product_id, wardate, reason,active, warstatus)) {
                 JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin bảo hành", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                 parentGUI.loadDanhSachWarranty();
                 dispose();

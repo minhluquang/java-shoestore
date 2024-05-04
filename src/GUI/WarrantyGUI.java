@@ -234,7 +234,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason", "Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason","Active", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -273,7 +273,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     	dtmWarranty.setRowCount(0);
     	ArrayList<Warranty> dswt = WarrantyBUS.getDanhSachWarranty();
     	for(Warranty wt: dswt) {
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus()};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getActive(),wt.getStatus()};
     		dtmWarranty.addRow(rowData);
     	}
     }
@@ -290,7 +290,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     		} else {
     			status = "0";
     		}
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus(),status};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getActive(),wt.getStatus(),status};
     		model.addRow(rowData);
     	}
     }

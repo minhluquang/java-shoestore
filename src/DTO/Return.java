@@ -8,16 +8,18 @@ public class Return {
     private String date_return;
     private String reason;
     private int status;
+    private String active;
     // Constructors
     public Return() {
     }
 
-    public Return(int return_id, int product_serial_id, String date_return, String reason, int status) {
+    public Return(int return_id, int product_serial_id, String date_return, String reason, int status, String active) {
         this.return_id = return_id;
         this.product_serial_id = product_serial_id;
         this.date_return = date_return;
         this.reason = reason;
         this.status = status;
+        this.active = active;
     }
 
 	public int getReturn_id() {
@@ -58,6 +60,14 @@ public class Return {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
 	}
 	
 	

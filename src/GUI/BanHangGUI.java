@@ -23,6 +23,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,6 +86,7 @@ import DTO.ChiTietHoaDonDTO;
 public class BanHangGUI extends JPanel implements ActionListener {
 
     // Khai báo các thành phần của giao diện
+    public String absolutePath = new File("").getAbsolutePath();
     private JTabbedPane tabbedPane;
 
     private JPanel pnlBanHang;
@@ -911,7 +913,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblXuatXu.setText("Xuất Xứ: " + sanPhamDTO.getCountry());
         lblNamSanXuat.setText("Năm sản xuất: " + sanPhamDTO.getYear_of_product());
         lblDonGia.setText("Đơn Giá: " + sanPhamDTO.getOutput_price());
-        ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+        ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
         Image image = icon.getImage();
         Image newImage = image.getScaledInstance(300, 300, Image.SCALE_DEFAULT);
         ImageIcon newIcon = new ImageIcon(newImage);
