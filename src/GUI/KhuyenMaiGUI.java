@@ -244,7 +244,7 @@ public class KhuyenMaiGUI extends JPanel implements ActionListener {
 		table.setFocusable(false);
 
 		dtmKhuyenMai = new DefaultTableModel(
-				new Object[] { "Name", "Discount_Value", "Type", "Start_Date", "End_Date", "Status" }, 0);
+				new Object[] { "Tên KM", "Giá trị KM", "Dạng KM", "Ngày BD", "Ngày KT", "Status" }, 0);
 		table.setModel(dtmKhuyenMai);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));

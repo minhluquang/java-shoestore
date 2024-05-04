@@ -118,7 +118,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         panel_4.add(panel_5);
         panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 
-        JLabel lblNewLabel_6_2 = new JLabel("WarrantyID");
+        JLabel lblNewLabel_6_2 = new JLabel("Mã Bảo Hành");
         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_2);
 
@@ -129,7 +129,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         txtWarrantyId.setColumns(10);
         panel_5.add(txtWarrantyId);
 
-        JLabel lblNewLabel_6 = new JLabel("ProductID");
+        JLabel lblNewLabel_6 = new JLabel("Mã Seri Sản Phẩm");
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
@@ -138,7 +138,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         txtProductId.setColumns(10);
         panel_5.add(txtProductId);
 
-        JLabel lblNewLabel_6_3_1_2 = new JLabel("Warranty Date");
+        JLabel lblNewLabel_6_3_1_2 = new JLabel("Ngày Bảo Hành");
         lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_2);
 
@@ -148,7 +148,7 @@ public class ChiTietWarrantyGUI extends JFrame {
         txtWarrantyDate.setColumns(10);
         panel_5.add(txtWarrantyDate);
 
-        JLabel lblNewLabel_6_3_1_1 = new JLabel("Reason");
+        JLabel lblNewLabel_6_3_1_1 = new JLabel("Lý do");
         lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_3_1_1);
 

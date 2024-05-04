@@ -251,7 +251,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason","Active", "Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Mã Bảo Hành", "Mã Seri Sản Phẩm"," Ngày Bảo Hành" ,"Lý do","Trạng thái", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));

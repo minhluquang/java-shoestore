@@ -101,11 +101,9 @@ public class ReturnDAO {
         connectDB.getConnection();
         ArrayList<Return> dsReturn = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM `returns` WHERE return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%'";
-            // Thêm điều kiện cho trường active
-            sql += " OR active LIKE '%" + keyword + "%'";
+        	String sql = "SELECT * FROM `returns` WHERE (return_id LIKE '%" + keyword + "%' OR reason LIKE '%" + keyword + "%' OR date_return LIKE '%" + keyword + "%' OR product_serial_id LIKE '%" + keyword + "%'" + " OR active LIKE '%" + keyword + "%')";
             if (status != -1) {
-                sql += " AND status = '" + (status == 1 ? "1" : "0") + "'";
+                sql += " AND status = " + status;
             }
 
             ResultSet rs = connectDB.runQuery(sql);
