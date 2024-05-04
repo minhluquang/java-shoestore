@@ -190,18 +190,6 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		}
 		cbbTrangthai.setSelectedItem("Trạng thái");
 
-		// JPanel pnlChucVu = new JPanel();
-		// pnlLocNangCao.add(pnlChucVu, BorderLayout.EAST);
-		// pnlChucVu.setLayout(new GridLayout(0, 1, 0, 0));
-
-		// JComboBox comboBox_1 = new JComboBox();
-		// comboBox_1.setFocusable(false);
-		// comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		// comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		// comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Chức vụ",
-		// "Admin", "Nhân viên"}));
-		// pnlChucVu.add(comboBox_1);
-
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
@@ -236,16 +224,6 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlTopBottom.setBackground(Color.WHITE);
 		pnlSearch.add(pnlTopBottom, BorderLayout.SOUTH);
 		pnlTopBottom.setLayout(new GridLayout(0, 7, 5, 0));
-
-		// btnChiTiet = new JButton("Chi tiết");
-		// btnChiTiet.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		// btnChiTiet.setIcon(new ImageIcon(absolutePath +
-		// "/src/images/icons/information.png"));
-		// btnChiTiet.setPreferredSize(new Dimension(150, 40));
-		// btnChiTiet.setFont(new Font("Tahoma", Font.BOLD, 14));
-		// btnChiTiet.setFocusable(false);
-		// btnChiTiet.setBackground(Color.WHITE);
-		// pnlTopBottom.add(btnChiTiet);
 
 		btnThem = new JButton("Thêm");
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

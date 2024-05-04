@@ -29,7 +29,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import DTO.Role;
+import DTO.TheLoaiDTO;
 import BUS.RoleBUS;
+import BUS.TheLoaiBUS;
+import DAO.TheLoaiDAO;
 import GUI.PhanQuyenGUI;
 
 
@@ -38,11 +41,11 @@ public class ChiTietLoai extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField txtMaPhanQuyen;
-    private JTextField txtTenPhanQuyen;
-
-    private Role rl;
-    private PhanQuyenGUI parentGUI;
+    private JTextField txtcateid;
+    private JTextField txtcatename;
+    
+    private TheLoaiDTO tl;
+    private QLLoai parentGUI;
 
     /**
      * Launch the application.
@@ -64,8 +67,8 @@ public class ChiTietLoai extends JFrame {
     /**
      * Create the frame.
      */
-    public ChiTietLoai(Role rl, PhanQuyenGUI parentGUI) {
-        this.rl = rl;
+    public ChiTietLoai(TheLoaiDTO tl, QLLoai parentGUI) {
+        this.tl = tl;
         this.parentGUI = parentGUI;
 
         addWindowListener(new WindowAdapter() {
@@ -84,7 +87,7 @@ public class ChiTietLoai extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, width, height);
         setLocationRelativeTo(null);
-        setTitle("Thông tin phân quyền");
+        setTitle("Thông tin thể loại");
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -123,24 +126,24 @@ public class ChiTietLoai extends JFrame {
         panel_4.add(panel_5);
         panel_5.setLayout(new GridLayout(0, 1, 0, 5));
 
-        JLabel lblNewLabel_6_2 = new JLabel("Mã nhóm quyền");
+        JLabel lblNewLabel_6_2 = new JLabel("Category_Id");
         lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6_2);
 
-        txtMaPhanQuyen = new JTextField();
-        txtMaPhanQuyen.setEnabled(false);
-        txtMaPhanQuyen.setEditable(false);
-        txtMaPhanQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtMaPhanQuyen.setColumns(10);
-        panel_5.add(txtMaPhanQuyen);
+        txtcateid = new JTextField();
+        txtcateid.setEnabled(false);
+        txtcateid.setEditable(false);
+        txtcateid.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtcateid.setColumns(10);
+        panel_5.add(txtcateid);
 
-        JLabel lblNewLabel_6 = new JLabel("Tên nhóm quyền");
+        JLabel lblNewLabel_6 = new JLabel("Category_name");
         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         panel_5.add(lblNewLabel_6);
 
-        txtTenPhanQuyen = new JTextField();
-        txtTenPhanQuyen.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        panel_5.add(txtTenPhanQuyen);
+        txtcatename = new JTextField();
+        txtcatename.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        panel_5.add(txtcatename);
 
         JPanel panel_2 = new JPanel();
         panel_2.setBackground(Color.WHITE);
@@ -149,14 +152,14 @@ public class ChiTietLoai extends JFrame {
 
 
 
-        // ========= Xử lý lưu thông tin phân quyền =========
+        // ========= Xử lý lưu thông tin =========
         JButton btnNewButton = new JButton("Lưu");
         btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				xuLyLuuThongTinPhanQuyen();
+				xuLyLuuThongTinTheLoai();
 			}
 		});
-        // ========= Xử lý lưu thông tin phân quyền =========
+        // ========= Xử lý lưu thông tin =========
 
         btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnNewButton.setPreferredSize(new Dimension(100, 30));
@@ -170,7 +173,7 @@ public class ChiTietLoai extends JFrame {
         JButton btnNewButton_1 = new JButton("Huỷ bỏ");
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết phân quyền không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết phân quyền", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết thể loại không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết thể loại", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -202,59 +205,47 @@ public class ChiTietLoai extends JFrame {
         panel_1.add(lblNewLabel);
 
         // ========== Gắn giá trị tự động ==========
-        if (rl != null) {
+        if (tl != null) {
             xuLyTuDongGanGiaTri();
         }
     }
 
     public void xuLyTuDongGanGiaTri() {
-        int phanQuyenId = rl.getRole_id();
-        if (phanQuyenId == 0) {
-            txtMaPhanQuyen.setText(Integer.toString(RoleBUS.generateIdRole(true)));
-        } else {
-            txtMaPhanQuyen.setText(Integer.toString(rl.getRole_id()));
+        int cateId = tl.getCategory_id();
+        if (cateId != 0) {
+            txtcateid.setText(Integer.toString(cateId));
         }
-        
-        txtTenPhanQuyen.setText(rl.getRole_name());
-        txtTenPhanQuyen.setEditable(true);
+        txtcatename.setText(tl.getCategory_name());
+        txtcatename.setEditable(true);
     }
+
     
-    // btnLưu
-    public void xuLyLuuThongTinPhanQuyen() {
-        int role_id = rl.getRole_id();
-        String role_name = txtTenPhanQuyen.getText().trim();
-        // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
-        if (role_name.isEmpty()) {
-            String message = "Vui lòng nhập tên nhóm quyền.";
-            JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
-        } else if (!isAlpha(role_name)) { // Kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
-            String message = "Tên nhóm quyền chỉ được chứa kí tự chữ và khoảng trắng.";
+ // btnLưu
+    public void xuLyLuuThongTinTheLoai() {
+        String categoryName = txtcatename.getText().trim(); 
+        // Kiểm tra xem tên thể loại có trống không
+        if (categoryName.isEmpty()) {
+            String message = "Vui lòng nhập tên thể loại.";
             JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
         } else {
-            // Nếu không tồn tại role_id (tức: không có mã nhóm quyền đó rồi thì insert)
-            boolean isExistRoleId = RoleBUS.isExistRole(role_id);
-            if (!isExistRoleId) {
-                if (RoleBUS.insertRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin nhóm quyền.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                    parentGUI.loadDanhSachRole();
-                    parentGUI.revalidate();
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin nhóm quyền.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                }
+            // Tạo đối tượng TheLoaiDTO từ thông tin nhập liệu
+            TheLoaiDTO newCategory = new TheLoaiDTO();
+            newCategory.setCategory_name(categoryName);
+            newCategory.setStatus(true); // Mặc định là true khi thêm mới
+
+            // Thực hiện thêm thể loại mới vào cơ sở dữ liệu
+            boolean result = TheLoaiDAO.themTheLoai(newCategory);
+            // Hiển thị thông báo thành công hoặc thất bại
+            if (result) {
+                JOptionPane.showMessageDialog(null, "Thêm thể loại thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                parentGUI.loadDanhSachTheLoai();
+                dispose(); // Đóng cửa sổ ChiTietLoai sau khi thêm thành công
             } else {
-                // Nếu tồn tại role_id (tức: có mã nhóm quyền đó rồi thì update)
-                if (RoleBUS.updateRole(role_id, role_name)) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhóm quyền.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                    parentGUI.loadDanhSachRole();
-                    parentGUI.revalidate();
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin nhóm quyền.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(null, "Thêm thể loại thất bại.", "Thông báo", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
 
     // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
     private boolean isAlpha(String str) {

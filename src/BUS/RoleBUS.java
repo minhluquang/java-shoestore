@@ -12,7 +12,7 @@ public class RoleBUS {
 	private static ArrayList<Role> dsrl ;
 		
 		public static ArrayList<Role> getDanhSachRole() {		
-				dsrl = RoleDAO.getDanhSachRole();			
+			dsrl = RoleDAO.getDanhSachRole();			
 			return dsrl;
 		}
 		public static ArrayList<Role> searchRole(String keyword) {
@@ -31,13 +31,13 @@ public class RoleBUS {
 		}
 
 		// insert
-		public static boolean insertRole(int role_id,String role_name) {
-			boolean success = RoleDAO.insertRole(role_id,role_name);
+		public static boolean insertRole(int role_id,String role_name,String role_tab_name, int status) {
+			boolean success = RoleDAO.insertRole(role_id,role_name,role_tab_name,status);
 			return success;
 		}
 		// update
-		public static boolean updateRole(int role_id, String role_name) {
-			boolean success = RoleDAO.updateRole(role_id, role_name);
+		public static boolean updateRole(int role_id, String role_name,String role_tab_name, int status) {
+			boolean success = RoleDAO.updateRole(role_id, role_name,role_tab_name,status);
 		    return success;
 		}	
 		// delete

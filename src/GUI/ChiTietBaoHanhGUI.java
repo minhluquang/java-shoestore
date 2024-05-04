@@ -130,7 +130,7 @@ public class ChiTietBaoHanhGUI extends JFrame {
 	         txtIdBaoHanh.setColumns(10);
 	         panel_5.add(txtIdBaoHanh);
 	         
-	         JLabel lblNewLabel_6 = new JLabel("Product_ID");
+	         JLabel lblNewLabel_6 = new JLabel("Product_Serial_ID");
 	         lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
 	         panel_5.add(lblNewLabel_6);
 
@@ -247,60 +247,66 @@ public class ChiTietBaoHanhGUI extends JFrame {
             String date_return = txtDateReturn.getText();
             String reason = txtReason.getText();  
             int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
-            // Kiểm tra giá trị ban đầu của product_id
+            
+            // Kiểm tra định dạng ngày tháng
+            Pattern datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+            Matcher dateMatcher = datePattern.matcher(date_return);
+            if (!dateMatcher.matches()) {
+                JOptionPane.showMessageDialog(null, "Date_Return phải có định dạng yyyy--mm--dd", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Tách năm, tháng và ngày từ chuỗi ngày tháng
+            String[] dateParts = date_return.split("-");
+            int year = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]);
+            int day = Integer.parseInt(dateParts[2]);          
+            if (month < 1 || month > 12 || day < 1 || day > 31) {
+                JOptionPane.showMessageDialog(null, "Ngày hoặc tháng không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Kiểm tra giá trị ban đầu của product_id và xử lý lưu thông tin
             if (txtidProduct.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Product_id không được để trống", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             try {
-            	product_serial_id = Integer.parseInt(txtidProduct.getText());
+                product_serial_id = Integer.parseInt(txtidProduct.getText());
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Product_id phải là số nguyên", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Kiểm tra product_id phải lớn hơn 0
             if (product_serial_id <= 0) {
                 JOptionPane.showMessageDialog(null, "Product_id phải lớn hơn 0", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // Kiểm tra các trường còn lại
-            if (date_return.trim().isEmpty() || reason.trim().isEmpty()) {
-                String message = "Vui lòng nhập đầy đủ các trường:";
-                // Kiểm tra date_return
-                Pattern datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-                Matcher dateMatcher = datePattern.matcher(date_return);
-                if (!dateMatcher.matches()) {
-                    JOptionPane.showMessageDialog(null, "Date_Return phải có định dạng yyyy/mm/dd", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Kiểm tra reason chỉ chứa chữ
-                if (!reason.matches("[\\p{L}\\s]+")) {
-                    JOptionPane.showMessageDialog(null, "Reason chỉ được nhập dưới định dạng chuỗi", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
+
+            // Kiểm tra giá trị của reason
+            if (reason.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Vui lòng nhập lý do", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Thực hiện lưu hoặc cập nhật thông tin
+            if (!ReturnBUS.isExistReturn(return_id)) {
+                if (ReturnBUS.insertReturn(return_id, product_serial_id, date_return, reason, status)) {
+                    JOptionPane.showMessageDialog(null, "Lưu thông tin đổi trả thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    parentGUI.loadDanhSachBaoHanh();
+                    parentGUI.revalidate();
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lưu thông tin đổi trả thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                boolean isExistReturnID = ReturnBUS.isExistReturn(return_id);
-                System.out.println(" id " + isExistReturnID);
-                if (!isExistReturnID) {
-                    if (ReturnBUS.insertReturn(return_id,product_serial_id,date_return,reason,status)) {
-                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin đổi trả", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                        parentGUI.loadDanhSachBaoHanh();
-                        parentGUI.revalidate();
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin đổi trả", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                if (ReturnBUS.updateReturn(return_id, product_serial_id, date_return, reason, status)) {
+                    JOptionPane.showMessageDialog(null, "Cập nhật thông tin đổi trả thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                    parentGUI.loadDanhSachBaoHanh();
+                    parentGUI.revalidate();
+                    dispose();
                 } else {
-                    if (ReturnBUS.updateReturn(return_id,product_serial_id,date_return,reason,status)) {
-                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin đổi trả", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-                        parentGUI.loadDanhSachBaoHanh();
-                        parentGUI.revalidate();
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin đổi trả", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(null, "Cập nhật thông tin đổi trả thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

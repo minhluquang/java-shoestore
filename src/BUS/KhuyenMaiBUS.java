@@ -25,7 +25,7 @@ public class KhuyenMaiBUS {
 	}
 	// insert
 	public static boolean insertKhuyenMai(String discount_code, int discount_value, String type, String start_date, String end_date, int status) {
-	    boolean success = KhuyenmaiDAO.insertKhuyenMai(discount_code, status, discount_value, start_date, end_date, type);
+	    boolean success = KhuyenmaiDAO.insertKhuyenMai(discount_code, discount_value, type,start_date, end_date, status);
 	    return success;
 	}
 	// update

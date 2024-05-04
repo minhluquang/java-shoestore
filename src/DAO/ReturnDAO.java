@@ -8,6 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JOptionPane;
+
+
 import DTO.Return;
 
 
@@ -116,21 +121,57 @@ public class ReturnDAO {
 
     
     // insert
-    public static boolean insertReturn(int return_id, int product_serial_id, String date_return,String reason, int status) {
-    	connectDB.getConnection();
-    	boolean success = false;
-    	try {
-    		String sql = "INSERT INTO `returns` (return_id,product_serial_id,date_return,reason,status) VALUES (" + return_id + ",'" + product_serial_id + "','" + date_return + "' ,'" + reason +"' ,'" + status + "')";
-    		int i = connectDB.runUpdate(sql);
-    		if(i>0) {
-    			success = true;
-    		}
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    	connectDB.closeConnection();
-    	return success;
+    public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, int status) {
+        connectDB.getConnection();
+        boolean success = false;
+        try {     
+        	String sqlBill_id = "select * from bills_details where product_serial_id = ?";
+    		PreparedStatement ps_bill_id = connectDB.prepareStatement(sqlBill_id);
+    		ps_bill_id.setInt(1, product_serial_id);
+  	        ResultSet rs_bill_id = ps_bill_id.executeQuery();
+  	        String sql_bill_date = "select * from bills where bill_id = ?";
+  	        PreparedStatement ps_bill_date =  connectDB.prepareStatement(sql_bill_date);
+  	        
+   	        if (rs_bill_id.next()) {  	        	
+   	        	int bill_id = rs_bill_id.getInt("bill_id");
+   	        	
+   	        	ps_bill_date.setInt(1, bill_id);
+  	            ResultSet rs_bill_date = ps_bill_date.executeQuery();
+  	            
+  	          String date_created ="";
+  	            if (rs_bill_date.next()) {
+  	            	 date_created = rs_bill_date.getString("date");
+				}
+  	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+  	            Date createDate = sdf.parse(date_created);
+  	            Date returnDate = sdf.parse(date_return);
+  	            System.out.println(date_return);
+  	            System.out.println(date_created);
+  	          long diffInMillies = Math.abs(returnDate.getTime() - createDate.getTime());
+              long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+              
+              // Kiểm tra nếu số ngày giữa date_return và date_created lớn hơn 7 ngày
+              if (diffInDays > 7) {
+                  JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                  return false;
+              }
+              // Tiến hành insert vào CSDL
+              String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "', " + status + ")";
+              int i = connectDB.runUpdate(sql);
+              if (i > 0) {
+                  success = true;
+                  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+              } else {
+                  JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+              }      
+        }
+   	   } catch (Exception e) {
+            e.printStackTrace();
+        }
+        connectDB.closeConnection();
+        return success;
     }
+
     
 	// tìm id sau khi click
 	public static Return getReturnById(int return_id) {

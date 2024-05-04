@@ -23,12 +23,12 @@ public class WarrantyBUS {
 		boolean isExist = WarrantyDAO.isExitWar(id);
 		return isExist;
 	}
-	public static boolean insertWar(int warranty_detail_id, int product_serial_id,String start_date,String end_date,String warranty_date,String reason,int status) {
-		boolean success = WarrantyDAO.insertWar(warranty_detail_id,product_serial_id,start_date,end_date,warranty_date,reason,status);
+	public static boolean insertWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,int status) {
+		boolean success = WarrantyDAO.insertWar(warranty_detail_id,product_serial_id,warranty_date,reason,status);
 		return success;
 	}
-	public static boolean updateWar(int warranty_detail_id, int product_serial_id,String start_date,String end_date,String warranty_date,String reason,int status) {
-		boolean success = WarrantyDAO.updateWar(warranty_detail_id,product_serial_id,start_date,end_date,warranty_date,reason,status);
+	public static boolean updateWar(int warranty_detail_id, int product_serial_id,String warranty_date,String reason,int status) {
+		boolean success = WarrantyDAO.updateWar(warranty_detail_id,product_serial_id,warranty_date,reason,status);
 		return success;
 	}
 	public static boolean deleteWar(int warranty_detail_id) {

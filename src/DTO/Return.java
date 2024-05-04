@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Date;
+
 public class Return {
     private int return_id;
     private int product_serial_id;

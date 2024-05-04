@@ -89,8 +89,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboBox_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Trạng thái","1" ,"0"}));
-		pnlChucVu.add(comboBox_1);
-		
+		pnlChucVu.add(comboBox_1);		
 		// ========== Start: Xử lý search trạng thái ==========
 				comboBox_1.addItemListener(new ItemListener() {
 							public void itemStateChanged(ItemEvent e) {
@@ -125,7 +124,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 				        xuLyTimKiem(txtTmKim.getText(), searchStatus);
 				    }
 				});
-				// ========== End: Xử lý search ==========
+		// ========== End: Xử lý search ==========
 		txtTmKim.setMinimumSize(new Dimension(250, 19));
 		txtTmKim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtTmKim.setColumns(10);
@@ -181,6 +180,15 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -220,19 +228,13 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 
 		// ========== TABLE DANH SÁCH ==========
 		table = new JTable();
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				xuLyCickTable();
-			}
-		});
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
 		table.setRowHeight(25);
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID", "Start_Date", " End_Date"," Warranty_Date" ,"Reason", "Status"}, 0);
+		dtmWarranty = new DefaultTableModel(new Object[]{"Warranty_ID", "Product_Serial_ID"," Warranty_Date" ,"Reason", "Status"}, 0);
 		table.setModel(dtmWarranty);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -261,8 +263,9 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 		// Sự kiện lắng nghe click
 		 btnThem.addActionListener(this);
 		 btnSua.addActionListener(this);
-//		btnNhapExcel.addActionListener(this);
-//		btnXuatExcel.addActionListener(this);
+		 btnXoa.addActionListener(this);
+		 btnNhapExcel.addActionListener(this);
+		 btnXuatExcel.addActionListener(this);
     }
     
     // load
@@ -270,7 +273,7 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     	dtmWarranty.setRowCount(0);
     	ArrayList<Warranty> dswt = WarrantyBUS.getDanhSachWarranty();
     	for(Warranty wt: dswt) {
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus()};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus()};
     		dtmWarranty.addRow(rowData);
     	}
     }
@@ -287,29 +290,11 @@ public class WarrantyGUI extends JPanel implements ActionListener {
     		} else {
     			status = "0";
     		}
-    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getStartDate(),wt.getEndDate(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus(),status};
+    		Object [] rowData = new Object[] {wt.getWarrantyid(),wt.getProduct_serial_id(),wt.getWarrantyDate(),wt.getReason(),wt.getStatus(),status};
     		model.addRow(rowData);
     	}
     }
-    // click
-    public void xuLyCickTable() {
-    	int selectedRow = table.getSelectedRow();
-    	if(selectedRow != -1) {
-    		int warrantiId = (int) table.getValueAt(selectedRow, 0);
-    		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thông tin bảo hành này?", "Xác nhận xóa thông tin", JOptionPane.YES_NO_OPTION);
-    		if (choice == JOptionPane.YES_OPTION) {
-    			boolean success = WarrantyBUS.deleteWar(warrantiId);
-    			if(success) {
-    				 JOptionPane.showMessageDialog(null, "Xóa thông tin thành công.");
-    				 loadDanhSachWarranty();
-    			} else {
-    				JOptionPane.showMessageDialog(null, "Xóa thông tin thất bại.");
-    			}
-    		}
-    	}  else {
-	        JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	    }
-    }
+
     // hiển thị giao diện bảo hành
     public void hienThiGiaoDienSua() {
     	int selectedRow = table.getSelectedRow();
@@ -342,6 +327,23 @@ public class WarrantyGUI extends JPanel implements ActionListener {
 			chiTietWarrantyGUI.requestFocus();
 		} else if(e.getSource() == btnSua) {
 			hienThiGiaoDienSua();
+		} else if(e.getSource() == btnXoa) {
+			int selectedRow = table.getSelectedRow();
+	    	if(selectedRow != -1) {
+	    		int warrantiId = (int) table.getValueAt(selectedRow, 0);
+	    		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thông tin bảo hành này?", "Xác nhận xóa thông tin", JOptionPane.YES_NO_OPTION);
+	    		if (choice == JOptionPane.YES_OPTION) {
+	    			boolean success = WarrantyBUS.deleteWar(warrantiId);
+	    			if(success) {
+	    				 JOptionPane.showMessageDialog(null, "Xóa thông tin thành công.");
+	    				 loadDanhSachWarranty();
+	    			} else {
+	    				JOptionPane.showMessageDialog(null, "Xóa thông tin thất bại.");
+	    			}
+	    		}
+	    	}  else {
+		        JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		    }
 		}
    	}
 }

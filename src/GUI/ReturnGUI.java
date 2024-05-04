@@ -185,6 +185,15 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+		btnXoa.setPreferredSize(new Dimension(0, 40));
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnXoa.setFocusable(false);
+		btnXoa.setBackground(Color.WHITE);
+		pnlTopBottom.add(btnXoa);
+		
 		btnNhapExcel = new JButton("Nhập excel");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -224,12 +233,6 @@ public class ReturnGUI extends JPanel implements ActionListener{
 
 		// ========== TABLE DANH SÁCH ==========
 		table = new JTable();
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				xuLyCickTable();
-			}
-		});
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
 		table.setRowHeight(25);
@@ -265,7 +268,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		// Sự kiện lắng nghe click
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-//		btnXoa.addActionListener(this);
+		btnXoa.addActionListener(this);
 		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
     }
@@ -298,25 +301,6 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		}
     }
   
-    // click xóa
-    public void xuLyCickTable() {
-    	int selectedRow = table.getSelectedRow();
-    	if(selectedRow != -1) {
-    		int return_id = (int) table.getValueAt(selectedRow, 0);
-    		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thông tin bảo hành này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
-    		 if (choice == JOptionPane.YES_OPTION) {
-    			 boolean success = ReturnBUS.deleteReturn(return_id);
-    			 if(success) {
-    				 JOptionPane.showMessageDialog(null, "Xóa thông tin bảo hành thành công.");
-    				 loadDanhSachBaoHanh();
-    			 } else {
-    				 JOptionPane.showMessageDialog(null, "Xóa thông tin bảo hành thất bại.");
-    			 }
-    		 }
-    	} else {
-    		JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin bảo hành để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    	}
-    }
     public void hienThiGiaoDienSua() {
 	    int selectedRow = table.getSelectedRow();
 	    if (selectedRow != -1) {
@@ -353,7 +337,24 @@ public class ReturnGUI extends JPanel implements ActionListener{
 			 chiTietBaoHanh.requestFocus();
         } else if (e.getSource() == btnSua) {
         	hienThiGiaoDienSua();
-        } 
+        } else if (e.getSource() == btnXoa) {
+        	int selectedRow = table.getSelectedRow();
+        	if(selectedRow != -1) {
+        		int return_id = (int) table.getValueAt(selectedRow, 0);
+        		int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa thông tin bảo hành này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
+        		 if (choice == JOptionPane.YES_OPTION) {
+        			 boolean success = ReturnBUS.deleteReturn(return_id);
+        			 if(success) {
+        				 JOptionPane.showMessageDialog(null, "Xóa thông tin bảo hành thành công.");
+        				 loadDanhSachBaoHanh();
+        			 } else {
+        				 JOptionPane.showMessageDialog(null, "Xóa thông tin bảo hành thất bại.");
+        			 }
+        		 }
+        	} else {
+        		JOptionPane.showMessageDialog(null, "Vui lòng chọn một thông tin bảo hành để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        	}
+        }
         else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
