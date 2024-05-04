@@ -238,7 +238,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmReturn = new DefaultTableModel(new Object[]{"Return_ID", "Product_ID", "Date_Return", "Reason","Active" ,"Status"}, 0);
+		dtmReturn = new DefaultTableModel(new Object[]{"Mã Đổi Trả", "Mã Seri Sản Phẩm", "Ngày Bảo Hành", "Lý do","Trạng thái" ,"Status"}, 0);
 		table.setModel(dtmReturn);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
