@@ -106,11 +106,10 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		});
 		// ========== End: Xử lý search trạng thái ==========
 		pnlChucVu.add(comboBox_1);
-				
+		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
-		
 	       
 		txtTmKim = new JTextField();
 		// ========== Start: Xử lý search ==========
@@ -239,7 +238,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
 		table.setIntercellSpacing(new Dimension(0, 0));
 		table.setFocusable(false);
 		
-		dtmReturn = new DefaultTableModel(new Object[]{"Return_ID", "Product_ID", "Date_Return", "Reason", "Status"}, 0);
+		dtmReturn = new DefaultTableModel(new Object[]{"Return_ID", "Product_ID", "Date_Return", "Reason","Active" ,"Status"}, 0);
 		table.setModel(dtmReturn);
 		table.setDefaultEditor(Object.class, null);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -286,7 +285,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
             } else {
                 status = "0";
             }
-    		Object[] row = {rt.getReturn_id(), rt.getProduct_serial_id(),rt.getDate_return(),rt.getReason(), rt.getStatus(), status};
+    		Object[] row = {rt.getReturn_id(), rt.getProduct_serial_id(),rt.getDate_return(),rt.getReason(), rt.getActive(), rt.getStatus(), status};
     		model.addRow(row);
     	}
     }
@@ -296,7 +295,7 @@ public class ReturnGUI extends JPanel implements ActionListener{
     	dtmReturn.setRowCount(0);
     	ArrayList<Return> danhSachBaoHanh = ReturnBUS.getDanhSachReturn();
 		for (Return returnItem : danhSachBaoHanh) {
-		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getStatus()};
+		    Object[] rowData = new Object[]{returnItem.getReturn_id(), returnItem.getProduct_serial_id(), returnItem.getDate_return(), returnItem.getReason(), returnItem.getActive(), returnItem.getStatus()};
 		    dtmReturn.addRow(rowData);
 		}
     }

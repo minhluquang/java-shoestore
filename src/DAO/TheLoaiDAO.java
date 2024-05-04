@@ -223,5 +223,22 @@ public class TheLoaiDAO {
         }
         return theLoais;
     }
-
+    public static int generateIdCate(boolean closeDatabase) {
+    	connectDB.getConnection();
+        int idRole = 0;
+        try {
+            String sql = "SELECT category_id FROM `categories` ORDER BY category_id DESC LIMIT 1";
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int lastId = rs.getInt("category_id");
+                idRole = lastId + 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (closeDatabase) {
+			connectDB.closeConnection();			
+		}
+        return idRole;
+    }
 }

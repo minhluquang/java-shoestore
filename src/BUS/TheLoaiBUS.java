@@ -2,6 +2,7 @@ package BUS;
 
 import java.util.ArrayList;
 
+import DAO.RoleDAO;
 import DAO.TheLoaiDAO;
 import DTO.TheLoaiDTO;
 
@@ -33,4 +34,9 @@ public class TheLoaiBUS {
     public static ArrayList<TheLoaiDTO> searchLoai(String key){
         return TheLoaiDAO.searchLoai(key);
     }   
+ // write id
+ 	public static int generateIdCate(boolean closeDatabase) {
+ 		int idtl = TheLoaiDAO.generateIdCate(closeDatabase);
+ 		    return idtl;
+ 		}
 }

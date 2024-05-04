@@ -212,8 +212,10 @@ public class ChiTietLoai extends JFrame {
 
     public void xuLyTuDongGanGiaTri() {
         int cateId = tl.getCategory_id();
-        if (cateId != 0) {
-            txtcateid.setText(Integer.toString(cateId));
+        if (cateId == 0) {
+            txtcateid.setText(Integer.toString(TheLoaiBUS.generateIdCate(true)));
+        } else {
+        	txtcateid.setText(Integer.toString( tl.getCategory_id()));
         }
         txtcatename.setText(tl.getCategory_name());
         txtcatename.setEditable(true);
