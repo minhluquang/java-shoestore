@@ -40,7 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import BUS.NhaCungCapBUS;
-import DAO.NhaCungCapDAO;
 import DTO.NhaCungCap;
 
 public class NhaCungCapGUI extends JPanel implements ActionListener {
@@ -145,7 +144,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		btnSua.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnSua);
 
-		btnXoa = new JButton("Xoá");
+		btnXoa = new JButton("Thay đổi trạng thái");
 		btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnXoa.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
 		btnXoa.setPreferredSize(new Dimension(0, 40));
@@ -201,7 +200,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		table.setFocusable(false);
 
 		defaultTableModel = new DefaultTableModel(
-				new Object[] { "STT", "Mã nhà cung cấp", "Tên nhà cung cấp", "Địa chỉ" }, 0);
+				new Object[] { "STT", "Mã nhà cung cấp", "Tên nhà cung cấp", "Địa chỉ", "Trạng Thái" }, 0);
 		table.setModel(defaultTableModel);
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
@@ -260,20 +259,20 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		} else if (e.getSource() == btnXoa) {
 			int selectedRow = table.getSelectedRow();
 			if (selectedRow == -1) {
-				JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần xóa", "Thông báo",
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần thay đổi trạng thái", "Thông báo",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			int selected = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa nhà cung cấp vừa chọn không!", "",
-					JOptionPane.YES_NO_OPTION);
+			int selected = JOptionPane.showConfirmDialog(null,
+					"Bạn có muốn thay đổi trạng thái nhà cung cấp vừa chọn không!", "", JOptionPane.YES_NO_OPTION);
 			if (selected != 0)
 				return;
-			boolean success = NhaCungCapDAO.deletePublisher(ncc.getSupplier_id());
+			boolean success = NhaCungCapBUS.deletePublisher(ncc.getSupplier_id(), ncc.getStatus());
 			if (!success) {
-				JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thất bại !", "Thông báo",
+				JOptionPane.showMessageDialog(null, "Thay đổi trạng thái nhà cung cấp thất bại !", "Thông báo",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thành công !", "Thông báo",
+				JOptionPane.showMessageDialog(null, "Thay đổi trạng thái nhà cung cấp thành công !", "Thông báo",
 						JOptionPane.CLOSED_OPTION);
 				loadDanhSachNhaCungCap();
 			}
@@ -303,11 +302,9 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 
 		int rowNum = defaultTableModel.getRowCount();
 		for (NhaCungCap n : dsncc) {
-			if (n.getStatus() == 0) {
-				continue;
-			}
 			int stt = ++rowNum;
-			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss() };
+			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss(),
+					n.getStatus() == 1 ? "Hoạt Động" : "Không Hoạt Động" };
 			defaultTableModel.addRow(row);
 		}
 
@@ -321,7 +318,8 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 				continue;
 			}
 			int stt = ++rowNum;
-			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss() };
+			Object[] row = { stt, n.getSupplier_id(), n.getSupplier_name(), n.getSupplier_addresss(),
+					n.getStatus() == 1 ? "Hoạt Động" : "Không Hoạt Động" };
 			defaultTableModel.addRow(row);
 		}
 
@@ -333,6 +331,8 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 			ncc.setSupplier_id(((int) table.getValueAt(row, 1)));
 			ncc.setSupplier_name((String) table.getValueAt(row, 2));
 			ncc.setSupplier_addresss((String) table.getValueAt(row, 3));
+			int status = table.getValueAt(row, 4).equals("Hoạt Động") ? 1 : 0;
+			ncc.setStatus(status);
 		}
 	}
 

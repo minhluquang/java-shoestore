@@ -34,8 +34,8 @@ public class NhaCungCapBUS {
 		return NhaCungCapDAO.updatePublisher(id, tenNcc, diachi);
 	}
 
-	public static boolean deletePublisher(int id) {
-		return NhaCungCapDAO.deletePublisher(id);
+	public static boolean deletePublisher(int id, int status) {
+		return NhaCungCapDAO.deletePublisher(id, status);
 	}
 
 	public static ArrayList<NhaCungCap> getListNCCByQuery(String enteredText) {

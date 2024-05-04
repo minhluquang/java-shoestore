@@ -123,13 +123,14 @@ public class NhaCungCapDAO {
 		return success;
 	}
 
-	public static boolean deletePublisher(int id) {
+	public static boolean deletePublisher(int id, int status) {
 		connectDB.getConnection();
 		boolean success = false;
+		int newStatus = status == 1 ? 0 : 1;
 		try {
 			String sql = "UPDATE suppliers 	SET status = ? WHERE supplier_id= ?";
 			PreparedStatement mystm = connectDB.prepareStatement(sql);
-			mystm.setInt(1, 0);
+			mystm.setInt(1, newStatus);
 			mystm.setInt(2, id);
 			int rowsDeleted = mystm.executeUpdate();
 			if (rowsDeleted > 0) {

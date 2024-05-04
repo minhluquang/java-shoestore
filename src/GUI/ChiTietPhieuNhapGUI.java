@@ -8,15 +8,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -127,9 +124,9 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		panel.add(panel_1, BorderLayout.NORTH);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[] { 218, 218, 218, 218 };
-		gbl_panel_1.rowHeights = new int[] { 40, 0 };
+		gbl_panel_1.rowHeights = new int[] { 0 };
 		gbl_panel_1.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0 };
-		gbl_panel_1.rowWeights = new double[] { 0.0, 0.0 };
+		gbl_panel_1.rowWeights = new double[] { 0.0 };
 		panel_1.setLayout(gbl_panel_1);
 
 		lblMa = new JLabel("");
@@ -140,7 +137,7 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		gbc_lblMa.fill = GridBagConstraints.BOTH;
 		gbc_lblMa.insets = new Insets(0, 0, 5, 5);
 		gbc_lblMa.gridx = 0;
-		gbc_lblMa.gridy = 1;
+		gbc_lblMa.gridy = 0;
 		panel_1.add(lblMa, gbc_lblMa);
 
 		lblNhanVien = new JLabel("");
@@ -150,7 +147,7 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		gbc_lblNhanVien.fill = GridBagConstraints.BOTH;
 		gbc_lblNhanVien.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNhanVien.gridx = 1;
-		gbc_lblNhanVien.gridy = 1;
+		gbc_lblNhanVien.gridy = 0;
 		panel_1.add(lblNhanVien, gbc_lblNhanVien);
 
 		lblNCC = new JLabel("");
@@ -160,7 +157,7 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		gbc_lblNCC.fill = GridBagConstraints.BOTH;
 		gbc_lblNCC.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNCC.gridx = 2;
-		gbc_lblNCC.gridy = 1;
+		gbc_lblNCC.gridy = 0;
 		panel_1.add(lblNCC, gbc_lblNCC);
 
 		lblTime = new JLabel("");
@@ -171,29 +168,8 @@ public class ChiTietPhieuNhapGUI extends JFrame {
 		gbc_lblTime.insets = new Insets(0, 0, 5, 0);
 		gbc_lblTime.fill = GridBagConstraints.BOTH;
 		gbc_lblTime.gridx = 3;
-		gbc_lblTime.gridy = 1;
+		gbc_lblTime.gridy = 0;
 		panel_1.add(lblTime, gbc_lblTime);
-
-		JButton btnNewButton = new JButton("Xuất Excel");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					exportExcel(id);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBackground(Color.WHITE);
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 0;
-		panel_1.add(btnNewButton, gbc_btnNewButton);
 
 		table = new JTable();
 		table.setSelectionForeground(Color.WHITE);
