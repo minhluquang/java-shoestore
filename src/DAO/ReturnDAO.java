@@ -11,7 +11,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
+import BUS.ChiTietSanPhamBUS;
+import BUS.SanPhamBUS;
+import DTO.ChiTietSanPhamDTO;
 import DTO.Return;
+import DTO.SanPhamDTO;
 
 
 
@@ -121,10 +125,7 @@ public class ReturnDAO {
         return dsReturn;
     }
 
-
-    
     // insert
-   
     public static boolean insertReturn(int return_id, int product_serial_id, String date_return, String reason, String active, int status) {
         connectDB.getConnection();
         boolean success = false;
@@ -159,11 +160,23 @@ public class ReturnDAO {
                   JOptionPane.showMessageDialog(null, "Quá thời hạn đổi trả (quá 7 ngày kể từ ngày mua).", "Lỗi", JOptionPane.ERROR_MESSAGE);
                   return false;
               }
+              ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(product_serial_id);
+              if(!SanPhamBUS.kiemTraTonKhoByID(chiTietSanPhamDTO.getProductId())) {
+            	  JOptionPane.showMessageDialog(null, "Hiện tại đã hết sản phẩm đổi trả", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                  return false;
+              }
               // Tiến hành insert vào CSDL
               String sql = "INSERT INTO `returns` (return_id, product_serial_id, date_return, reason, active, status) VALUES (" + return_id + ", '" + product_serial_id + "', '" + date_return + "', '" + reason + "','" + active + "', " + status + ")";
+              System.out.println(sql); 
+              connectDB.getConnection();
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
+                  SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());                 
+                  sanPhamDTO.setQuantity(sanPhamDTO.getQuantity()-1);
+                  ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
+                  ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
+                  SanPhamBUS.suaSanPham(sanPhamDTO);
                   JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
               } else {
                   JOptionPane.showMessageDialog(null, "Lỗi khi thêm đổi trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
