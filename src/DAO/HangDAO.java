@@ -180,4 +180,47 @@ public class HangDAO {
         }
         return success;
 	}
+
+    public static boolean isExistTenHang(String tenHang) {
+    	boolean success = false;
+    	
+    	try {
+            connectDB.getConnection();
+            String sql = "SELECT * "
+            		+ "FROM brands "
+            		+ "WHERE brand_name = " + tenHang;
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs!=null && rs.next()) {
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return success;
+	}
+
+    public static ArrayList<HangDTO> searchHang(String key) { 
+        key=key.toLowerCase();
+        ArrayList<HangDTO> brands = new ArrayList<>();
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM brands WHERE LOWER(brand_name) LIKE %"+key+"%";
+            ResultSet rs = connectDB.runQuery(sql);
+            while (rs.next()) {
+                int brand_id = rs.getInt("brand_id");
+                String brand_name = rs.getString("brand_name");
+                boolean status = rs.getBoolean("status");
+
+                HangDTO brand = new HangDTO(brand_id, brand_name, status);
+                brands.add(brand);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return brands;
+    }
 }
