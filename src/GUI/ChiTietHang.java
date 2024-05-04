@@ -2,7 +2,6 @@ package GUI;
 
 import java.awt.EventQueue;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -31,14 +30,15 @@ import java.awt.event.ActionEvent;
 import DTO.HangDTO;
 import BUS.HangBUS;
 
-
-
-public class ChiTietHang extends JFrame {
+public class ChiTietHang extends JFrame implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField txtMaHang;
     private JTextField txtTenHang;
+    private JButton btnTrangThai;
+    private JButton btnHuy;
+    private JButton btnLuu;
 
     public HangDTO hang;
     public QLHang qlHang;
@@ -70,7 +70,8 @@ public class ChiTietHang extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết hãng không?", "Xác nhận đóng chi tiết hãng", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết hãng không?",
+                        "Xác nhận đóng chi tiết hãng", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     dispose();
                 }
@@ -78,7 +79,7 @@ public class ChiTietHang extends JFrame {
         });
 
         int width = 600;
-        int height = 500;
+        int height = 400;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, width, height);
@@ -141,48 +142,41 @@ public class ChiTietHang extends JFrame {
         txtTenHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_5.add(txtTenHang);
 
+        btnTrangThai = new JButton();
+        btnTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnTrangThai.setBackground(Color.WHITE);
+        btnTrangThai.addActionListener(this);
+        panel_5.add(btnTrangThai);
+
         JPanel panel_2 = new JPanel();
         panel_2.setBackground(Color.WHITE);
         panel_5.add(panel_2);
         panel_2.setLayout(new GridLayout(0, 2, 20, 0));
 
-
-
         // ========= Xử lý lưu thông tin hãng =========
-        JButton btnNewButton = new JButton("Lưu");
-        btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				xuLyLuuThongTinPhanQuyen();
-			}
-		});
+        JButton btnLuu = new JButton("Lưu");
+        btnLuu.addActionListener(this);
         // ========= Xử lý lưu thông tin hãng =========
 
-        btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnNewButton.setPreferredSize(new Dimension(100, 30));
-        btnNewButton.setForeground(Color.WHITE);
-        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnNewButton.setFocusable(false);
-        btnNewButton.setBorder(null);
-        btnNewButton.setBackground(new Color(21, 155, 71));
-        panel_2.add(btnNewButton);
+        btnLuu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLuu.setPreferredSize(new Dimension(100, 30));
+        btnLuu.setForeground(Color.WHITE);
+        btnLuu.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnLuu.setFocusable(false);
+        btnLuu.setBorder(null);
+        btnLuu.setBackground(new Color(21, 155, 71));
+        panel_2.add(btnLuu);
 
-        JButton btnNewButton_1 = new JButton("Huỷ bỏ");
-        btnNewButton_1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết hãng không?", "Xác nhận huỷ bỏ chỉnh sửa chi tiết hãng", JOptionPane.YES_NO_OPTION);
-                if (choice == JOptionPane.YES_OPTION) {
-                    dispose();
-                }
-            }
-        });
-        btnNewButton_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnNewButton_1.setPreferredSize(new Dimension(100, 30));
-        btnNewButton_1.setForeground(Color.WHITE);
-        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnNewButton_1.setFocusable(false);
-        btnNewButton_1.setBorder(null);
-        btnNewButton_1.setBackground(new Color(220, 53, 69));
-        panel_2.add(btnNewButton_1);
+        btnHuy = new JButton("Huỷ bỏ");
+        btnHuy.addActionListener(this);
+        btnHuy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnHuy.setPreferredSize(new Dimension(100, 30));
+        btnHuy.setForeground(Color.WHITE);
+        btnHuy.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnHuy.setFocusable(false);
+        btnHuy.setBorder(null);
+        btnHuy.setBackground(new Color(220, 53, 69));
+        panel_2.add(btnHuy);
 
         JPanel panel_6 = new JPanel();
         panel_6.setBackground(Color.WHITE);
@@ -200,26 +194,27 @@ public class ChiTietHang extends JFrame {
         JLabel lblNewLabel = new JLabel("");
         panel_1.add(lblNewLabel);
 
-        // ========== Gắn giá trị tự động ==========
-        if (hang != null) {
-            xuLyTuDongGanGiaTri();
-        }
+        xuLyTuDongGanGiaTri();
     }
 
     public void xuLyTuDongGanGiaTri() {
         int hangID = hang.getBrand_id();
         if (hangID == 0) {
-            txtMaHang.setText(Integer.toString(HangBUS.getSoluongHang()+1));
+            txtMaHang.setText(Integer.toString(HangBUS.getSoluongHang() + 1));
         } else {
             txtMaHang.setText(Integer.toString(hang.getBrand_id()));
         }
-        
+
         txtTenHang.setText(hang.getBrand_name());
-        txtTenHang.setEditable(true);
+        if (hang.isStatus()) {
+            btnTrangThai.setText("Hoạt động");
+        } else {
+            btnTrangThai.setText("Ngừng hoạt động");
+        }
     }
-    
+
     // btnLưu
-    public void xuLyLuuThongTinPhanQuyen() {
+    public void xuLyLuuThongTinHang() {
         int hangID = Integer.parseInt(txtMaHang.getText());
         String hangName = txtTenHang.getText().trim();
         // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
@@ -234,31 +229,59 @@ public class ChiTietHang extends JFrame {
             boolean isExistHang = HangBUS.isExistTenHang(hangName);
             if (!isExistHang) {
                 if (HangBUS.themHang(new HangDTO(hangID, hangName, true))) {
-                    JOptionPane.showMessageDialog(null, "Thêm thành công thông tin hãng.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Thêm thành công thông tin hãng.", "Thông báo thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
                     qlHang.loadDanhSachHang();
                     qlHang.revalidate();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Thêm thất bại thông tin hãng.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Thêm thất bại thông tin hãng.", "Thông báo thất bại",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
                 // Nếu tồn tại hangID (tức: có Mã hãng đó rồi thì update)
                 if (HangBUS.suaHang(new HangDTO(hangID, hangName, true))) {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin hãng.", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin hãng.",
+                            "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
                     qlHang.loadDanhSachHang();
                     qlHang.revalidate();
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin hãng.", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin hãng.",
+                            "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
     }
 
-    // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
-    private boolean isAlpha(String str) {
-    	 return str.matches("[\\p{L}\\s]+");
+    public void xulyTrangThai(){
+        if (btnTrangThai.getText() == "Hoạt động") {
+            btnTrangThai.setText("Ngừng hoạt động");
+            hang.setStatus(false);
+        } else {
+            btnTrangThai.setText("Hoạt động");
+            hang.setStatus(true);
+        }
     }
 
+    // Phương thức kiểm tra chuỗi chỉ chứa kí tự chữ và khoảng trắng
+    private boolean isAlpha(String str) {
+        return str.matches("[\\p{L}\\s]+");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnHuy) {
+            int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn huỷ bỏ chỉnh sửa chi tiết hãng không?",
+                    "Xác nhận huỷ bỏ chỉnh sửa chi tiết hãng", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        } else if(e.getSource() == btnLuu) {
+            xuLyLuuThongTinHang();
+        } else if (e.getSource() == btnTrangThai){
+
+        }
+    }
 
 }

@@ -226,8 +226,13 @@ public class QLHang extends JPanel implements ActionListener {
         dtmHang.setRowCount(0);
         // dsHang = HangBUS.getDanhSachHang();
 
+        String status = "Hoạt động";
+
         for (HangDTO hang : dsHang) {
-            Object[] row = { hang.getBrand_id(), hang.getBrand_name(), hang.isStatus() };
+            if (!hang.isStatus()) {
+                status = "Không hoạt động";
+            }
+            Object[] row = { hang.getBrand_id(), hang.getBrand_name(), status };
             dtmHang.addRow(row);
         }
     }
@@ -298,7 +303,7 @@ public class QLHang extends JPanel implements ActionListener {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietHang frame = new ChiTietHang(new HangDTO(), qlHang);
+                    ChiTietHang frame = new ChiTietHang(new HangDTO(0, "", true), qlHang);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
