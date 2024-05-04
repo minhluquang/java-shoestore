@@ -120,6 +120,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JLabel lblMaKH;
     private JLabel lblNVLap;
     private JLabel lblNgayLap;
+    private JLabel lblDiaChi;
     private JLabel lblTongTien;
     private JTextField txtGiaTu;
     private JTextField txtGiaDen;
@@ -344,6 +345,8 @@ public class BanHangGUI extends JPanel implements ActionListener {
         lblNVLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblNgayLap = new JLabel("Ngày Lập:");
         lblNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblDiaChi = new JLabel("Địa chỉ:");
+        lblDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblTongTien = new JLabel("Tổng Tiền:");
         lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtGiaTu = new JTextField(10);
@@ -476,6 +479,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panelHD2.add(lblMaKH);
         panelHD2.add(lblNVLap);
         panelHD2.add(lblNgayLap);
+        panelHD2.add(lblDiaChi);
         panelHD2.add(lblTongTien);
 
         JPanel panelHD3 = new JPanel(new GridLayout(0, 4, 3, 3));
@@ -828,6 +832,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
         NhanVien nhanVien = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
         lblNVLap.setText("Nhân Viên Lập: " + nhanVien.getStaffId_Name());
         lblNgayLap.setText("Ngày Lập: " + hoaDonDTO.getDate());
+        lblDiaChi.setText("Địa chỉ: "+hoaDonDTO.getAddress());
         lblTongTien.setText("Tổng Tiền: " + hoaDonDTO.getTotalPrice());
         txtMaHD.setText(hoaDonDTO.getBillId() + "");
         setChiTietHoaDonTable();

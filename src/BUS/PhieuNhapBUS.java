@@ -41,9 +41,10 @@ public class PhieuNhapBUS {
 
 		for (int i = 0; i < rowCount; i++) {
 			Object lastColumnValue = table.getValueAt(i, lastColumnIndex);
-			sum += (double) lastColumnValue;
+			sum += Double.parseDouble((String) lastColumnValue);
 		}
-		return sum + "";
+		String formattedNumber = String.format("%.0f", sum);
+		return formattedNumber;
 	}
 
 	public static boolean create_GoodsReceipts(int receipt_id, String date, int supplier_id, int staff_id) {
