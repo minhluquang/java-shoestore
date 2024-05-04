@@ -96,6 +96,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private JComboBox<String> cbbTheLoai;
     private Map<String, Integer> mapHang;
 	private Map<String, Integer> mapLoai;
+    private JButton btnReset;
     private JTable tblSanPham;
     private JScrollPane spnGioHang;
     private JLabel lblGH;
@@ -184,10 +185,33 @@ public class BanHangGUI extends JPanel implements ActionListener {
         panel1.setBackground(new Color(36, 136, 203));
         panel1.add(lblDSSP, BorderLayout.NORTH);
 
-        JPanel panel1_TimKiem = new JPanel();
+        JPanel panel1_TimKiem = new JPanel(new GridLayout(1,0));
         txtTenSP = new JTextField();
+        txtTenSP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtTenSP.setPreferredSize(new Dimension(0, 30));
+        txtTenSP.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				timSanPham();
+			}
+		});
+        panel1_TimKiem.add(txtTenSP);
+        JPanel pnlTmp = new JPanel(new GridLayout(1, 0));
         cbbHang = new JComboBox<>();
+        cbbHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        cbbHang.setPreferredSize(new Dimension(0, 30));
+        pnlTmp.add(cbbHang);
         cbbTheLoai = new JComboBox<>();
+        cbbTheLoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        cbbTheLoai.setPreferredSize(new Dimension(0, 30));
+        pnlTmp.add(cbbTheLoai);
+        btnReset = new JButton("Reset");
+        btnReset.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnReset.setPreferredSize(new Dimension(0, 30));
+        pnlTmp.add(btnReset);
+        panel1_TimKiem.add(pnlTmp);
+
+        panel1.add(panel1_TimKiem, BorderLayout.CENTER);
 
         tblSanPham = new JTable();
         tblSanPham.setBorder(null);
@@ -567,7 +591,12 @@ public class BanHangGUI extends JPanel implements ActionListener {
         cthd = ChiTietHoaDonBUS.getAllChiTietHoaDon();
 
         loadData();
+        loadcbbHang();
+        loadcbbLoai();
 
+        cbbTheLoai.addActionListener(this);
+        cbbHang.addActionListener(this);
+        btnReset.addActionListener(this);
         btnXoa.addActionListener(this);
         // btnXem.addActionListener(this);
         btnLuu.addActionListener(this);
@@ -655,6 +684,20 @@ public class BanHangGUI extends JPanel implements ActionListener {
                     hangDTO.getBrand_name(), theLoaiDTO.getCategory_name(), sanPhamDTO.getOutput_price() };
             gioHangModel.addRow(sanPhamData);
         }
+    }
+
+    public void timSanPham(){
+        int hangId = mapHang.get(cbbHang.getSelectedItem()).intValue();
+		int loaiId = mapLoai.get(cbbTheLoai.getSelectedItem()).intValue();
+		String ten = txtTenSP.getText().toLowerCase().strip();
+		ArrayList<SanPhamDTO> dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten, 1);
+        ArrayList<ChiTietSanPhamDTO> danhSachMoi = new ArrayList<>();
+        for (SanPhamDTO sanPhamDTO : dsSanPham) {
+            ArrayList<ChiTietSanPhamDTO> dsTmp = ChiTietSanPhamBUS.getChiTietSanPhamByID(sanPhamDTO.getProduct_id());
+            danhSachMoi.addAll(dsTmp);
+        }
+        dssp = new ArrayList<>(danhSachMoi);
+        loadDanhSachSanPham();
     }
 
     public void loadData() {
@@ -835,17 +878,27 @@ public class BanHangGUI extends JPanel implements ActionListener {
         if (e.getSource() == btnLuu) {
             themVaoGioHang();
         }
-        if (e.getSource() == btnXoa) {
+        else if (e.getSource() == btnXoa) {
             xoaKhoiGioHang();
         }
-        if (e.getSource() == btnMuaHang) {
+        else if (e.getSource() == btnMuaHang) {
             muaHang();
         }
-        if (e.getSource()==btnTim) {
+        else if (e.getSource() == btnTim) {
             timHoaDon();
         }
-        if (e.getSource()==btnXoatim) {
+        else if (e.getSource() == btnXoatim) {
             xoaTimHoaDon();
+        }
+        else if (e.getSource() == btnReset) {
+            dssp = ChiTietSanPhamBUS.getDanhSachChiTietSanPham();
+            loadDanhSachSanPham();
+        }
+        else if (e.getSource() == cbbHang) {
+            timSanPham();
+        }
+        else if(e.getSource() == cbbTheLoai){
+            timSanPham();
         }
     }
 
