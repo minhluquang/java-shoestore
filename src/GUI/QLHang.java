@@ -45,7 +45,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import DTO.Role;
+import DTO.TheLoaiDTO;
 import BUS.RoleBUS;
+import BUS.TheLoaiBUS;
 
 public class QLHang extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
@@ -60,6 +62,8 @@ public class QLHang extends JPanel implements ActionListener {
     private JButton btnXoa;
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
+    private JButton btnDoiTrangThai;
+
     private DefaultTableModel dtmHang;
 
     public ArrayList<HangDTO> dsHang;
@@ -143,6 +147,15 @@ public class QLHang extends JPanel implements ActionListener {
         btnSua.setBackground(Color.WHITE);
         pnlTopBottom.add(btnSua);
 
+        btnDoiTrangThai = new JButton("Đổi trạng thái");
+        btnDoiTrangThai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnDoiTrangThai.setIcon(new ImageIcon(absolutePath + "/src/images/icons/delete.png"));
+        btnDoiTrangThai.setPreferredSize(new Dimension(200, 40));
+        btnDoiTrangThai.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnDoiTrangThai.setFocusable(false);
+        btnDoiTrangThai.setBackground(Color.WHITE);
+        pnlTopBottom.add(btnDoiTrangThai);
+
         btnNhapExcel = new JButton("Nhập excel");
         btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
@@ -217,6 +230,7 @@ public class QLHang extends JPanel implements ActionListener {
         btnTim.addActionListener(this);
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
+        btnDoiTrangThai.addActionListener(this);
         btnNhapExcel.addActionListener(this);
         btnXuatExcel.addActionListener(this);
     }
@@ -242,29 +256,6 @@ public class QLHang extends JPanel implements ActionListener {
         loadDanhSachHang();
     }
 
-    // // Xử lý click vào row table
-    // public void xuLyClickTable() {
-    // int selectedRow = tblHang.getSelectedRow();
-    // if (selectedRow != -1) {
-    // int role_id = (int) tblHang.getValueAt(selectedRow, 0);
-    // int choice = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa
-    // vai trò này?", "Xác nhận xóa vai trò", JOptionPane.YES_NO_OPTION);
-    // if (choice == JOptionPane.YES_OPTION) {
-    // boolean success = RoleBUS.deleteRole(role_id);
-    // if (success) {
-    // JOptionPane.showMessageDialog(null, "Xóa vai trò thành công.");
-    // loadDanhSachHang();
-    // } else {
-    // JOptionPane.showMessageDialog(null, "Xóa vai trò thất bại.");
-    // }
-    // }
-    // } else {
-    // JOptionPane.showMessageDialog(null, "Vui lòng chọn một vai trò để xóa.",
-    // "Lỗi", JOptionPane.ERROR_MESSAGE);
-    // }
-    // }
-
-    // Xử lý tìm kiếm
     public void xuLyTimKiem() {
         String keyword = txtTimKiem.getText();
         dtmHang.setRowCount(0);
@@ -312,20 +303,47 @@ public class QLHang extends JPanel implements ActionListener {
         });
     }
 
+    public void doiTrangThai() {
+        int selectedRow = tblHang.getSelectedRow();
+        if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+            int hangID = (int) tblHang.getValueAt(selectedRow, 0);
+            HangDTO hang = HangBUS.getHangByID(hangID);
+            int choice = JOptionPane.showConfirmDialog(null,
+                    "Bạn có chắc chắn muốn thay dổi trạng thái hãng này?",
+                    "Xác nhận thay đổi trạng thái hãng", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                hang.setStatus(!hang.isStatus());
+                if (HangBUS.suaHang(hang)) {
+                    JOptionPane.showMessageDialog(null, "Thay đổi trạng thái thành công.", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Thay đổi trạng thái thất bại.", "Thông báo",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn một hãng để thay đổi trạng thái.", "Thông báo",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        loadDanhSachHang();
+    }
+
     @Override
-		public void actionPerformed(ActionEvent e) { 
-			if (e.getSource() == btnThem) {
-	        	themHang();
-	        } else if (e.getSource() == btnSua) {
-	        	hienThiGiaoDienSua();
-	        } else if(e.getSource() == btnTim){
-                txtTimKiem.setText("");
-                xuLyTimKiem();
-            } else if (e.getSource() == btnNhapExcel) {
-	            // Xử lý khi button "Nhập excel" được nhấn
-	        } else if (e.getSource() == btnXuatExcel) {
-	            // Xử lý khi button "Xuất excel" được nhấn
-	        }
-		}
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnThem) {
+            themHang();
+        } else if (e.getSource() == btnSua) {
+            hienThiGiaoDienSua();
+        } else if (e.getSource() == btnTim) {
+            txtTimKiem.setText("");
+            xuLyTimKiem();
+        } else if (e.getSource() == btnDoiTrangThai) {
+            doiTrangThai();
+        } else if (e.getSource() == btnNhapExcel) {
+            // Xử lý khi button "Nhập excel" được nhấn
+        } else if (e.getSource() == btnXuatExcel) {
+            // Xử lý khi button "Xuất excel" được nhấn
+        }
+    }
 
 }

@@ -224,4 +224,21 @@ public class TheLoaiDAO {
         return theLoais;
     }
 
+    public static int generateIdCate(){
+        int count=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT COUNT(*) AS count FROM categories";
+            ResultSet rs= connectDB.runQuery(sql);
+            if (rs.next()) {
+                count = rs.getInt("count");
+                count += 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return count;
+    }
 }
