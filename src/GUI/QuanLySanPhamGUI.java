@@ -30,12 +30,15 @@ import java.awt.Cursor;
 
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -56,6 +59,7 @@ import DTO.SanPhamDTO;
 import DTO.TheLoaiDTO;
 
 import javax.swing.JRadioButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -84,7 +88,10 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	private Map<String, Integer> mapHang;
 	private Map<String, Integer> mapLoai;
 	private JButton btnLamMoi;
-	
+	private JTabbedPane tabbedPane;
+	private JPanel pnlSanPham;
+	private JPanel pnlHang;
+	private JPanel pnlLoai;
 
 	private SanPhamDTO sp = new SanPhamDTO();
 	private ArrayList<SanPhamDTO> dsSanPham;
@@ -98,12 +105,41 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	 */
 	public QuanLySanPhamGUI() {
 		this.quanLySanPhamGUI = this;
-		setBackground(new Color(230, 230, 230));
-		setLayout(new BorderLayout(10, 10));
+
+		tabbedPane = new JTabbedPane();
+		pnlSanPham = new JPanel();
+		pnlHang = new QLHang();
+		pnlLoai = new QLLoai();
+		tabbedPane.addTab("Hãng", pnlSanPham);
+		tabbedPane.addTab("Hãng", pnlHang);
+        tabbedPane.addTab("Loại", pnlLoai);
+        tabbedPane.setFont(new Font("Tahoma", Font.BOLD, 14));
+        tabbedPane.setForeground(Color.BLACK);
+        tabbedPane.setBackground(Color.LIGHT_GRAY);
+        tabbedPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        tabbedPane.setForegroundAt(0, new Color(36, 136, 203));
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                // Tùy chỉnh giao diện của tab được chọn
+                for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                    tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
+                }
+                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn
+                                                                                    // thành màu đỏ
+            }
+        });
+
+        setLayout(new BorderLayout());
+        add(tabbedPane, BorderLayout.CENTER);
+
+		pnlSanPham.setBackground(new Color(230, 230, 230));
+		pnlSanPham.setLayout(new BorderLayout(10, 10));
 
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(new Color(255, 255, 255));
-		add(pnlTop, BorderLayout.NORTH);
+		pnlSanPham.add(pnlTop, BorderLayout.NORTH);
 		pnlTop.setLayout(new BorderLayout(20, 5));
 
 		JPanel pnlSearch = new JPanel();
@@ -272,7 +308,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 		JPanel pnlCenter = new JPanel();
 		pnlCenter.setBackground(new Color(255, 255, 255));
-		add(pnlCenter, BorderLayout.CENTER);
+		pnlSanPham.add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
 		
 		dtmTableModel = new DefaultTableModel(new Object[] {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái" }, 0);

@@ -420,11 +420,10 @@ public class ChiTietSanPhamGUI extends JFrame implements ActionListener {
                         System.out.println(file.getAbsolutePath());
                         String imagePath = getPathAfterSrc(file.getAbsolutePath());
                         if (!imagePath.isEmpty()) {
-                                sanPhamDTO.setImage_path(absolutePath + imagePath);
-                                System.out.println(absolutePath + imagePath);
+                                sanPhamDTO.setImage_path(imagePath);
                         }
                 }
-                ImageIcon icon = new ImageIcon(sanPhamDTO.getImage_path());
+                ImageIcon icon = new ImageIcon(absolutePath+sanPhamDTO.getImage_path());
                 Image image = icon.getImage();
                 Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
                 icon = new ImageIcon(scaledImage);

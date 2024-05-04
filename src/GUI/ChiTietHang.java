@@ -215,6 +215,7 @@ public class ChiTietHang extends JFrame implements ActionListener {
 
     // btnLưu
     public void xuLyLuuThongTinHang() {
+        System.out.println("vao dc dat");
         int hangID = Integer.parseInt(txtMaHang.getText());
         String hangName = txtTenHang.getText().trim();
         // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
@@ -254,7 +255,7 @@ public class ChiTietHang extends JFrame implements ActionListener {
         }
     }
 
-    public void xulyTrangThai(){
+    public void xulyTrangThai() {
         if (btnTrangThai.getText() == "Hoạt động") {
             btnTrangThai.setText("Ngừng hoạt động");
             hang.setStatus(false);
@@ -277,11 +278,14 @@ public class ChiTietHang extends JFrame implements ActionListener {
             if (choice == JOptionPane.YES_OPTION) {
                 dispose();
             }
-        } else if(e.getSource() == btnLuu) {
+        }
+        if (e.getSource() == btnLuu) {
             xuLyLuuThongTinHang();
-        } else if (e.getSource() == btnTrangThai){
 
         }
-    }
+        if (e.getSource() == btnTrangThai) {
+            xulyTrangThai();
+        }
 
+    }
 }
