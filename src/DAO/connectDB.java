@@ -10,11 +10,9 @@ public class connectDB {
 
 	static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
 	static final String USER = "root";
-<<<<<<< HEAD
-	static final String PASS = "20112004";
-=======
-	static final String PASS = "12345";
->>>>>>> 883582bd990f785cb06293a7ecd98c38c1788e1e
+
+	static final String PASS = "";
+
 
 	static Connection con;
 	static Statement stm;
