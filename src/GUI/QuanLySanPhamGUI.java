@@ -445,7 +445,9 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 	}
 
 	public void changeStatusSanPham(int productID){
-		boolean doiThanhCong= SanPhamBUS.xoaSanPham(productID);
+		SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(productID);
+		sanPhamDTO.setStatus(!sanPhamDTO.isStatus());
+		boolean doiThanhCong = SanPhamBUS.doiTrangThaiSanPham(sanPhamDTO);
 		if (doiThanhCong) {
 			JOptionPane.showMessageDialog(null, "Đổi trạng thái sản phẩm "+productID+" thành công");
 		} else {
@@ -477,7 +479,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		if (e.getSource()==btnXoa) {
 			int selectedIndex = tblSanPham.getSelectedRow();
 			int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
-			int op = JOptionPane.showConfirmDialog(null, "Bạn muốn thay đổi xoá sản phẩm "+productID+"?","Xác nhận xoá sản phẩm", JOptionPane.YES_NO_OPTION);
+			int op = JOptionPane.showConfirmDialog(null, "Bạn muốn thay đổi trạng thái sản phẩm "+productID+"?","Xác nhận xoá sản phẩm", JOptionPane.YES_NO_OPTION);
 			if (op == JOptionPane.YES_OPTION) {
 				changeStatusSanPham(productID);
 			}

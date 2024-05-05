@@ -300,4 +300,27 @@ public class SanPhamDAO {
         }
         return ok;
     }
+
+    public static boolean doiTrangThaiSanPham(SanPhamDTO sanPham) {
+        boolean flag = true;
+        try {
+            connectDB.getConnection();
+            String sql = "UPDATE products SET status = ? WHERE product_id = ?";
+            PreparedStatement pstmt = connectDB.prepareStatement(sql);
+
+            pstmt.setBoolean(1, sanPham.isStatus());
+            pstmt.setInt(2, sanPham.getProduct_id());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                flag = false;
+            }
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return flag;
+    }
 }
