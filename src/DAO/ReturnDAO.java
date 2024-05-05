@@ -136,6 +136,16 @@ public class ReturnDAO {
   	        String sql_bill_date = "select * from bills where bill_id = ?";
   	        PreparedStatement ps_bill_date =  connectDB.prepareStatement(sql_bill_date);
   	        
+  	       String sqlCheckReturn = "SELECT * FROM returns WHERE product_serial_id = ?";
+           PreparedStatement ps_checkReturn = connectDB.prepareStatement(sqlCheckReturn);
+           ps_checkReturn.setInt(1, product_serial_id);
+           ResultSet rs_checkReturn = ps_checkReturn.executeQuery();
+           if (rs_checkReturn.next()) {
+              if (!noJOption) {
+                  JOptionPane.showMessageDialog(null, "Sản phẩm này đã được đổi trả trước đó.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+              }
+              return false; // Không cho phép thêm đổi trả mới
+           }
    	        if (rs_bill_id.next()) {  	        	
    	        	int bill_id = rs_bill_id.getInt("bill_id");
    	        	
@@ -152,7 +162,7 @@ public class ReturnDAO {
 
   	          long diffInMillies = Math.abs(returnDate.getTime() - createDate.getTime());
               long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-              
+              System.out.println("date" + date_created);
               // Kiểm tra nếu số ngày giữa date_return và date_created lớn hơn 7 ngày
               if (diffInDays > 7) {
             	  if (!noJOption) {

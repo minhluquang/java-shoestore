@@ -4,15 +4,13 @@ public class Role {
 	private int role_id;
 	private String role_name;
 	private String role_tab_name;
-	private int status;
 	public Role() {
 		
 	}
-	public Role(int role_id, String role_name, String role_tab_name, int status) {
+	public Role(int role_id, String role_name, String role_tab_name) {
 		this.role_id = role_id;
 		this.role_name = role_name;
 		this.role_tab_name = role_tab_name;
-		this.status = status;
 	}
 	public int getRole_id() {
 		return role_id;
@@ -32,12 +30,5 @@ public class Role {
 	public void setRole_tab_name(String role_tab_name) {
 		this.role_tab_name = role_tab_name;
 	}
-	public int getStatus() {
-		return status;
-	}
-	public void setStatus(int status) {
-		this.status = status;
-	}
-	
-	
+		
 }
