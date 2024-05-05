@@ -17,7 +17,7 @@ public class TaiKhoanDAO {
 		ArrayList<TaiKhoan> dstk = new ArrayList<>();
 		
 		try {
-			String sql = "SELECT * FROM accounts WHERE status = 1";
+			String sql = "SELECT * FROM accounts ";
 			ResultSet rs = connectDB.runQuery(sql);
 			while(rs.next()) {
 				TaiKhoan tk = new TaiKhoan();
@@ -158,13 +158,13 @@ public class TaiKhoanDAO {
 		return success;
 	}
 	
-	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position, int status) {
+	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position) {
 		connectDB.getConnection();
 		boolean success = false;
 		
 		try {
-			String sql = "INSERT INTO accounts (username, password, account_status, position, status) "
-					    + "VALUES ('" + username + "', '" + password + "', " + accountStatus + ", '" + position + "', " + status + ")";
+			String sql = "INSERT INTO accounts (username, password, account_status, position) "
+					    + "VALUES ('" + username + "', '" + password + "', " + accountStatus + ", '" + position + "')";
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
 				success = true;
@@ -184,7 +184,6 @@ public class TaiKhoanDAO {
 			String password = tk.getPassword();
 			int accountStatus = tk.getAccountStatus();
 			String position = tk.getPosition();
-			int status = 1;
 			int staffId = tk.getStaffId();
 			
 			if (isUsedUsername(username)) {
@@ -195,7 +194,7 @@ public class TaiKhoanDAO {
 				continue;
 			}
 			
-			success = insertTaiKhoan(username, password, accountStatus, position, status);
+			success = insertTaiKhoan(username, password, accountStatus, position);
 			if (!success) {
 				return success;
 			} else {
@@ -216,8 +215,8 @@ public class TaiKhoanDAO {
 		try {
 			String sql = "SELECT * "
 					+ "FROM accounts "
-					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')"
-					+ " AND status = 1";
+					+ "WHERE (account_id LIKE '%" + keyword + "%' OR  username LIKE '%" + keyword + "%')";
+			
 			if (searchStatus != -1) {
 				sql += " AND account_status = " + searchStatus;
 			}
@@ -299,7 +298,28 @@ public class TaiKhoanDAO {
 		
 		try {
 			String sql = "UPDATE accounts "
-					+ "SET account_status = 0, status = 0 "
+					+ "SET account_status = 0 "
+					+ "WHERE account_id = " + accountId;
+			int i = connectDB.runUpdate(sql);
+			if (i > 0) {
+				success = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		connectDB.closeConnection();
+		return success;
+	}
+	
+	public static boolean unlockTaiKhoanByAccountId(int accountId) {
+		connectDB.getConnection();
+		boolean success = false;
+		
+		try {
+			String sql = "UPDATE accounts "
+					+ "SET account_status = 1"
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {

@@ -4,13 +4,15 @@ public class KhachHang {
 	private int customerId;
 	private String customerName;
 	private String phoneNumber;
+	private int status;
 	
 	public KhachHang() {}
 	
-	public KhachHang(int customerId, String customerName, String phoneNumber) {
+	public KhachHang(int customerId, String customerName, String phoneNumber, int status) {
 		this.customerId = customerId;
 		this.customerName = customerName;
 		this.phoneNumber = phoneNumber;
+		this.status = status;
 	}
 
 	public int getCustomerId() {
@@ -40,5 +42,12 @@ public class KhachHang {
 	public String getCustomerId_Name(){
 		return this.getCustomerId()+" "+this.getCustomerName();
 	}
-	
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 }

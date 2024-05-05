@@ -10,17 +10,29 @@ import DTO.NhanVien;
 import DTO.TaiKhoan;
 
 public class NhanVienDAO {
-	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount) {
+	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount, int status) {
 		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		try {
 			String sql = "SELECT staff_id, fullname, email, phone_number, s.status, s.account_id, username, password, account_status, position  "
 					+ "FROM staffs s "
-					+ "LEFT JOIN accounts a ON a.account_id = s.account_id"
-					+ " WHERE s.status = 1";
-			if (nonAccount) {
-				sql += " AND s.account_id IS NULL";
+					+ "LEFT JOIN accounts a ON a.account_id = s.account_id";
+			
+			if (status != -1 || nonAccount) {
+				sql += " WHERE ";
 			}
+			
+			if (status != -1) {
+				sql += " s.status = " + status;
+			}
+			
+			if (nonAccount) {
+				if (status != -1) {
+					sql += " AND ";
+				}
+				sql += " s.account_id IS NULL";
+			}
+			
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();
@@ -86,14 +98,14 @@ public class NhanVienDAO {
 		return isExist;
 	}
 	
-	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber) {
+	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status) {
 	    connectDB.getConnection();
 	    boolean success = false;
 	    
 	    try {
-	        String sql = "UPDATE staffs "
-	                    + "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "'"
-	                    + " WHERE staff_id = " + id;
+	    	String sql = "UPDATE staffs "
+	                + "SET fullname = '" + fullname + "', email = '" + email + "', phone_number = '" + phoneNumber + "', status = '" + status + "'"
+	                + " WHERE staff_id = " + id;
 	        
 	        int i = connectDB.runUpdate(sql);
 	        if (i > 0) {
@@ -144,15 +156,19 @@ public class NhanVienDAO {
 		return success;
 	}
 	
-	public static ArrayList<NhanVien> searchNhanVien(String keyword) {
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus) {
 		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
 		try {
 			String sql = "SELECT * "
 					+ "FROM staffs "
-					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')"
-					+ " AND status = 1";
+					+ "WHERE (fullname LIKE '%" + keyword + "%' OR email LIKE '%" + keyword + "%' OR phone_number LIKE '%" + keyword + "%')";
+			
+			if (searchStatus != -1) {
+				sql += " AND status = " + searchStatus;
+			}
+			
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();

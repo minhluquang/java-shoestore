@@ -2,6 +2,8 @@ package BUS;
 
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DAO.NhanVienDAO;
 import DAO.TaiKhoanDAO;
 import DTO.TaiKhoan;
@@ -34,8 +36,8 @@ public class TaiKhoanBUS {
 		return success;
 	}
 	
-	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position, int status) {
-		boolean success = TaiKhoanDAO.insertTaiKhoan(username, password, accountStatus, position, status);
+	public static boolean insertTaiKhoan(String username, String password, int accountStatus, String position) {
+		boolean success = TaiKhoanDAO.insertTaiKhoan(username, password, accountStatus, position);
 		return success;
 	}
 	
@@ -50,6 +52,10 @@ public class TaiKhoanBUS {
 	
 	public static boolean deleteTaiKhoanById(int accountId) {
 		return TaiKhoanDAO.deleteTaiKhoanById(accountId);
+	}
+	
+	public static boolean unlockTaiKhoanByAccountId(int accountId) {
+		return TaiKhoanDAO.unlockTaiKhoanByAccountId(accountId);
 	}
 	
 	public static boolean isUsedUsername(String username) {

@@ -472,7 +472,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     }
 
     public void themKhachHang() {
-        khachHang = new KhachHang(0, "", "");
+        khachHang = new KhachHang(0, "", "", 1);
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

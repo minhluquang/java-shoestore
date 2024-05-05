@@ -73,7 +73,8 @@ public class NhanVienGUI extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     private DefaultTableModel dtmNhanVien;
-    private JComboBox cmbTrangThai;
+    private JComboBox<String> comboBox;
+    private int searchStatus = -1;
     
     private static ChiTietNhanVienGUI chiTietNhanVienGUI;
     private static ChiTietQuyenGUI chiTietQuyenGUI;
@@ -97,11 +98,6 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		pnlTop.add(pnlSearch, BorderLayout.CENTER);
 		pnlSearch.setLayout(new BorderLayout(5, 10));
 		
-		JPanel pnlLocNangCao = new JPanel();
-		pnlLocNangCao.setBackground(new Color(255, 255, 255));
-		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
-		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
-		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
@@ -112,7 +108,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		txtTimKiem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				xuLyTimKiem(txtTimKiem.getText());
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
 			}
 		});
 		// ========== End: Xử lý search ==========
@@ -133,7 +129,8 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		btnTim.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtTimKiem.setText("");
-				xuLyTimKiem("");
+				comboBox.setSelectedIndex(0);
+				xuLyTimKiem("", -1);
 			}
 		});
 		// ========== End: Xử lý làm mới search ==========
@@ -204,6 +201,33 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		btnXuatExcel.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnXuatExcel);
 		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		pnlSearch.add(panel, BorderLayout.WEST);
+		panel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Tất cả", "Hoạt động", "Ngưng hoạt động"}));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox.setFocusable(false);
+		comboBox.setBorder(null);
+		panel.add(comboBox);
+		
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				searchStatus = comboBox.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
+			}
+		});
+		
 		JPanel panel_7 = new JPanel();
 		panel_7.setBackground(new Color(255, 255, 255));
 		pnlTop.add(panel_7, BorderLayout.NORTH);
@@ -237,7 +261,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		tblNhanVien.setIntercellSpacing(new Dimension(0, 0));
 		tblNhanVien.setFocusable(false);
 		
-		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email"}, 0);
+		dtmNhanVien = new DefaultTableModel(new Object[]{"Mã NV", "Họ và tên", "Số điện thoại", "Email", "Trạng thái"}, 0);
 		tblNhanVien.setModel(dtmNhanVien);
 		tblNhanVien.setDefaultEditor(Object.class, null);
 		tblNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -331,9 +355,14 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	// Load danh sách nhân viên
 	public void loadDanhSachNhanVien() {		
 		dtmNhanVien.setRowCount(0);
-		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false, -1);
 		for (NhanVien nv : dsnv) {
-			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
+			String status = "Hoạt động";
+			if (nv.getStaffStatus() == 0) {
+				status = "Ngưng hoạt động";
+			}
+			
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
 			dtmNhanVien.addRow(row);
 		}
 		
@@ -351,12 +380,17 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	}
 	
 	// Xử lý tìm kiếm
-	public void xuLyTimKiem(String keyword) {
+	public void xuLyTimKiem(String keyword, int searchStatus) {
 		dtmNhanVien.setRowCount(0);
-		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, searchStatus);
 		
 		for (NhanVien nv : dsnv) {
-			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
+			String status = "Hoạt động";
+			if (nv.getStaff_status() == 0) {
+				status = "Ngưng hoạt động";
+			}
+
+			Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail(), status};
 			dtmNhanVien.addRow(row);
 		}
 	}
@@ -445,7 +479,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	
 	
 	public void exportExcel() throws IOException {
-		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false, -1);
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream("excel/dsnv.xlsx");
 		    XSSFWorkbook wb = new XSSFWorkbook();
@@ -457,6 +491,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		    headerRow.createCell(1).setCellValue("fullname");
 		    headerRow.createCell(2).setCellValue("email");
 		    headerRow.createCell(3).setCellValue("phone_number");
+		    headerRow.createCell(4).setCellValue("status");
 		    
 		    // Ghi thông tin nhân viên
 		    int rowNum = 1;
@@ -466,6 +501,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		    	row.createCell(1).setCellValue(nv.getFull_name());
 		    	row.createCell(2).setCellValue(nv.getEmail());
 		    	row.createCell(3).setCellValue(nv.getPhone_number());
+		    	row.createCell(4).setCellValue(nv.getStaff_status());
 		    }
 		    
 		    wb.write(fileOutputStream);

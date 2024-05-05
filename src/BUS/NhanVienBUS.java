@@ -8,8 +8,8 @@ import DTO.NhanVien;
 public class NhanVienBUS {
 	private static ArrayList<NhanVien> dsnv;
 	
-	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount) {
-		dsnv = NhanVienDAO.getDanhSachNhanVien(nonAccount);
+	public static ArrayList<NhanVien> getDanhSachNhanVien(boolean nonAccount, int status) {
+		dsnv = NhanVienDAO.getDanhSachNhanVien(nonAccount, status);
 		return dsnv;
 	}
 	
@@ -23,8 +23,8 @@ public class NhanVienBUS {
 		return isExist;
 	}
 	
-	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber) {
-		boolean success = NhanVienDAO.updateNhanVien(id, fullname, email, phoneNumber);
+	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status) {
+		boolean success = NhanVienDAO.updateNhanVien(id, fullname, email, phoneNumber, status);
 		return success;
 	}
 	
@@ -38,8 +38,8 @@ public class NhanVienBUS {
 		return success;
 	}
 	
-	public static ArrayList<NhanVien> searchNhanVien(String keyword) {
-		dsnv = NhanVienDAO.searchNhanVien(keyword);
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus) {
+		dsnv = NhanVienDAO.searchNhanVien(keyword, searchStatus);
 		return dsnv;
 	}
 	

@@ -281,7 +281,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 		public void loadDanhSachNhanVien() {
 			System.out.println();
 			dtm.setRowCount(0);
-			ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(true);
+			ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(true, 1);
 			for (NhanVien nv : dsnv) {
 				Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
 				dtm.addRow(row);
@@ -292,7 +292,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 		// Xử lý tìm kiếm
 		public void xuLyTimKiem(String keyword) {
 			dtm.setRowCount(0);
-			ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword);
+			ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, 1);
 			
 			for (NhanVien nv : dsnv) {
 				Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};
@@ -366,9 +366,8 @@ public class ChonTaiKhoanGUI extends JFrame {
 			
 			// Nếu không có lỗi gì hết thì lưu
 			int staffId = Integer.parseInt(txtMaNhanVien.getText().trim());
-			int status = 1;
 			
-			boolean isSuccessCreateNewAccount = TaiKhoanBUS.insertTaiKhoan(username, "shopgiay88", accountStatus, position, status);
+			boolean isSuccessCreateNewAccount = TaiKhoanBUS.insertTaiKhoan(username, "shopgiay88", accountStatus, position);
 			boolean isSuccessUpdateStaff = NhanVienBUS.updateAccountIdForStaff(staffId, accountId, true);
 			
 			if (isSuccessCreateNewAccount && isSuccessUpdateStaff) {

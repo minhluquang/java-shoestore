@@ -12,13 +12,14 @@ public class KhachHangDAO {
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 
 		try {
-			String sql = "SELECT * FROM customers where status = 1";
+			String sql = "SELECT * FROM customers";
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				KhachHang kh = new KhachHang();
 				kh.setCustomerId(rs.getInt("customer_id"));
 				kh.setCustomerName(rs.getString("customer_name"));
 				kh.setPhoneNumber(rs.getString("phone_number"));
+				kh.setStatus(rs.getInt("status"));
 				dskh.add(kh);
 			}
 		} catch (Exception e) {
@@ -67,18 +68,19 @@ public class KhachHangDAO {
 		return isExist;
 	}
 
-	public static boolean updateKhachHang(int customerId, String customerName, String phoneNumber) {
+	public static boolean updateKhachHang(int customerId, String customerName, String phoneNumber, int status) {
 		connectDB.getConnection();
 		boolean success = false;
 
 		try {
-			String sql = "UPDATE customers " + "SET customer_name = ?, phone_number = ?" + "WHERE customer_id = ?";
+			String sql = "UPDATE customers " + "SET customer_name = ?, phone_number = ?, status = ? " + "WHERE customer_id = ?";
 			PreparedStatement prest = connectDB.prepareStatement(sql);
 
 			prest.setString(1, customerName);
 			prest.setString(2, phoneNumber);
-			prest.setInt(3, customerId);
-
+			prest.setInt(3, status);
+			prest.setInt(4, customerId);
+			
 			int i = prest.executeUpdate();
 
 			if (i > 0) {
@@ -152,13 +154,18 @@ public class KhachHangDAO {
 		return success;
 	}
 
-	public static ArrayList<KhachHang> searchKhachHang(String keyword) {
+	public static ArrayList<KhachHang> searchKhachHang(String keyword, int searchStatus) {
 		connectDB.getConnection();
 		ArrayList<KhachHang> dskh = new ArrayList<>();
 
 		try {
 			String sql = "SELECT * FROM customers "
-					+ "WHERE (customer_id LIKE ? OR customer_name LIKE ? OR phone_number LIKE ?)" + " AND status = 1";
+					+ "WHERE (customer_id LIKE ? OR customer_name LIKE ? OR phone_number LIKE ?)";
+			
+			if (searchStatus != -1) {
+				sql += " AND status = " + searchStatus;
+			}
+			
 			PreparedStatement prest = connectDB.prepareStatement(sql);
 
 			String searchKeyword = "%" + keyword + "%";
@@ -173,6 +180,7 @@ public class KhachHangDAO {
 				kh.setCustomerId(rs.getInt("customer_id"));
 				kh.setCustomerName(rs.getString("customer_name"));
 				kh.setPhoneNumber(rs.getString("phone_number"));
+				kh.setStatus(rs.getInt("status"));
 				dskh.add(kh);
 			}
 

@@ -43,7 +43,8 @@ public class ChiTietKhachHangGUI extends JFrame {
 	private JTextField txtSoDienThoai;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtMaKhachHang;
-
+	private JComboBox comboBox;
+	
 	private KhachHang khachhang;
 	private KhachHangGUI parentGUI;
 
@@ -66,6 +67,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @wbp.parser.constructor
 	 */
 	public ChiTietKhachHangGUI(KhachHang kh, KhachHangGUI parentGUI) {
 		this.khachhang = kh;
@@ -163,6 +165,17 @@ public class ChiTietKhachHangGUI extends JFrame {
 		txtSoDienThoai.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtSoDienThoai.setColumns(10);
 		panel_5.add(txtSoDienThoai);
+		
+		JLabel lblNewLabel_6_3_1 = new JLabel("Trạng thái");
+		lblNewLabel_6_3_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel_5.add(lblNewLabel_6_3_1);
+		
+		comboBox = new JComboBox();
+		comboBox.setBorder(null);
+		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Hoạt động", "Ngưng hoạt động"}));
+		panel_5.add(comboBox);
 
 		JLabel lblNewLabel_7_1_1 = new JLabel("");
 		panel_5.add(lblNewLabel_7_1_1);
@@ -393,7 +406,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("");
 		panel_1.add(lblNewLabel);
-		xuLyTuDongGanGiaTri(kh);
+		xuLyTuDongGanGiaTri();
 	}
 
 	public void xuLyTuDongGanGiaTri() {
@@ -404,12 +417,24 @@ public class ChiTietKhachHangGUI extends JFrame {
 		}
 		txtHoTen.setText(khachhang.getCustomerName());
 		txtSoDienThoai.setText(khachhang.getPhoneNumber());
+		
+		if (khachhang.getStatus() == 1) {
+			comboBox.setSelectedIndex(0);
+		} else {
+			comboBox.setSelectedIndex(1);
+		}
 	}
 
 	public void xuLyLuuThongTinNhanVien() {
 		int customerId = Integer.parseInt(txtMaKhachHang.getText());
 		String customerName = txtHoTen.getText().trim();
 		String phoneNumber = txtSoDienThoai.getText().trim();
+		int status;
+		if (comboBox.getSelectedItem().equals("Hoạt động")) {
+			status = 1;
+		} else {
+			status = 0;
+		}
 
 		if (customerName.isEmpty() || phoneNumber.isEmpty()) {
 			String message = "Vui lòng nhập đầy đủ các trường:";
@@ -443,7 +468,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 						"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				if (KhachHangBUS.isExistKhachHang(customerId)) {
-					if (KhachHangBUS.updateKhachHang(customerId, customerName, phoneNumber)) {
+					if (KhachHangBUS.updateKhachHang(customerId, customerName, phoneNumber, status)) {
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khách hàng",
 								"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						parentGUI.loadDanhSachKhachHang();
@@ -453,7 +478,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 								"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 					}
 				} else {
-					int status = 1;
+					status = 1;
 					if (KhachHangBUS.insertKhachHang(customerId, customerName, phoneNumber, status)) {
 						JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khách hàng",
 								"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -468,11 +493,11 @@ public class ChiTietKhachHangGUI extends JFrame {
 		}
 	}
 
-	public void xuLyTuDongGanGiaTri(KhachHang kh) {
-		txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));
-		txtHoTen.setText(kh.getCustomerName());
-		txtSoDienThoai.setText(kh.getPhoneNumber());
-	}
+//	public void xuLyTuDongGanGiaTri(KhachHang kh) {
+//		txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));
+//		txtHoTen.setText(kh.getCustomerName());
+//		txtSoDienThoai.setText(kh.getPhoneNumber());
+//	}
 
 	public void xuLyLuuThongTinNhanVien(KhachHang kh,ChiTietHoaDonGUI chiTietHoaDonGUI) {
 		int customerId = KhachHangBUS.generateIdKhachHang();

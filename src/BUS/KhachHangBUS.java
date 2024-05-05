@@ -13,8 +13,8 @@ public class KhachHangBUS {
 		return dskh;
 	}
 	
-	public static ArrayList<KhachHang> searchKhachHang(String keyword) {
-		dskh = KhachHangDAO.searchKhachHang(keyword);
+	public static ArrayList<KhachHang> searchKhachHang(String keyword, int searchStatus) {
+		dskh = KhachHangDAO.searchKhachHang(keyword, searchStatus);
 		return dskh;
 	}
 	
@@ -22,8 +22,8 @@ public class KhachHangBUS {
 		return KhachHangDAO.generateIdKhachHang();
 	}
 	
-	public static boolean updateKhachHang(int customerId, String customerName, String phoneNumber) {
-		return KhachHangDAO.updateKhachHang(customerId, customerName, phoneNumber);
+	public static boolean updateKhachHang(int customerId, String customerName, String phoneNumber, int status) {
+		return KhachHangDAO.updateKhachHang(customerId, customerName, phoneNumber, status);
 	}
 	
 	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber, int status) {

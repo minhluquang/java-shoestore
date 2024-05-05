@@ -68,12 +68,12 @@ public class KhachHangGUI extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     private DefaultTableModel dtmKhachHang;
-    private JComboBox cmbTrangThai;
+    private JComboBox<String> comboBox;
     
     private static ChiTietKhachHangGUI chiTietKhachHangGUI;
     
     private KhachHang kh = new KhachHang();
-    
+    private int searchStatus = -1;
 	/**
 	 * Create the panel.
 	 */
@@ -91,10 +91,8 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		pnlTop.add(pnlSearch, BorderLayout.CENTER);
 		pnlSearch.setLayout(new BorderLayout(5, 10));
 		
-		JPanel pnlLocNangCao = new JPanel();
-		pnlLocNangCao.setBackground(new Color(255, 255, 255));
-		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
-		pnlLocNangCao.setLayout(new BorderLayout(2, 0));
+		
+		
 		
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -106,7 +104,7 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		txtTimKiem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				xuLyTimKiem(txtTimKiem.getText());
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
 			}
 		});
 		// ========== End: Xử lý search ==========
@@ -126,7 +124,8 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		btnTim.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtTimKiem.setText("");
-				xuLyTimKiem("");
+				comboBox.setSelectedIndex(0);
+				xuLyTimKiem("", -1);
 			}
 		});
 		// ========== End: Xử lý làm mới search ==========
@@ -188,6 +187,34 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		btnXuatExcel.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnXuatExcel);
 		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		pnlSearch.add(panel, BorderLayout.WEST);
+		panel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		comboBox = new JComboBox();
+		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox.setFocusable(false);
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Tất cả", "Hoạt động", "Ngưng hoạt động"}));
+		comboBox.setBorder(null);
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel.add(comboBox);
+		
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				searchStatus = comboBox.getSelectedIndex();
+				if (searchStatus == 1) {
+					searchStatus = 1;
+				} else if (searchStatus == 2) {
+					searchStatus = 0;
+				} else {
+					searchStatus = -1;
+				}
+				
+				xuLyTimKiem(txtTimKiem.getText(), searchStatus);
+			}
+		});
+		
 		JPanel panel_7 = new JPanel();
 		panel_7.setBackground(new Color(255, 255, 255));
 		pnlTop.add(panel_7, BorderLayout.NORTH);
@@ -221,7 +248,7 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		tblKhachHang.setIntercellSpacing(new Dimension(0, 0));
 		tblKhachHang.setFocusable(false);
 		
-		dtmKhachHang = new DefaultTableModel(new Object[]{"Mã khách hàng", "Họ và tên", "Số điện thoại"}, 0);
+		dtmKhachHang = new DefaultTableModel(new Object[]{"Mã khách hàng", "Họ và tên", "Số điện thoại", "Trạng thái"}, 0);
 		tblKhachHang.setModel(dtmKhachHang);
 		tblKhachHang.setDefaultEditor(Object.class, null);
 		tblKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -308,7 +335,12 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		ArrayList<KhachHang> dskh = KhachHangBUS.getDanhSachKhachHang();
 		
 		for (KhachHang kh : dskh) {
-			Object[] row = {kh.getCustomerId(), kh.getCustomerName(), kh.getPhoneNumber()};
+			String status = "Hoạt động";
+			if (kh.getStatus() == 0) {
+				status = "Ngưng hoạt động";
+			}
+			
+			Object[] row = {kh.getCustomerId(), kh.getCustomerName(), kh.getPhoneNumber(), status};
 			dtmKhachHang.addRow(row);
 		}
 		
@@ -325,12 +357,17 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 	}
 	
 	// Xử lý tìm kiếm
-	public void xuLyTimKiem(String keyword) {
+	public void xuLyTimKiem(String keyword, int searchStatus) {
 		dtmKhachHang.setRowCount(0);
-		ArrayList<KhachHang> dskh = KhachHangBUS.searchKhachHang(keyword);
+		ArrayList<KhachHang> dskh = KhachHangBUS.searchKhachHang(keyword, searchStatus);
 		
 		for (KhachHang kh : dskh) {
-			Object[] row = {kh.getCustomerId(), kh.getCustomerName(), kh.getPhoneNumber()};
+			String status = "Hoạt động";
+			if (kh.getStatus() == 0) {
+				status = "Ngưng hoạt động";
+			}
+
+			Object[] row = {kh.getCustomerId(), kh.getCustomerName(), kh.getPhoneNumber(), status};
 			dtmKhachHang.addRow(row);
 		}
 	}

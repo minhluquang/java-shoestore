@@ -426,6 +426,7 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 				// Cập nhật mật khẩu
 				if (TaiKhoanBUS.updatePasswordByAccountId(accountId, matKhauMoi)) {
 					JOptionPane.showMessageDialog(null, "Hệ thống đổi mật khẩu thành công", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					dispose();
 				} else {
 					JOptionPane.showMessageDialog(null, "Hệ thống đổi mật khẩu thất bại, vui lòng thử lại sau!", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 				}
