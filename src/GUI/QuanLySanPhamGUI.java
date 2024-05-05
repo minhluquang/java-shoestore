@@ -110,7 +110,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlSanPham = new JPanel();
 		pnlHang = new QLHang();
 		pnlLoai = new QLLoai();
-		tabbedPane.addTab("Hãng", pnlSanPham);
+		tabbedPane.addTab("Sản phẩm", pnlSanPham);
 		tabbedPane.addTab("Hãng", pnlHang);
 		tabbedPane.addTab("Loại", pnlLoai);
 		tabbedPane.setFont(new Font("Tahoma", Font.BOLD, 14));
