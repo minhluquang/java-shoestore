@@ -325,22 +325,36 @@ public class ChiTietNhanVienGUI extends JFrame {
 				return;
 			}
 			
-			if (NhanVienBUS.isExistPhoneNumber(phoneNumber)) {
-				JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng số điện thoại này", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				return;
+			boolean isPassEmail = false;
+			boolean isPassPhoneNumber = false;
+			
+			if (NhanVienBUS.isExistEmail(email, staffId)) { 
+				isPassEmail = true;
+			} 
+			
+			if (NhanVienBUS.isExistPhoneNumber(phoneNumber, staffId)) {
+				isPassPhoneNumber = true;
 			}
 			
-			if (NhanVienBUS.isExistEmail(email)) {
-				JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng email này", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				return;
+			if (!isPassEmail) {
+				if (NhanVienBUS.isExistEmail(email)) {
+					JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng email này", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			
-				
+			if (!isPassPhoneNumber) {
+				if (NhanVienBUS.isExistPhoneNumber(phoneNumber)) {
+					JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng số điện thoại này", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			
 			// Nếu tồn tại staff_id (tức: có nhân viên thì update)
 			if (NhanVienBUS.isExistNhanVien(staffId)) {
 				int accountId = NhanVienBUS.getAccountIdByStaffId(staffId);
 				 if (NhanVienBUS.updateNhanVien(staffId, fullname, email, phoneNumber, status)) {
-					 if (status == 0 && TaiKhoanBUS.deleteTaiKhoanById(accountId)) {
+					 if ((status == 0 && TaiKhoanBUS.deleteTaiKhoanById(accountId)) || accountId == 0) {
 						 JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin nhân viên", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						 parentGUI.loadDanhSachNhanVien();
 						 dispose();						 

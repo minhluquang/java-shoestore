@@ -98,6 +98,50 @@ public class NhanVienDAO {
 		return isExist;
 	}
 	
+	public static boolean isExistPhoneNumber(String phoneNumber, int staffId) {
+		connectDB.getConnection();
+		boolean isExist = false;
+
+		try {
+			String sql = "SELECT * " + "FROM staffs " + "WHERE phone_number = '" + phoneNumber + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+
+			if (rs.next()) {
+				String currentStaffId = rs.getString("staff_id");
+				if (currentStaffId.equals(staffId + "")) {
+					isExist = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		connectDB.closeConnection();
+		return isExist;
+	}
+	
+	public static boolean isExistEmail(String email, int staffId) {
+		connectDB.getConnection();
+		boolean isExist = false;
+
+		try {
+			String sql = "SELECT * FROM staffs WHERE email = '" + email + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				String currentStaffId = rs.getString("staff_id");
+				if (currentStaffId.equals(staffId + "")) {
+					isExist = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		connectDB.closeConnection();
+		return isExist;
+	}
+	
+	
 	public static boolean updateNhanVien(int id, String fullname, String email, String phoneNumber, int status) {
 	    connectDB.getConnection();
 	    boolean success = false;

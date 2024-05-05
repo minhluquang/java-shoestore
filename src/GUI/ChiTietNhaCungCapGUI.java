@@ -166,7 +166,7 @@ public class ChiTietNhaCungCapGUI extends JFrame implements ActionListener {
 		panel_1.setBackground(new Color(255, 255, 255));
 		panel_5.add(panel_1);
 
-		btnNewButton = new JButton("Thêm");
+		btnNewButton = new JButton();
 		btnNewButton.setFocusable(false);
 		btnNewButton.setOpaque(true);
 		btnNewButton.setBackground(new Color(255, 255, 255));
@@ -207,7 +207,10 @@ public class ChiTietNhaCungCapGUI extends JFrame implements ActionListener {
 			txtTenNcc.setText(oldName);
 			txtDiaChi.setText(oldAddress);
 		}
-
+		if (this.ncc.getSupplier_id() == 0) {
+			btnNewButton.setText("Thêm");
+		} else
+			btnNewButton.setText("Sửa");
 		btnNewButton.addActionListener(this);
 	}
 
@@ -229,7 +232,7 @@ public class ChiTietNhaCungCapGUI extends JFrame implements ActionListener {
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Thêm nhà cung cấp thành công !", "Thông báo",
-							JOptionPane.OK_CANCEL_OPTION);
+							JOptionPane.CLOSED_OPTION);
 					parent.loadDanhSachNhaCungCap();
 					txtTenNcc.setText("");
 					txtDiaChi.setText("");
@@ -244,7 +247,7 @@ public class ChiTietNhaCungCapGUI extends JFrame implements ActionListener {
 							JOptionPane.ERROR_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Sửa nhà cung cấp thành công !", "Thông báo",
-							JOptionPane.OK_CANCEL_OPTION);
+							JOptionPane.CLOSED_OPTION);
 					parent.loadDanhSachNhaCungCap();
 				}
 			}

@@ -353,6 +353,12 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 			kh.setCustomerId((int) tblKhachHang.getValueAt(row, 0));
 			kh.setCustomerName((String) tblKhachHang.getValueAt(row, 1));
 			kh.setPhoneNumber((String) tblKhachHang.getValueAt(row, 2));
+			
+			if (tblKhachHang.getValueAt(row, 3).equals("Hoạt động")) {
+				kh.setStatus(1);
+			} else {
+				kh.setStatus(0);
+			}
 		}
 	}
 	
