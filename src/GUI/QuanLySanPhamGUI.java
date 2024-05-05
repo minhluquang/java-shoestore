@@ -408,20 +408,24 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 	public void suaSanPham() {
 		int selectedIndex = tblSanPham.getSelectedRow();
-		int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
-		SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(productID);
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO, "change", quanLySanPhamGUI);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+		if (selectedIndex != -1) {
+			int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
+			SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(productID);
+			EventQueue.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+						ChiTietSanPhamGUI frame = new ChiTietSanPhamGUI(sanPhamDTO, "change", quanLySanPhamGUI);
+						frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
+		} else {
+			JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để sửa");
+		}
 	}
 
 	public void themSanPham() {
@@ -481,7 +485,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		}
 		if (e.getSource() == btnXoa) {
 			int selectedIndex = tblSanPham.getSelectedRow();
-			if (selectedIndex > 0) {
+			if (selectedIndex > -1) {
 				int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
 				int op = JOptionPane.showConfirmDialog(null, "Bạn muốn thay đổi trạng thái sản phẩm " + productID + "?",
 						"Xác nhận", JOptionPane.YES_NO_OPTION);

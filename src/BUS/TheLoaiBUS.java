@@ -31,8 +31,8 @@ public class TheLoaiBUS {
     public static boolean isExistNameTheLoai(String categoryName){
         return TheLoaiDAO.isExistNameTheLoai(categoryName);
     }
-    public static ArrayList<TheLoaiDTO> searchLoai(String key){
-        return TheLoaiDAO.searchLoai(key);
+    public static ArrayList<TheLoaiDTO> searchLoai(String key, int trangThai){
+        return TheLoaiDAO.searchLoai(key, trangThai);
     }   
 
     public static int generateIdCate(){

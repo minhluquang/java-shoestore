@@ -9,6 +9,8 @@ import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -58,6 +60,8 @@ public class QLLoai extends JPanel implements ActionListener {
 	private JButton btnNhapExcel;
 	private JButton btnXuatExcel;
 	private DefaultTableModel dtmLoai;
+	private Map<String, Integer> mapTrangThai;
+    private JComboBox<String> cbbTrangthai;
 
 	private static ChiTietLoai chiTietLoai;
 
@@ -80,6 +84,29 @@ public class QLLoai extends JPanel implements ActionListener {
 		pnlTop.add(pnlSearch, BorderLayout.CENTER);
 		pnlSearch.setLayout(new BorderLayout(5, 10));
 
+		JPanel pnlLocNangCao = new JPanel();
+		pnlLocNangCao.setBackground(new Color(255, 255, 255));
+		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
+		pnlLocNangCao.setLayout(new GridLayout(1, 0, 2, 0));
+
+		JPanel pnlTrangThai = new JPanel();
+		pnlLocNangCao.add(pnlTrangThai);
+		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
+
+		cbbTrangthai = new JComboBox<>();
+		cbbTrangthai.setFocusable(false);
+		cbbTrangthai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cbbTrangthai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlTrangThai.add(cbbTrangthai);
+		mapTrangThai = new HashMap<>();
+		mapTrangThai.put("Trạng thái", -1);
+		mapTrangThai.put("Hoạt động", 1);
+		mapTrangThai.put("Ngừng hoạt động", 0);
+		for (String key : mapTrangThai.keySet()) {
+			cbbTrangthai.addItem(key);
+		}
+		cbbTrangthai.setSelectedItem("Trạng thái");
+
 		JPanel panel_1 = new JPanel();
 		pnlSearch.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
@@ -89,7 +116,7 @@ public class QLLoai extends JPanel implements ActionListener {
 		txtTimKiem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				xuLyTimKiem(txtTimKiem.getText());
+				xuLyTimKiem();
 			}
 		});
 		txtTimKiem.setMinimumSize(new Dimension(250, 19));
@@ -113,7 +140,7 @@ public class QLLoai extends JPanel implements ActionListener {
 		btnTim.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtTimKiem.setText("");
-				xuLyTimKiem("");
+				xuLyTimKiem();
 			}
 		});
 		// ========== End: Xử lý làm mới search ==========
@@ -222,6 +249,7 @@ public class QLLoai extends JPanel implements ActionListener {
 		// ========== TABLE DANH SÁCH NHÂN VIÊN ==========
 
 		// Sự kiện lắng nghe click
+		cbbTrangthai.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnDoiTrangThai.addActionListener(this);
@@ -245,9 +273,11 @@ public class QLLoai extends JPanel implements ActionListener {
 	}
 
 	// Xử lý tìm kiếm
-	public void xuLyTimKiem(String keyword) {
+	public void xuLyTimKiem() {
+		String keyword = txtTimKiem.getText();
+		int trangThai = mapTrangThai.get(cbbTrangthai.getSelectedItem()).intValue();
 		dtmLoai.setRowCount(0);
-		ArrayList<TheLoaiDTO> dsl = TheLoaiBUS.searchLoai(keyword);
+		ArrayList<TheLoaiDTO> dsl = TheLoaiBUS.searchLoai(keyword, trangThai);
 		for (TheLoaiDTO tl : dsl) {
 			String status = "Hoạt động";
 			if (!tl.isStatus()) {
@@ -321,6 +351,9 @@ public class QLLoai extends JPanel implements ActionListener {
 			hienThiGiaoDienSua();
 		} else if (e.getSource() == btnDoiTrangThai) {
 			doiTrangThai();
+		}
+		else if (e.getSource() == cbbTrangthai) {
+			xuLyTimKiem();
 		} else if (e.getSource() == btnNhapExcel) {
 			// Xử lý khi button "Nhập excel" được nhấn
 		} else if (e.getSource() == btnXuatExcel) {

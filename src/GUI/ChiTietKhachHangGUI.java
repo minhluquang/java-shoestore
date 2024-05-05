@@ -406,7 +406,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("");
 		panel_1.add(lblNewLabel);
-		xuLyTuDongGanGiaTri();
+		xuLyTuDongGanGiaTri(kh);
 	}
 
 	public void xuLyTuDongGanGiaTri() {
@@ -493,11 +493,11 @@ public class ChiTietKhachHangGUI extends JFrame {
 		}
 	}
 
-//	public void xuLyTuDongGanGiaTri(KhachHang kh) {
-//		txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));
-//		txtHoTen.setText(kh.getCustomerName());
-//		txtSoDienThoai.setText(kh.getPhoneNumber());
-//	}
+	public void xuLyTuDongGanGiaTri(KhachHang kh) {
+		txtMaKhachHang.setText(Integer.toString(KhachHangBUS.generateIdKhachHang()));
+		txtHoTen.setText(kh.getCustomerName());
+		txtSoDienThoai.setText(kh.getPhoneNumber());
+	}
 
 	public void xuLyLuuThongTinNhanVien(KhachHang kh,ChiTietHoaDonGUI chiTietHoaDonGUI) {
 		int customerId = KhachHangBUS.generateIdKhachHang();

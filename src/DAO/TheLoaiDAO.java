@@ -202,12 +202,15 @@ public class TheLoaiDAO {
         return success;
 	}
 
-    public static ArrayList<TheLoaiDTO> searchLoai(String key) { 
+    public static ArrayList<TheLoaiDTO> searchLoai(String key, int trangThai) { 
         key=key.toLowerCase();
         ArrayList<TheLoaiDTO> theLoais = new ArrayList<>();
         try {
             connectDB.getConnection();
             String sql = "SELECT * FROM categories WHERE LOWER(category_name) LIKE '%"+key+"%'";
+            if (trangThai!=-1) {
+                sql+=" AND status="+trangThai;
+            }
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int category_id = rs.getInt("category_id");

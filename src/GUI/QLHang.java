@@ -11,6 +11,8 @@ import javax.swing.JComboBox;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -63,6 +65,9 @@ public class QLHang extends JPanel implements ActionListener {
     private JButton btnNhapExcel;
     private JButton btnXuatExcel;
     private JButton btnDoiTrangThai;
+    private Map<String, Integer> mapTrangThai;
+    private JComboBox<String> cbbTrangthai;
+
 
     private DefaultTableModel dtmHang;
 
@@ -87,6 +92,29 @@ public class QLHang extends JPanel implements ActionListener {
         pnlSearch.setBackground(new Color(255, 255, 255));
         pnlTop.add(pnlSearch, BorderLayout.CENTER);
         pnlSearch.setLayout(new BorderLayout(5, 10));
+
+        JPanel pnlLocNangCao = new JPanel();
+		pnlLocNangCao.setBackground(new Color(255, 255, 255));
+		pnlSearch.add(pnlLocNangCao, BorderLayout.WEST);
+		pnlLocNangCao.setLayout(new GridLayout(1, 0, 2, 0));
+
+        JPanel pnlTrangThai = new JPanel();
+		pnlLocNangCao.add(pnlTrangThai);
+		pnlTrangThai.setLayout(new GridLayout(0, 1, 0, 0));
+
+        cbbTrangthai = new JComboBox<>();
+		cbbTrangthai.setFocusable(false);
+		cbbTrangthai.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cbbTrangthai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlTrangThai.add(cbbTrangthai);
+		mapTrangThai = new HashMap<>();
+		mapTrangThai.put("Trạng thái", -1);
+		mapTrangThai.put("Hoạt động", 1);
+		mapTrangThai.put("Ngừng hoạt động", 0);
+		for (String key : mapTrangThai.keySet()) {
+			cbbTrangthai.addItem(key);
+		}
+		cbbTrangthai.setSelectedItem("Trạng thái");
 
         JPanel panel_1 = new JPanel();
         pnlSearch.add(panel_1, BorderLayout.CENTER);
@@ -227,6 +255,7 @@ public class QLHang extends JPanel implements ActionListener {
         // ========== TABLE DANH SÁCH NHÂN VIÊN ==========
 
         // Sự kiện lắng nghe click
+		cbbTrangthai.addActionListener(this);
         btnTim.addActionListener(this);
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
@@ -259,8 +288,9 @@ public class QLHang extends JPanel implements ActionListener {
 
     public void xuLyTimKiem() {
         String keyword = txtTimKiem.getText();
+		int trangThai = mapTrangThai.get(cbbTrangthai.getSelectedItem()).intValue();
         dtmHang.setRowCount(0);
-        dsHang = HangBUS.searchHang(keyword);
+        dsHang = HangBUS.searchHang(keyword, trangThai);
         loadDanhSachHang();
     }
 
@@ -340,7 +370,9 @@ public class QLHang extends JPanel implements ActionListener {
             xuLyTimKiem();
         } else if (e.getSource() == btnDoiTrangThai) {
             doiTrangThai();
-        } else if (e.getSource() == btnNhapExcel) {
+        }else if (e.getSource() == cbbTrangthai) {
+			xuLyTimKiem();
+		} else if (e.getSource() == btnNhapExcel) {
             // Xử lý khi button "Nhập excel" được nhấn
         } else if (e.getSource() == btnXuatExcel) {
             // Xử lý khi button "Xuất excel" được nhấn

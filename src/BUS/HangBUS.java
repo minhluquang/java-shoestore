@@ -30,8 +30,8 @@ public class HangBUS {
     public static boolean isExistTenHang(String tenHang){
         return HangDAO.isExistTenHang(tenHang);
     }
-    public static ArrayList<HangDTO> searchHang(String key){
-        return HangDAO.searchHang(key);
+    public static ArrayList<HangDTO> searchHang(String key, int trangThai){
+        return HangDAO.searchHang(key, trangThai);
     }
     public static boolean isExistIdHang(int brandId){
         return HangDAO.isExistIdHang(brandId);

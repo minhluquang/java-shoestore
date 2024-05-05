@@ -201,12 +201,15 @@ public class HangDAO {
         return success;
 	}
 
-    public static ArrayList<HangDTO> searchHang(String key) { 
+    public static ArrayList<HangDTO> searchHang(String key, int trangThai) { 
         key=key.toLowerCase();
         ArrayList<HangDTO> brands = new ArrayList<>();
         try {
             connectDB.getConnection();
             String sql = "SELECT * FROM brands WHERE LOWER(brand_name) LIKE '%"+key+"%'";
+            if (trangThai!=-1) {
+                sql+=" AND status="+trangThai;
+            }
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 int brand_id = rs.getInt("brand_id");
