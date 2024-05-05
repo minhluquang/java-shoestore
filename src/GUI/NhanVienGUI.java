@@ -457,7 +457,11 @@ public class NhanVienGUI extends JPanel implements ActionListener {
                 // Ghi dữ liệu vào db
 					if (NhanVienBUS.insertDanhSachNhanVien(dsnv)) {
 						loadDanhSachNhanVien();
-						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+						message += "\nNgoại trừ: ";
+						message += "\n - Dữ liệu trùng số điện thoại";
+						message += "\n - Dữ liệu trùng email";
+						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						return;
 					} else {
 							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);

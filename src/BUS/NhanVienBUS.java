@@ -2,6 +2,8 @@ package BUS;
 
 import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import DAO.NhanVienDAO;
 import DTO.NhanVien;
 
@@ -73,5 +75,13 @@ public class NhanVienBUS {
 	
 	public static boolean isWorking(int accountId) {
 		return NhanVienDAO.isWorking(accountId);
+	}
+	
+	public static boolean isExistEmail(String email) {
+		return NhanVienDAO.isExistEmail(email);
+	}
+	
+	public static boolean isExistPhoneNumber(String phoneNumber) {
+		return NhanVienDAO.isExistPhoneNumber(phoneNumber);
 	}
 }
