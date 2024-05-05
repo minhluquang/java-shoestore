@@ -203,12 +203,7 @@ import java.awt.event.ActionEvent;
 			pnl_button.setBorder(BorderFactory.createEmptyBorder(20, 20, 30, 100));
 			
 			JButton btn_reset = new JButton("Reset");
-			btn_reset.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					dtmTongQuan.setRowCount(0);
-					displayData();
-				}
-			});
+			
 			pnl_button.add(btn_reset);
 			
 			JButton btn_excel = new JButton("Xuất Excel");
@@ -318,7 +313,21 @@ import java.awt.event.ActionEvent;
 			pnlLoiNhuan.add(lbl_loiNhuan);
 			
 			
-					
+			btn_reset.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dtmTongQuan.setRowCount(0);
+					displayData();
+					lbl_ngay.setText(calculateColumnTotal()[0]+"");
+					lbl_phieuNhap.setText(calculateColumnTotal()[1]+"");
+					lbl_von.setText(calculateColumnTotal()[2]+"");
+					lbl_hoaDon.setText(calculateColumnTotal()[3]+"");
+					lbl_doanhThu.setText(calculateColumnTotal()[4]+"");
+					lbl_loiNhuan.setText(calculateColumnTotal()[5]+"");
+					lblSp.setText(ThongKeDoanhThuBUS.getTotalProduct()+"");
+					lblKH.setText(ThongKeDoanhThuBUS.getTotalCustomer()+"");
+					lblNV.setText(ThongKeDoanhThuBUS.getTotalStaff()+"");
+				}
+			});		
 			
 			
 			

@@ -260,7 +260,7 @@ public class ThongKeDoanhThuDAO {
 		int total = 0;
 		try {
 			connectDB.getConnection();
-			String sql = "select sum(staff_id) AS total_satff from staffs where status = 1";
+			String sql = "select count(staff_id) AS total_satff from staffs where status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 				while(rs.next()) {
 					total = rs.getInt("total_satff");			
@@ -276,7 +276,7 @@ public class ThongKeDoanhThuDAO {
 		int total = 0;
 		try {
 			connectDB.getConnection();
-			String sql = "select sum(customer_id) AS total_cus from customers where status = 1";
+			String sql = "select count(customer_id) AS total_cus from customers where status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 				while(rs.next()) {
 					total = rs.getInt("total_cus");			
