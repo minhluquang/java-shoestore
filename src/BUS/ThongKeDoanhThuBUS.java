@@ -26,8 +26,8 @@ public class ThongKeDoanhThuBUS {
         return ThongKeDoanhThuDAO.ThongKeTheoKhoangNgay(dateStart, dateFinish);
     }
     
-    public static int getTotalStaff() {
-		return ThongKeDoanhThuDAO.getTotalStaff();
+    public static int getTotalAccount() {
+		return ThongKeDoanhThuDAO.getTotalAccount();
 	}
     
     public static int getTotalCustomer() {
