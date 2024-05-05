@@ -325,6 +325,16 @@ public class ChiTietNhanVienGUI extends JFrame {
 				return;
 			}
 			
+			if (NhanVienBUS.isExistPhoneNumber(phoneNumber)) {
+				JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng số điện thoại này", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			if (NhanVienBUS.isExistEmail(email)) {
+				JOptionPane.showMessageDialog(null, "Hệ thống đã có nhân viên sử dụng email này", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
 				
 			// Nếu tồn tại staff_id (tức: có nhân viên thì update)
 			if (NhanVienBUS.isExistNhanVien(staffId)) {

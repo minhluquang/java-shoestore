@@ -115,6 +115,27 @@ public class KhachHangDAO {
 		connectDB.closeConnection();
 		return isExist;
 	}
+	
+	
+	public static boolean isExistPhoneNumber(String phoneNumber) {
+		connectDB.getConnection();
+		boolean isExist = false;
+
+		try {
+			String sql = "SELECT * " + "FROM customers " + "WHERE phone_number = '" + phoneNumber + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		connectDB.closeConnection();
+		return isExist;
+	}
+	
 
 	public static boolean insertKhachHang(int customerId, String customerName, String phoneNumber, int status) {
 		connectDB.getConnection();
@@ -217,6 +238,10 @@ public class KhachHangDAO {
 			String fullname = kh.getCustomerName();
 			String phoneNumber = kh.getPhoneNumber();
 			int status = 1;
+			
+			if (KhachHangDAO.isExistPhoneNumber(phoneNumber)) {
+				continue;
+			}
 
 			success = insertKhachHang(0, fullname, phoneNumber, status);
 			if (!success) {

@@ -412,7 +412,6 @@ public class KhachHangGUI extends JPanel implements ActionListener {
 		                         case 1:
 		                             khachHang.setPhoneNumber(cell.getStringCellValue());
 		                             break;
-	                         
                            }
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
@@ -425,7 +424,10 @@ public class KhachHangGUI extends JPanel implements ActionListener {
                 // Ghi dữ liệu vào db
 					if (KhachHangBUS.insertDanhSachKhachHang(dskh)) {
 						loadDanhSachKhachHang();
-						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+						String message = "Đã import dữ liệu từ file excel vào hệ thống thành công!";
+						message += "\nNgoại trừ: ";
+						message += "\n - Dữ liệu trùng số điện thoại";
+						JOptionPane.showMessageDialog(null, message, "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
 						return;
 					} else {
 						JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);

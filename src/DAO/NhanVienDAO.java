@@ -140,6 +140,44 @@ public class NhanVienDAO {
 		return success;
 	}
 	
+	public static boolean isExistPhoneNumber(String phoneNumber) {
+		connectDB.getConnection();
+		boolean isExist = false;
+
+		try {
+			String sql = "SELECT * FROM staffs WHERE phone_number = '" + phoneNumber + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		connectDB.closeConnection();
+		return isExist;
+	}
+	
+	public static boolean isExistEmail(String email) {
+		connectDB.getConnection();
+		boolean isExist = false;
+
+		try {
+			String sql = "SELECT * FROM staffs WHERE email =  '" + email + "'";
+			ResultSet rs = connectDB.runQuery(sql);
+
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		connectDB.closeConnection();
+		return isExist;
+	}
+	
 	public static boolean insertDanhSachNhanVien(ArrayList<NhanVien> dsnv) {
 		boolean success = true;
 		for (NhanVien nv : dsnv) {
@@ -147,6 +185,15 @@ public class NhanVienDAO {
 			String email = nv.getEmail();
 			String phoneNumber = nv.getPhone_number();
 			int status = 1;
+			
+			if (isExistPhoneNumber(phoneNumber)) {
+				continue;
+			}
+			
+			if (isExistEmail(email)) {
+				continue;
+			}
+			
 			
 			success = insertNhanVien(fullname, email, phoneNumber, status);
 			if (!success) {
