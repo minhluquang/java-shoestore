@@ -151,14 +151,14 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         txtRoleTabName.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_5.add(txtRoleTabName);
         
-        JLabel lblNewLabel_6_1_2 = new JLabel("Status");
-        lblNewLabel_6_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel_5.add(lblNewLabel_6_1_2);
-		cmbTrangThai = new JComboBox();
-		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"1", "0"}));
-		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbTrangThai.setFocusable(false);
-		panel_5.add(cmbTrangThai);
+//        JLabel lblNewLabel_6_1_2 = new JLabel("Status");
+//        lblNewLabel_6_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+//		panel_5.add(lblNewLabel_6_1_2);
+//		cmbTrangThai = new JComboBox();
+//		cmbTrangThai.setModel(new DefaultComboBoxModel(new String[] {"1", "0"}));
+//		cmbTrangThai.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//		cmbTrangThai.setFocusable(false);
+//		panel_5.add(cmbTrangThai);
 
         JPanel panel_2 = new JPanel();
         panel_2.setBackground(Color.WHITE);
@@ -244,7 +244,7 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         int role_id = rl.getRole_id();
         String role_name = txtTenPhanQuyen.getText().trim();
         String role_tab_name = txtRoleTabName.getText().trim();
-        int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
+//        int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
         
         // Kiểm tra các trường dữ liệu không được bỏ trống
         if (role_name.isEmpty() || role_tab_name.isEmpty()) {
@@ -255,7 +255,7 @@ public class ChiTietPhanQuyenGUI extends JFrame {
         boolean isExistRoleId = RoleBUS.isExistRole(role_id);        
         // Nếu role_id chưa tồn tại (tức là đang thực hiện thêm mới)
         if (!isExistRoleId) {
-            if (RoleBUS.insertRole(role_id, role_name, role_tab_name, status)) {
+            if (RoleBUS.insertRole(role_id, role_name, role_tab_name)) {
                 JOptionPane.showMessageDialog(null, "Thêm nhóm quyền thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 parentGUI.loadDanhSachRole();
                 parentGUI.revalidate();
@@ -264,7 +264,7 @@ public class ChiTietPhanQuyenGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Thêm nhóm quyền thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } else { // Nếu role_id đã tồn tại (tức là đang thực hiện cập nhật)
-            if (RoleBUS.updateRole(role_id, role_name, role_tab_name, status)) {
+            if (RoleBUS.updateRole(role_id, role_name, role_tab_name)) {
                 JOptionPane.showMessageDialog(null, "Cập nhật nhóm quyền thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 parentGUI.loadDanhSachRole();
                 parentGUI.revalidate();

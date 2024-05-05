@@ -31,13 +31,13 @@ public class RoleBUS {
 		}
 
 		// insert
-		public static boolean insertRole(int role_id,String role_name,String role_tab_name, int status) {
-			boolean success = RoleDAO.insertRole(role_id,role_name,role_tab_name,status);
+		public static boolean insertRole(int role_id,String role_name,String role_tab_name) {
+			boolean success = RoleDAO.insertRole(role_id,role_name,role_tab_name);
 			return success;
 		}
 		// update
-		public static boolean updateRole(int role_id, String role_name,String role_tab_name, int status) {
-			boolean success = RoleDAO.updateRole(role_id, role_name,role_tab_name,status);
+		public static boolean updateRole(int role_id, String role_name,String role_tab_name) {
+			boolean success = RoleDAO.updateRole(role_id, role_name,role_tab_name);
 		    return success;
 		}	
 		// delete
