@@ -227,20 +227,20 @@ public class TheLoaiDAO {
 
 
     public static int generateIdCate(){
-        int count=0;
+        int id=0;
         try {
             connectDB.getConnection();
-            String sql = "SELECT COUNT(*) AS count FROM categories";
+            String sql = "SELECT * FROM categories WHERE category_id = (SELECT MAX(category_id) FROM categories)";
             ResultSet rs= connectDB.runQuery(sql);
             if (rs.next()) {
-                count = rs.getInt("count");
-                count += 1;
+                id = rs.getInt("category_id");
+                id += 1;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             connectDB.closeConnection();
         }
-        return count;
+        return id;
     }
 }

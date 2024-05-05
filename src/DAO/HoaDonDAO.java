@@ -198,4 +198,23 @@ public class HoaDonDAO {
         return bills;
     }
 
+    public static int generateIdHoaDon(){
+        int id=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM bills WHERE bill_id = (SELECT MAX(bill_id) FROM bills)";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                id = rs.getInt("bill_id");
+                id++;
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return id;
+    }
+
 }

@@ -754,7 +754,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
 
     public HoaDonDTO taoHoaDon() {
         HoaDonDTO hoaDonDTO = new HoaDonDTO();
-        int id = HoaDonBUS.getSoLuongHoaDon() + 1;
+        int id = HoaDonBUS.generateIdHoaDon();
         hoaDonDTO.setBillId(id);
         hoaDonDTO.setDate(Date.valueOf(LocalDate.now()));
         int total = 0;

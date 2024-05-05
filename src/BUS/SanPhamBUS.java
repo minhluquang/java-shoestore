@@ -47,4 +47,8 @@ public class SanPhamBUS {
 	public static boolean doiTrangThaiSanPham(SanPhamDTO sanPhamDTO){
 		return SanPhamDAO.doiTrangThaiSanPham(sanPhamDTO);
 	}
+
+	public static int generateIdSanPham(){
+		return SanPhamDAO.generateIdSanPham();
+	}
 }

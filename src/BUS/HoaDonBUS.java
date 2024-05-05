@@ -34,4 +34,8 @@ public class HoaDonBUS {
     public static ArrayList<HoaDonDTO> searchHoaDon(int totalMin, int totalMax, int MaKH, int MaNV, Date dateStart, Date dateEnd){
         return HoaDonDAO.searchDanhSachHoaDon(totalMin, totalMax, MaKH, MaNV, dateStart, dateEnd);
     }
+
+    public static int generateIdHoaDon(){
+        return HoaDonDAO.generateIdHoaDon();
+    }
 }

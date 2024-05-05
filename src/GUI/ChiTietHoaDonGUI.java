@@ -53,20 +53,24 @@ import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import BUS.ChiTietHoaDonBUS;
 import BUS.ChiTietSanPhamBUS;
+import BUS.HangBUS;
 import BUS.HoaDonBUS;
 import BUS.KhuyenMaiBUS;
 import BUS.NhanVienBUS;
 import BUS.SanPhamBUS;
 import BUS.TaiKhoanBUS;
+import BUS.TheLoaiBUS;
 import DAO.SanPhamDAO;
 import DTO.ChiTietHoaDonDTO;
 import DTO.ChiTietSanPhamDTO;
+import DTO.HangDTO;
 import DTO.HoaDonDTO;
 import DTO.KhachHang;
 import DTO.KhuyenMai;
 import DTO.NhanVien;
 import DTO.SanPhamDTO;
 import DTO.TaiKhoan;
+import DTO.TheLoaiDTO;
 
 /**
  *
@@ -368,7 +372,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         dcmMaGiamGia.setSelectedItem("Mã giảm giá");
         ArrayList<KhuyenMai> khuyenMais = KhuyenMaiBUS.getDanhSachKhuyenMai();
         for (KhuyenMai khuyenMai : khuyenMais) {
-            if(khuyenMai.getStatus()==1){
+            if (khuyenMai.getStatus() == 1) {
                 dcmMaGiamGia.addElement(khuyenMai.getDiscount_code());
             }
         }
@@ -396,15 +400,18 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
             ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
                     .getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
             SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
-            Object[] ctHoaDonData = { chiTietHoaDonDTO.getBillId(), chiTietHoaDonDTO.getProductSerialId(),
-                    sanPhamDTO.getProduct_name(), chiTietHoaDonDTO.getPriceSingle() };
+            HangDTO hang = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
+            TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
+            Object[] ctHoaDonData = { chiTietHoaDonDTO.getProductSerialId(),
+                    sanPhamDTO.getProduct_name(), hang.getBrand_name(), theLoaiDTO.getCategory_name(),
+                    sanPhamDTO.getOutput_price() };
             sanPhamModel.addRow(ctHoaDonData);
         }
     }
 
     public void tinhToTalPrice() {
         KhuyenMai khuyenMai = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
-        
+
         if (khuyenMai.getType().equals("AR")) {
             System.out.println(khuyenMai.getDiscount_value());
             int km = khuyenMai.getDiscount_value();
@@ -442,10 +449,11 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
     public void danhDauDanhSachDaBanSanPham() {
         for (ChiTietHoaDonDTO chiTietHoaDonDTO : chiTietHoaDonDTOs) {
-            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS.getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
+            ChiTietSanPhamDTO chiTietSanPhamDTO = ChiTietSanPhamBUS
+                    .getChiTietSanPhamBySerial(chiTietHoaDonDTO.getProductSerialId());
             ChiTietSanPhamBUS.danhDauDaBan(chiTietHoaDonDTO.getProductSerialId());
             SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
-            sanPhamDTO.setQuantity(sanPhamDTO.getQuantity()-1);
+            sanPhamDTO.setQuantity(sanPhamDTO.getQuantity() - 1);
             SanPhamBUS.suaSanPham(sanPhamDTO);
         }
     }
@@ -548,10 +556,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
         Table table = new Table(twocolumnWidth);
         table.setMarginTop(20);
-        table.addCell(new Cell().add(new Paragraph("Ngay tao: "+hoaDonDTO.getDate())).setBorder(Border.NO_BORDER));
-        table.addCell(new Cell().add(new Paragraph("Ma so: "+hoaDonDTO.getBillId())).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph("Ngay tao: " + hoaDonDTO.getDate())).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph("Ma so: " + hoaDonDTO.getBillId())).setBorder(Border.NO_BORDER));
         NhanVien nv = NhanVienBUS.getNhanVienByID(hoaDonDTO.getStaffId());
-        table.addCell(new Cell().add(new Paragraph("Thu ngan: "+nv.getFull_name())).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph("Thu ngan: " + nv.getFull_name())).setBorder(Border.NO_BORDER));
 
         document.add(table);
 
@@ -589,8 +597,10 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
 
         for (SanPhamDTO sanPhamDTO : sanPhams) {
             Cell cellBody1 = new Cell().add(new Paragraph(sanPhamDTO.getProduct_name())).setBorder(new SolidBorder(1));
-            Cell cellBody2 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getQuantity()))).setBorder(new SolidBorder(1));
-            Cell cellBody3 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getOutput_price()))).setBorder(new SolidBorder(1));
+            Cell cellBody2 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getQuantity())))
+                    .setBorder(new SolidBorder(1));
+            Cell cellBody3 = new Cell().add(new Paragraph(String.valueOf(sanPhamDTO.getOutput_price())))
+                    .setBorder(new SolidBorder(1));
 
             cellBody2.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
             cellBody3.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
@@ -605,21 +615,22 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         // Phan bottom
         Table tableBottom = new Table(twocolumnWidth);
         tableBottom.setMarginTop(20);
-        tableBottom.addCell(new Cell().add(new Paragraph("Tien hang: "+tamTinh+"đ")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph("Tien hang: " + tamTinh + "đ")).setBorder(Border.NO_BORDER));
         tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
         KhuyenMai km = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
         int giamGia;
-        if (km.getType()=="AR") {
+        if (km.getType() == "AR") {
             giamGia = km.getDiscount_value();
         } else {
-            giamGia = tamTinh*km.getDiscount_value()/100;
+            giamGia = tamTinh * km.getDiscount_value() / 100;
         }
-        tableBottom.addCell(new Cell().add(new Paragraph("Giam gia: "+giamGia+"đ")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph("Giam gia: " + giamGia + "đ")).setBorder(Border.NO_BORDER));
         tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
 
         tableBottom.addCell(new Cell(1, 2).add(new LineSeparator(new DottedLine())));
 
-        tableBottom.addCell(new Cell().add(new Paragraph("TONG TIEN "+hoaDonDTO.getTotalPrice()+"")).setBorder(Border.NO_BORDER));
+        tableBottom.addCell(new Cell().add(new Paragraph("TONG TIEN " + hoaDonDTO.getTotalPrice() + ""))
+                .setBorder(Border.NO_BORDER));
         tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
 
         document.add(tableBottom);

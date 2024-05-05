@@ -223,4 +223,23 @@ public class HangDAO {
         }
         return brands;
     }
+
+    public static int generateIdHang(){
+        int id=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM brands WHERE brand_id = (SELECT MAX(brand_id) FROM brands)";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                id = rs.getInt("brand_id");
+                id++;
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return id;
+    }
 }

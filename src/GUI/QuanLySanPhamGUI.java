@@ -426,7 +426,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 	public void themSanPham() {
 		SanPhamDTO sanPhamDTO = new SanPhamDTO();
-		int productID = SanPhamBUS.getSoluongSanPham() + 1;
+		int productID = SanPhamBUS.generateIdSanPham();
 		sanPhamDTO.setProduct_id(productID);
 		sanPhamDTO.setQuantity(0);
 		sanPhamDTO.setStatus(true);

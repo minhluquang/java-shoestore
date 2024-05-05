@@ -323,4 +323,23 @@ public class SanPhamDAO {
         }
         return flag;
     }
+
+    public static int generateIdSanPham(){
+        int id=0;
+        try {
+            connectDB.getConnection();
+            String sql = "SELECT * FROM products WHERE product_id = (SELECT MAX(product_id) FROM products)";
+            ResultSet rs = connectDB.runQuery(sql);
+            if (rs.next()) {
+                id = rs.getInt("product_id");
+                id++;
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connectDB.closeConnection();
+        }
+        return id;
+    }
 }

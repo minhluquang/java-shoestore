@@ -36,4 +36,8 @@ public class HangBUS {
     public static boolean isExistIdHang(int brandId){
         return HangDAO.isExistIdHang(brandId);
     }
+
+    public static int generateIdHang(){
+        return HangDAO.generateIdHang();
+    }
 }

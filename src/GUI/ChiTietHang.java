@@ -190,7 +190,7 @@ public class ChiTietHang extends JFrame implements ActionListener {
     public void xuLyTuDongGanGiaTri() {
         int hangID = hang.getBrand_id();
         if (hangID == 0) {
-            txtMaHang.setText(Integer.toString(HangBUS.getSoluongHang() + 1));
+            txtMaHang.setText(Integer.toString(HangBUS.generateIdHang()));
         } else {
             txtMaHang.setText(Integer.toString(hang.getBrand_id()));
         }
