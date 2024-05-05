@@ -319,7 +319,7 @@ public class TaiKhoanDAO {
 		
 		try {
 			String sql = "UPDATE accounts "
-					+ "SET account_status = 1"
+					+ "SET account_status = 1 "
 					+ "WHERE account_id = " + accountId;
 			int i = connectDB.runUpdate(sql);
 			if (i > 0) {
