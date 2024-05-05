@@ -87,11 +87,11 @@ public class NhapHangGUI extends JPanel {
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					String enteredText = textField.getText();
-					ArrayList<SanPhamDTO> arr = PhieuNhapBUS.searchObjectById(enteredText);
-					loadDanhSachSanPham(arr);
-				}
+
+				String enteredText = textField.getText();
+				ArrayList<SanPhamDTO> arr = PhieuNhapBUS.searchObjectById(enteredText);
+				loadDanhSachSanPham(arr);
+
 			}
 		});
 		textField.setBorder(
