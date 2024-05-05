@@ -209,8 +209,6 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		// Sự kiện lắng nghe click
 //		btnThem.addActionListener(this);
 		btnSua.addActionListener(this);
-//		btnXoa.addActionListener(this);
-//		btnNhapExcel.addActionListener(this);
 		btnXuatExcel.addActionListener(this);
 	}
 
