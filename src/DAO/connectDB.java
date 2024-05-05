@@ -10,6 +10,7 @@ public class connectDB {
 
 	static final String DB_URL = "jdbc:mysql://localhost:3306/backend_java";
 	static final String USER = "root";
+
 	static final String PASS = "";
 
 	static Connection con;
