@@ -19,11 +19,10 @@ public class HoaDonDAO {
                 int staff_id = rs.getInt("staff_id");
                 Date date = rs.getDate("date");
                 int total_price = rs.getInt("total_price");
-                String address = rs.getString("address");
                 int customer_id = rs.getInt("customer_id");
                 String discount_code = rs.getString("discount_code");
 
-                HoaDonDTO bill = new HoaDonDTO(bill_id, staff_id, date, total_price, address, customer_id,
+                HoaDonDTO bill = new HoaDonDTO(bill_id, staff_id, date, total_price, customer_id,
                         discount_code);
                 bills.add(bill);
             }
@@ -47,7 +46,6 @@ public class HoaDonDAO {
                 int staff_id = rs.getInt("staff_id");
                 String date = rs.getString("date");
                 int total_price = rs.getInt("total_price");
-                String address = rs.getString("address");
                 int customer_id = rs.getInt("customer_id");
                 String discount_code = rs.getString("discount_code");
 
@@ -55,7 +53,6 @@ public class HoaDonDAO {
                 bill.setStaffId(staff_id);
                 bill.setDate(Date.valueOf(date));
                 bill.setTotalPrice(total_price);
-                bill.setAddress(address);
                 bill.setCustomerId(customer_id);
                 bill.setDiscountCode(discount_code);
             }
@@ -91,15 +88,14 @@ public class HoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO bills (staff_id, date, total_price, address, customer_id, discount_code, bill_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO bills (staff_id, date, total_price, customer_id, discount_code, bill_id) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
             pstmt.setInt(1, bill.getStaffId());
             pstmt.setString(2, bill.getDate().toString());
             pstmt.setInt(3, bill.getTotalPrice());
-            pstmt.setString(4, bill.getAddress());
-            pstmt.setInt(5, bill.getCustomerId());
-            pstmt.setString(6, bill.getDiscountCode());
-            pstmt.setInt(7, bill.getBillId());
+            pstmt.setInt(4, bill.getCustomerId());
+            pstmt.setString(5, bill.getDiscountCode());
+            pstmt.setInt(6, bill.getBillId());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
                 flag = false;
@@ -117,15 +113,14 @@ public class HoaDonDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "UPDATE bills SET staff_id = ?, date = ?, total_price = ?, address = ?, customer_id = ?, discount_code = ? WHERE bill_id = ?";
+            String sql = "UPDATE bills SET staff_id = ?, date = ?, total_price = ?, customer_id = ?, discount_code = ? WHERE bill_id = ?";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
             pstmt.setInt(1, bill.getStaffId());
             pstmt.setString(2, bill.getDate().toString());
             pstmt.setInt(3, bill.getTotalPrice());
-            pstmt.setString(4, bill.getAddress());
-            pstmt.setInt(5, bill.getCustomerId());
-            pstmt.setString(6, bill.getDiscountCode());
-            pstmt.setInt(7, bill.getBillId());
+            pstmt.setInt(4, bill.getCustomerId());
+            pstmt.setString(5, bill.getDiscountCode());
+            pstmt.setInt(6, bill.getBillId());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
                 flag = false;
@@ -182,11 +177,10 @@ public class HoaDonDAO {
                 int staff_id = rs.getInt("staff_id");
                 Date date = rs.getDate("date");
                 int total_price = rs.getInt("total_price");
-                String address = rs.getString("address");
                 int customer_id = rs.getInt("customer_id");
                 String discount_code = rs.getString("discount_code");
 
-                HoaDonDTO bill = new HoaDonDTO(bill_id, staff_id, date, total_price, address, customer_id,
+                HoaDonDTO bill = new HoaDonDTO(bill_id, staff_id, date, total_price, customer_id,
                         discount_code);
                 bills.add(bill);
             }
