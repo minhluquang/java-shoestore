@@ -229,7 +229,7 @@ public class PhanQuyenGUI extends JPanel implements ActionListener {
 		    	dtmRole.setRowCount(0);
 		        ArrayList<Role> dsrl = RoleBUS.searchRole(keyword);
 		        for (Role role : dsrl) {
-		            Object[] row = {role.getRole_id(), role.getRole_name()};
+		            Object[] row = {role.getRole_id(), role.getRole_name(),role.getRole_tab_name()};
 		            dtmRole.addRow(row);
 		        }
 		 }

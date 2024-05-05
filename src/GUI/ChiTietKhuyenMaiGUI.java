@@ -1,36 +1,35 @@
 package GUI;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JComboBox;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Cursor;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
-import DTO.KhuyenMai;
-import DTO.NhanVien;
 import BUS.KhuyenMaiBUS;
-import BUS.NhanVienBUS;
-import DAO.KhuyenmaiDAO;
-import GUI.NhanVienGUI;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import DTO.KhuyenMai;
 
 public class ChiTietKhuyenMaiGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -263,6 +262,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	    String endDate = txtEndDate.getText();
 	   
 	    int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
+	    
 	    // Kiểm tra form có txt trống không, nếu có thì không cho đi tiếp
 	    if (discountCode.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
 	        String message = "Vui lòng nhập đầy đủ các trường:";
@@ -272,28 +272,58 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	        message += "\n - Ngày kết thúc";
 	        JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    } else {
-	        // Kiểm tra xem discount_code đã tồn tại chưa
+	        // Kiểm tra điều kiện phần trăm giảm giá (type)
+	        if (type.equalsIgnoreCase("PR")) {
+	            if (discount <= 0 || discount >= 101) {
+	                JOptionPane.showMessageDialog(null, "Phần trăm giảm giá phải nằm trong khoảng từ 1 đến 100", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                return; // Dừng lại nếu có lỗi
+	            }
+	        } else if (type.equalsIgnoreCase("AR")) {
+	            if (discount <= 0) {
+	                JOptionPane.showMessageDialog(null, "Phần trăm giảm giá phải lớn hơn 0", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                return; // Dừng lại nếu có lỗi
+	            }
+	        } else {
+	            JOptionPane.showMessageDialog(null, "Loại khuyến mãi không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            return; // Dừng lại nếu có lỗi
+	        }
+	        
+	        // Kiểm tra ngày kết thúc không nhỏ hơn ngày bắt đầu
+	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	        try {
+	            Date start = dateFormat.parse(startDate);
+	            Date end = dateFormat.parse(endDate);
+	            
+	            if (end.before(start)) {
+	                JOptionPane.showMessageDialog(null, "Ngày kết thúc không được bé hơn ngày bắt đầu", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                return; // Dừng lại nếu có lỗi
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        // Tiếp tục thêm hoặc cập nhật thông tin khuyến mãi nếu không có lỗi
 	        boolean isExistDiscount = KhuyenMaiBUS.isExistKM(discountCode);
 	        if (!isExistDiscount) {
-	        	   if (KhuyenMaiBUS.insertKhuyenMai(discountCode, discount ,type,  startDate, endDate, status)) {
-		                JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-		                parentGUI.loadDanhSachKhuyenMai();
-		                dispose();
-		            } else {
-		                JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khuyến mãi", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
-		            }
-	        } else {
-	            if(KhuyenMaiBUS.updateKhuyenMai(discountCode, discount ,type,  startDate, endDate, status) ) {
-	            	 JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-	            	  parentGUI.loadDanhSachKhuyenMai();
-		                dispose();
+	            if (KhuyenMaiBUS.insertKhuyenMai(discountCode, discount, type, startDate, endDate, status)) {
+	                JOptionPane.showMessageDialog(null, "Hệ thống thêm thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+	                parentGUI.loadDanhSachKhuyenMai();
+	                dispose();
+	            } else {
+	                JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khuyến mãi", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 	            }
-	            else {
-	            	 JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khuyến mãi", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+	        } else {
+	            if (KhuyenMaiBUS.updateKhuyenMai(discountCode, discount, type, startDate, endDate, status)) {
+	                JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thành công thông tin khuyến mãi", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+	                parentGUI.loadDanhSachKhuyenMai();
+	                dispose();
+	            } else {
+	                JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khuyến mãi", "Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
 	            }
 	        }
 	    }
 	}
+
 	//
 	public void hienThiThongTinKhuyenMai() {
 	    txtTen.setText(km.getDiscount_code());

@@ -36,12 +36,13 @@ public class RoleDAO {
     	connectDB.getConnection();
         ArrayList<Role> dsrl = new ArrayList<>();        
         try {
-            String sql = "SELECT * FROM `roles` WHERE role_id LIKE '%" + keyword + "%' OR role_name LIKE '%" + keyword + "%'";         
+        	String sql = "SELECT * FROM `roles` WHERE role_id LIKE '%" + keyword + "%' OR role_name LIKE '%" + keyword + "%' OR role_tab_name LIKE '%" + keyword + "%'";         
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
                 Role rl = new Role();            
                 rl.setRole_id(rs.getInt("role_id"));
                 rl.setRole_name(rs.getString("role_name"));
+                rl.setRole_tab_name(rs.getString("role_tab_name"));
                 dsrl.add(rl);
             }
         } catch (Exception e) {
