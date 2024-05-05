@@ -70,4 +70,8 @@ public class NhanVienBUS {
 	public static NhanVien getNhanVienByAccountID(int id){
 		return NhanVienDAO.getNhanVienByAccountID(id);
 	}
+	
+	public static boolean isWorking(int accountId) {
+		return NhanVienDAO.isWorking(accountId);
+	}
 }

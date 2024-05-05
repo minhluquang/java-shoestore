@@ -348,4 +348,28 @@ public class NhanVienDAO {
 		connectDB.closeConnection();
 		return nv;
 	}
+	
+	public static boolean isWorking(int accountId) {
+		connectDB.getConnection();
+		boolean success = true;
+		try {
+			String sql = "SELECT * "
+					+ "FROM staffs "
+					+ "WHERE account_id = " + accountId;
+			ResultSet rs = connectDB.runQuery(sql);
+			if (rs.next()) {
+				int status = rs.getInt("status");
+				if (status == 0) {
+					success = false;
+				}
+			} else {
+				success = false;
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return success;
+	}
 }

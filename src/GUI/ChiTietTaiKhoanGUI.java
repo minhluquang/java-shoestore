@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import BUS.ChiTietQuyenBUS;
+import BUS.NhanVienBUS;
 import BUS.QuyenBUS;
 import BUS.TaiKhoanBUS;
 import DTO.Quyen;
@@ -363,7 +364,9 @@ public class ChiTietTaiKhoanGUI extends JFrame {
 		}
 		
 		
-		if (username.isEmpty()) {
+		if (!NhanVienBUS.isWorking(accountId) && tk.getAccountStatus() == 0 && status == 1) {
+			JOptionPane.showMessageDialog(null, "Không thể mở khoá trạng thái tài khoản vì nhân viên đã ngưng hoạt động", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		} else if (username.isEmpty()) {
 			String message = "Vui lòng nhập đầy đủ các trường:";
 			message += "\n - Username";
 			JOptionPane.showMessageDialog(null, message, "Lỗi", JOptionPane.ERROR_MESSAGE);

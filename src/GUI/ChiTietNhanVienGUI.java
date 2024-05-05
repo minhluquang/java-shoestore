@@ -259,7 +259,7 @@ public class ChiTietNhanVienGUI extends JFrame {
 	public void xuLyTuDongGanGiaTri() {
 		int staffId = nv.getStaffId();
 		int accountId = nv.getTaiKhoan().getAccountId();
-		if (staffId == 0 || accountId == 0) {
+		if (staffId == 0) {
 			txtMaNhanVien.setText(Integer.toString(NhanVienBUS.generateIdNhanVien(true)));
 		} else {
 			txtMaNhanVien.setText(Integer.toString(nv.getStaffId()));

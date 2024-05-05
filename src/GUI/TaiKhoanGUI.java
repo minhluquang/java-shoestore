@@ -413,6 +413,10 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		ArrayList<TaiKhoan> dstk = TaiKhoanBUS.getDanhSachTaiKhoan();
 		
 		for (TaiKhoan tk : dstk) {
+			if (tk.getAccountId() == 9999) {
+				continue;
+			}
+			
 			String status = "";
 			if (tk.getAccountStatus() == 1) {
 				status = "Hoạt động";
@@ -459,6 +463,10 @@ public class TaiKhoanGUI extends JPanel implements ActionListener {
 		ArrayList<TaiKhoan> dstk = TaiKhoanBUS.searchTaiKhoan(keyword, searchStatus, searchRole);
 		
 		for(TaiKhoan tk : dstk) {
+			if (tk.getAccountId() == 9999) {
+				continue;
+			}
+			
 			String status;
 			if (tk.getAccountStatus() == 1) {
 				status = "Hoạt động";
