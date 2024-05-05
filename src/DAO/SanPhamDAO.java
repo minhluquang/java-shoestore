@@ -95,9 +95,9 @@ public class SanPhamDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO products (category_id, brand_id, product_name, output_price, country, year_of_product, image_path, quantity, status) "
+            String sql = "INSERT INTO products (category_id, brand_id, product_name, output_price, country, year_of_product, image_path, quantity, status, product_id) "
                     +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
             pstmt.setInt(1, sanPham.getCategory_id());
@@ -109,6 +109,8 @@ public class SanPhamDAO {
             pstmt.setString(7, sanPham.getImage_path());
             pstmt.setInt(8, sanPham.getQuantity());
             pstmt.setBoolean(9, sanPham.isStatus());
+            pstmt.setInt(10, sanPham.getProduct_id());
+
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {

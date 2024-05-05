@@ -79,11 +79,12 @@ public class HangDAO {
         boolean flag = true;
         try {
             connectDB.getConnection();
-            String sql = "INSERT INTO brands (brand_name, status) VALUES (?, ?)";
+            String sql = "INSERT INTO brands (brand_id, brand_name, status) VALUES (?, ?, ?)";
             PreparedStatement pstmt = connectDB.prepareStatement(sql);
 
-            pstmt.setString(1, hang.getBrand_name());
-            pstmt.setBoolean(2, hang.isStatus());
+            pstmt.setInt(1, hang.getBrand_id());
+            pstmt.setString(2, hang.getBrand_name());
+            pstmt.setBoolean(3, hang.isStatus());
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
