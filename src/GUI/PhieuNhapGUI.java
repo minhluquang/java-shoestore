@@ -13,8 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,22 +33,6 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.LineSeparator;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-
 import BUS.NhaCungCapBUS;
 import BUS.PhieuNhapBUS;
 import DTO.PhieuNhap;
@@ -63,7 +45,6 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JButton btnChiTietPhieuNhap;
 	private JButton btnNhapExcel;
-	private JButton btnXuatExcel;
 	private DefaultTableModel defaultTableModel;
 
 	private static ChiTietPhieuNhapGUI chiTietPhieuNhap;
@@ -211,25 +192,15 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		btnChiTietPhieuNhap.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnChiTietPhieuNhap);
 
-		btnNhapExcel = new JButton("Nhập excel");
+		btnNhapExcel = new JButton("Xuất PDF");
 		btnNhapExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
+		btnNhapExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/pdf.png"));
 		btnNhapExcel.setPreferredSize(new Dimension(150, 40));
 		btnNhapExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnNhapExcel.setFocusable(false);
 		btnNhapExcel.setBackground(Color.WHITE);
 		pnlTopBottom.add(btnNhapExcel);
 		btnNhapExcel.addActionListener(this);
-
-		btnXuatExcel = new JButton("Xuất excel");
-		btnXuatExcel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnXuatExcel.setIcon(new ImageIcon(absolutePath + "/src/images/icons/excel.png"));
-		btnXuatExcel.setPreferredSize(new Dimension(150, 40));
-		btnXuatExcel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnXuatExcel.setFocusable(false);
-		btnXuatExcel.setBackground(Color.WHITE);
-		pnlTopBottom.add(btnXuatExcel);
-		btnXuatExcel.addActionListener(this);
 
 		JPanel panel_7 = new JPanel();
 		panel_7.setBackground(new Color(255, 255, 255));
@@ -270,7 +241,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
 		scrollPane.getVerticalScrollBar().setUnitIncrement(8);
-		pnlCenter.add(scrollPane, BorderLayout.NORTH);
+		pnlCenter.add(scrollPane, BorderLayout.CENTER);
 
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
 		table.getTableHeader().setOpaque(false);
@@ -327,15 +298,24 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 //			chiTietNhanVienGUI.setVisible(true);
 //			chiTietNhanVienGUI.requestFocus();
 		} else if (e.getSource() == btnNhapExcel) {
-			// Xử lý khi button "Nhập excel" được nhấn
-		} else if (e.getSource() == btnXuatExcel) {
+			int row = table.getSelectedRow();
+			if (row < 0) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần xuất pdf !", "Thông báo",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int receipt_id = (int) table.getValueAt(row, 0);
+			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn xuất pdf không ? ", "Thông báo",
+					JOptionPane.YES_NO_OPTION);
+			if (choice != JOptionPane.YES_OPTION) {
+				return;
+			}
 			try {
-				exportExcel();
-			} catch (IOException e1) {
+				PhieuNhapBUS.xuatPdf(receipt_id);
+			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			// Xử lý khi button "Xuất excel" được nhấn
 		}
 	}
 
@@ -384,134 +364,4 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		chiTietPhieuNhap.requestFocus();
 	}
 
-	public void exportExcel() throws IOException {
-		ArrayList<PhieuNhap> dsnv = PhieuNhapBUS.getDanhSachPhieuNhap();
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("excel/dspn.xlsx");
-			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Danh sách nhân viên");
-
-			// Ghi header
-			XSSFRow headerRow = sheet.createRow(0);
-			headerRow.createCell(0).setCellValue("receipt_id");
-			headerRow.createCell(1).setCellValue("supplier");
-			headerRow.createCell(2).setCellValue("staff_id");
-			headerRow.createCell(3).setCellValue("total_price");
-			headerRow.createCell(4).setCellValue("date");
-
-			// Ghi thông tin nhân viên
-			int rowNum = 1;
-			for (PhieuNhap nv : dsnv) {
-				XSSFRow row = sheet.createRow(rowNum++);
-				row.createCell(0).setCellValue(nv.getReceipt_id());
-				row.createCell(1).setCellValue(NhaCungCapBUS.getTenNhaCungCapById(nv.getSupplier_id()));
-				row.createCell(2).setCellValue(PhieuNhapBUS.getTenNhanVienById(nv.getStaff_id()));
-				row.createCell(3).setCellValue(nv.getTotal_price());
-				row.createCell(4).setCellValue(nv.getDate());
-			}
-
-			wb.write(fileOutputStream);
-			wb.close();
-			JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công",
-					JOptionPane.INFORMATION_MESSAGE);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	public static void xuatPdf() throws FileNotFoundException {
-		String path = "invoice.pdf";
-		PdfWriter pdfWriter = new PdfWriter(path);
-		PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-		pdfDocument.setDefaultPageSize(PageSize.A4);
-		Document document = new Document(pdfDocument);
-
-		Paragraph storeTitle = new Paragraph("Cua hang ban giay Shopgiay88").setBold().setFontSize(16);
-		storeTitle.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
-		Paragraph storeAddress = new Paragraph("DC: 273 An Duong Vuong, P.3, Q.5, Tp. HCM");
-		storeAddress.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
-		Paragraph phoneNumberAddress = new Paragraph("SDT: 028.392.44.690");
-		phoneNumberAddress.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
-
-		Paragraph invoiceTitle = new Paragraph("HOA DON BAN HANG").setBold().setFontSize(16).setMarginTop(20);
-		invoiceTitle.setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
-
-		document.add(storeTitle);
-		document.add(storeAddress);
-		document.add(phoneNumberAddress);
-		document.add(invoiceTitle);
-
-		// bill info
-		float twocol = 285f;
-		float twocol150 = twocol + 150f;
-		float twocolumnWidth[] = { twocol150, twocol };
-
-		Table table = new Table(twocolumnWidth);
-		table.setMarginTop(20);
-		table.addCell(new Cell().add(new Paragraph("Ngay tao: 2/5/2024")).setBorder(Border.NO_BORDER));
-		table.addCell(new Cell().add(new Paragraph("Ma so: 111")).setBorder(Border.NO_BORDER));
-		table.addCell(new Cell().add(new Paragraph("Thu ngan: Lu Quang Minh")).setBorder(Border.NO_BORDER));
-
-		document.add(table);
-
-		// bill detail
-		float threecol = 190f;
-		float threeColumnWidth[] = { threecol, threecol, threecol };
-		Table tableBillDetail = new Table(threeColumnWidth);
-		tableBillDetail.setMarginTop(20);
-
-		// header
-		Cell cellHeader1 = new Cell().add(new Paragraph("Ten san pham")).setBorder(new SolidBorder(1));
-		Cell cellHeader2 = new Cell().add(new Paragraph("So luong")).setBorder(new SolidBorder(1));
-		Cell cellHeader3 = new Cell().add(new Paragraph("Don gia")).setBorder(new SolidBorder(1));
-
-		tableBillDetail.addCell(cellHeader1);
-		tableBillDetail.addCell(cellHeader2);
-		tableBillDetail.addCell(cellHeader3);
-
-		// body
-		// ROW 1
-		Cell cellBody1 = new Cell().add(new Paragraph("Nike Air Force 1")).setBorder(new SolidBorder(1));
-		Cell cellBody2 = new Cell().add(new Paragraph("2")).setBorder(new SolidBorder(1));
-		Cell cellBody3 = new Cell().add(new Paragraph("1685000")).setBorder(new SolidBorder(1));
-
-		cellBody2.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
-		cellBody3.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
-
-		tableBillDetail.addCell(cellBody1);
-		tableBillDetail.addCell(cellBody2);
-		tableBillDetail.addCell(cellBody3);
-
-		// ROW 2
-		Cell cellBody4 = new Cell().add(new Paragraph("Converse Chunk Taylor")).setBorder(new SolidBorder(1));
-		Cell cellBody5 = new Cell().add(new Paragraph("1")).setBorder(new SolidBorder(1));
-		Cell cellBody6 = new Cell().add(new Paragraph("800000")).setBorder(new SolidBorder(1));
-
-		cellBody5.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
-		cellBody6.setTextAlignment(com.itextpdf.layout.property.TextAlignment.RIGHT);
-
-		tableBillDetail.addCell(cellBody4);
-		tableBillDetail.addCell(cellBody5);
-		tableBillDetail.addCell(cellBody6);
-
-		document.add(tableBillDetail);
-
-		// Phan bottom
-		Table tableBottom = new Table(twocolumnWidth);
-		tableBottom.setMarginTop(20);
-		tableBottom.addCell(new Cell().add(new Paragraph("Tien hang:")).setBorder(Border.NO_BORDER));
-		tableBottom.addCell(new Cell().add(new Paragraph("4170000")).setBorder(Border.NO_BORDER));
-		tableBottom.addCell(new Cell().add(new Paragraph("Giam gia:")).setBorder(Border.NO_BORDER));
-		tableBottom.addCell(new Cell().add(new Paragraph("50000")).setBorder(Border.NO_BORDER));
-
-		tableBottom.addCell(new Cell(1, 2).add(new LineSeparator(new DottedLine())));
-
-		tableBottom.addCell(new Cell().add(new Paragraph("TONG TIEN")).setBorder(Border.NO_BORDER));
-		tableBottom.addCell(new Cell().add(new Paragraph("4120000")).setBorder(Border.NO_BORDER));
-
-		document.add(tableBottom);
-
-		document.close();
-	}
 }

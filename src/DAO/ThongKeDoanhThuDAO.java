@@ -19,8 +19,8 @@ public class ThongKeDoanhThuDAO {
 		
 		try {
 			connectDB.getConnection();
-			String sqlNgayBanHang = "SELECT distinct date FROM bills ";
-			String sqlNgayNhapHang = "SELECT distinct date FROM goodsreceipts  ";
+			String sqlNgayBanHang = "SELECT distinct date FROM bills order by date desc ";
+			String sqlNgayNhapHang = "SELECT distinct date FROM goodsreceipts order by date desc ";
 			PreparedStatement psNgayBanHang = connectDB.prepareStatement(sqlNgayBanHang);
 			PreparedStatement psNgayNhapHang = connectDB.prepareStatement(sqlNgayNhapHang);
 			ResultSet rsNgayBanHang = psNgayBanHang.executeQuery();
@@ -45,7 +45,7 @@ public class ThongKeDoanhThuDAO {
 			
 			 Collections.sort(allDates);
 			 Collections.reverse(allDates);
-			
+			System.out.println(allDates);
 			
 			String sqlBanHang = "SELECT date, COUNT(*) AS SL_HoaDon, SUM(total_price) AS doanhThu FROM bills WHERE date = ? GROUP BY date";
 	        PreparedStatement psBanHang = connectDB.prepareStatement(sqlBanHang);

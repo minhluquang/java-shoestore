@@ -6,6 +6,8 @@
 	import java.awt.Font;
 	import java.awt.GridLayout;
 	import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -13,7 +15,9 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 	import javax.swing.ImageIcon;
 	import javax.swing.JLabel;
-	import java.awt.SystemColor;
+import javax.swing.JOptionPane;
+
+import java.awt.SystemColor;
 	import java.awt.event.MouseAdapter;
 	import java.awt.event.MouseEvent;
 	import java.awt.Color;
@@ -28,12 +32,22 @@ import javax.swing.BorderFactory;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import BUS.ThongKeDoanhThuBUS;
+import BUS.ThongKeTonKhoBUS;
 import DTO.ThongKeDoanhThuDTO;
+import DTO.ThongKeTonKhoDTO;
 
 import javax.swing.ListSelectionModel;
 	import javax.swing.ScrollPaneConstants;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 	
 	public class ThongKeTongQuanGUI extends JPanel {
 		public String absolutePath = new File("").getAbsolutePath();
@@ -158,7 +172,6 @@ import javax.swing.BoxLayout;
 			tblTongQuan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			
 			
-			List<ThongKeDoanhThuDTO> dataList = ThongKeDoanhThuBUS.getThongKeDoanhThu();
 			displayData();
 			pnlCenter.setLayout(new BorderLayout(0, 0));
 			
@@ -183,6 +196,32 @@ import javax.swing.BoxLayout;
 			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			pnlCenter.add(lblNewLabel, BorderLayout.SOUTH);
 			lblNewLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 30, 30));
+			
+			JPanel pnl_button = new JPanel();
+			pnlCenter.add(pnl_button, BorderLayout.NORTH);
+			pnl_button.setLayout(new GridLayout(0, 6, 50, 0));
+			pnl_button.setBorder(BorderFactory.createEmptyBorder(20, 20, 30, 100));
+			
+			JButton btn_reset = new JButton("Reset");
+			btn_reset.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dtmTongQuan.setRowCount(0);
+					displayData();
+				}
+			});
+			pnl_button.add(btn_reset);
+			
+			JButton btn_excel = new JButton("Xuất Excel");
+			btn_excel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						exportExcel();
+					} catch (Exception e2) {
+						// TODO: handle exception
+					}
+				}
+			});
+			pnl_button.add(btn_excel);
 			
 			JPanel pnl_bottom = new JPanel();
 			add(pnl_bottom, BorderLayout.SOUTH);
@@ -319,4 +358,41 @@ import javax.swing.BoxLayout;
 		    }
 		    return columnTotals;
 	}
+		public void exportExcel() throws IOException {
+			List<ThongKeDoanhThuDTO> dataList = ThongKeDoanhThuBUS.getThongKeDoanhThu();
+			try {
+				FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/thong_ke_7_ngay.xlsx");
+			    XSSFWorkbook wb = new XSSFWorkbook();
+			    XSSFSheet sheet = wb.createSheet("Doanh thu 7 ngày gần nhất");
+			    XSSFRow row = null;
+			    Cell cell = null;
+			    
+			    // Ghi header
+			    XSSFRow headerRow = sheet.createRow(0);
+			    headerRow.createCell(0).setCellValue("Ngày");
+			    headerRow.createCell(1).setCellValue("Tổng đơn nhập");
+			    headerRow.createCell(2).setCellValue("Vốn");
+			    headerRow.createCell(3).setCellValue("Tổng hóa đơn");
+			    headerRow.createCell(4).setCellValue("Doanh thu");
+			    headerRow.createCell(5).setCellValue("Lợi nhuận");
+			    
+			   
+			    int rowNum = 1;
+			    for (ThongKeDoanhThuDTO list : dataList) {
+			    	 row = sheet.createRow(rowNum++);
+			    	row.createCell(0).setCellValue(list.getThoigian());
+			    	row.createCell(1).setCellValue(list.getSlDonNhap());
+			    	row.createCell(2).setCellValue(list.getVon());
+			    	row.createCell(3).setCellValue(list.getSlHoaDon());
+			    	row.createCell(4).setCellValue(list.getDoanhthu());
+			    	row.createCell(4).setCellValue(list.getLoinhuan());
+			    }
+			    
+			    wb.write(fileOutputStream);
+			    wb.close();
+			    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+			} catch (Exception e) {
+			    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 }
