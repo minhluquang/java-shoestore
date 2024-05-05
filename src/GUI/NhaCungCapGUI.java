@@ -192,6 +192,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 
 //		=================================TABLE================================
 		table = new JTable();
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setSelectionForeground(Color.WHITE);
 		table.setBorder(null);
 		table.setSelectionBackground(new Color(232, 57, 95));
@@ -215,7 +216,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
-		pnlCenter.add(scrollPane, BorderLayout.NORTH);
+		pnlCenter.add(scrollPane, BorderLayout.CENTER);
 
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
 		table.getTableHeader().setOpaque(false);
@@ -448,7 +449,7 @@ public class NhaCungCapGUI extends JPanel implements ActionListener {
 	}
 
 	public boolean checkHeaderImportExcel(Row row) {
-		String[] expectedHeaders = { "supplier_id", "supplier_name", "supplier_email" };
+		String[] expectedHeaders = { "supplier_id", "supplier_name", "supplier_address" };
 		boolean headerMatched = true;
 
 		for (int i = 0; i < expectedHeaders.length; i++) {

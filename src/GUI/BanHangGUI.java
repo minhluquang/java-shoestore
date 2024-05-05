@@ -160,10 +160,10 @@ public class BanHangGUI extends JPanel implements ActionListener {
     private ArrayList<ChiTietHoaDonDTO> cthd;
     private ArrayList<ChiTietSanPhamDTO> dsgh = new ArrayList<>();
 
-    public BanHangGUI banHangGUI;
+    public static BanHangGUI banHangGUI;
 
     public BanHangGUI() {
-        this.banHangGUI = this;
+        BanHangGUI.banHangGUI = this;
         initComponents();
     }
 
@@ -646,6 +646,9 @@ public class BanHangGUI extends JPanel implements ActionListener {
                 continue;
             }
             SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+            if(!sanPhamDTO.isStatus()){
+                continue;
+            }
             HangDTO hangDTO = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
             TheLoaiDTO theLoaiDTO = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
             Object[] sanPhamData = { chiTietSanPhamDTO.getProductSerialId(), sanPhamDTO.getProduct_name(),
@@ -791,7 +794,7 @@ public class BanHangGUI extends JPanel implements ActionListener {
             public void run() {
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(hoaDonDTO, chiTietHoaDonDTOs, banHangGUI);
+                    ChiTietHoaDonGUI frame = new ChiTietHoaDonGUI(hoaDonDTO, chiTietHoaDonDTOs, BanHangGUI.banHangGUI);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();

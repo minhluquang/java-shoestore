@@ -241,7 +241,7 @@ public class PhieuNhapGUI extends JPanel implements ActionListener {
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(new Color(255, 255, 255));
 		scrollPane.getVerticalScrollBar().setUnitIncrement(8);
-		pnlCenter.add(scrollPane, BorderLayout.NORTH);
+		pnlCenter.add(scrollPane, BorderLayout.CENTER);
 
 		table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
 		table.getTableHeader().setOpaque(false);

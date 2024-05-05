@@ -112,27 +112,27 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlLoai = new QLLoai();
 		tabbedPane.addTab("Hãng", pnlSanPham);
 		tabbedPane.addTab("Hãng", pnlHang);
-        tabbedPane.addTab("Loại", pnlLoai);
-        tabbedPane.setFont(new Font("Tahoma", Font.BOLD, 14));
-        tabbedPane.setForeground(Color.BLACK);
-        tabbedPane.setBackground(Color.LIGHT_GRAY);
-        tabbedPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        tabbedPane.setForegroundAt(0, new Color(36, 136, 203));
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int selectedIndex = tabbedPane.getSelectedIndex();
-                // Tùy chỉnh giao diện của tab được chọn
-                for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-                    tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
-                }
-                tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn
-                                                                                    // thành màu đỏ
-            }
-        });
+		tabbedPane.addTab("Loại", pnlLoai);
+		tabbedPane.setFont(new Font("Tahoma", Font.BOLD, 14));
+		tabbedPane.setForeground(Color.BLACK);
+		tabbedPane.setBackground(Color.LIGHT_GRAY);
+		tabbedPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		tabbedPane.setForegroundAt(0, new Color(36, 136, 203));
+		tabbedPane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int selectedIndex = tabbedPane.getSelectedIndex();
+				// Tùy chỉnh giao diện của tab được chọn
+				for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+					tabbedPane.setForegroundAt(i, Color.BLACK); // Đặt màu chữ của tất cả các tab về màu đen
+				}
+				tabbedPane.setForegroundAt(selectedIndex, new Color(36, 136, 203)); // Đặt màu chữ của tab được chọn
+																					// thành màu đỏ
+			}
+		});
 
-        setLayout(new BorderLayout());
-        add(tabbedPane, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
+		add(tabbedPane, BorderLayout.CENTER);
 
 		pnlSanPham.setBackground(new Color(230, 230, 230));
 		pnlSanPham.setLayout(new BorderLayout(10, 10));
@@ -185,7 +185,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		mapTrangThai.put("Trạng thái", -1);
 		mapTrangThai.put("Đang kinh doanh", 1);
 		mapTrangThai.put("Ngừng kinh doanh", 0);
-		for (String key  : mapTrangThai.keySet()) {
+		for (String key : mapTrangThai.keySet()) {
 			cbbTrangthai.addItem(key);
 		}
 		cbbTrangthai.setSelectedItem("Trạng thái");
@@ -288,8 +288,9 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		pnlCenter.setBackground(new Color(255, 255, 255));
 		pnlSanPham.add(pnlCenter, BorderLayout.CENTER);
 		pnlCenter.setLayout(new BorderLayout(0, 0));
-		
-		dtmTableModel = new DefaultTableModel(new Object[] {"Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái" }, 0);
+
+		dtmTableModel = new DefaultTableModel(
+				new Object[] { "Mã SP", "Tên sản phẩm", "Hãng", "Loại", "Giá bán", "Số lượng", "Trạng thái" }, 0);
 		tblSanPham = new JTable(dtmTableModel);
 		tblSanPham.addMouseListener(new MouseAdapter() {
 			@Override
@@ -334,7 +335,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 	}
 
-	public void reLoadData(){
+	public void reLoadData() {
 		dsSanPham = SanPhamBUS.getDanhSachSanPham();
 		loadDanhSachSanPham();
 	}
@@ -344,7 +345,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		// "Trạng thái"};
 
 		dtmTableModel.setRowCount(0);
-		dsSanPham = SanPhamBUS.getDanhSachSanPham(); 
+		dsSanPham = SanPhamBUS.getDanhSachSanPham();
 		for (SanPhamDTO sanPhamDTO : dsSanPham) {
 			HangDTO hang = HangBUS.getHangByID(sanPhamDTO.getBrand_id());
 			TheLoaiDTO theLoai = TheLoaiBUS.getTheLoaiByID(sanPhamDTO.getCategory_id());
@@ -361,8 +362,8 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		ArrayList<TheLoaiDTO> theLoaiDTOs = TheLoaiBUS.getDanhSachTheLoai();
 		for (TheLoaiDTO theLoaiDTO : theLoaiDTOs) {
 			if (theLoaiDTO.isStatus()) {
-			mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
-				
+				mapLoai.put(theLoaiDTO.getCategory_name(), theLoaiDTO.getCategory_id());
+
 			}
 		}
 		for (String key : mapLoai.keySet()) {
@@ -377,8 +378,8 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		ArrayList<HangDTO> hangDTOs = HangBUS.getDanhSachHang();
 		for (HangDTO hangDTO : hangDTOs) {
 			if (hangDTO.isStatus()) {
-			mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
-				
+				mapHang.put(hangDTO.getBrand_name(), hangDTO.getBrand_id());
+
 			}
 		}
 		for (String key : mapHang.keySet()) {
@@ -393,9 +394,9 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		int trangThai = mapTrangThai.get(cbbTrangthai.getSelectedItem()).intValue();
 		String ten = txtTmKiem.getText().toLowerCase().strip();
 		dsSanPham = SanPhamBUS.searchDanhSachSanPham(hangId, loaiId, ten, trangThai);
-		
+
 		dtmTableModel.setRowCount(0);
-		for (SanPhamDTO sp: dsSanPham) {
+		for (SanPhamDTO sp : dsSanPham) {
 			HangDTO hang = HangBUS.getHangByID(sp.getBrand_id());
 			TheLoaiDTO theLoai = TheLoaiBUS.getTheLoaiByID(sp.getCategory_id());
 			String status = sp.isStatus() ? "Đang kinh doanh" : "Ngừng kinh doanh";
@@ -425,7 +426,7 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 
 	public void themSanPham() {
 		SanPhamDTO sanPhamDTO = new SanPhamDTO();
-		int productID = SanPhamBUS.getSoluongSanPham()+1;
+		int productID = SanPhamBUS.getSoluongSanPham() + 1;
 		sanPhamDTO.setProduct_id(productID);
 		sanPhamDTO.setQuantity(0);
 		sanPhamDTO.setStatus(true);
@@ -444,43 +445,54 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		});
 	}
 
-	public void changeStatusSanPham(int productID){
-		boolean doiThanhCong= SanPhamBUS.xoaSanPham(productID);
+	public void changeStatusSanPham(int productID) {
+		SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(productID);
+		sanPhamDTO.setStatus(!sanPhamDTO.isStatus());
+		boolean doiThanhCong = SanPhamBUS.doiTrangThaiSanPham(sanPhamDTO);
 		if (doiThanhCong) {
-			JOptionPane.showMessageDialog(null, "Đổi trạng thái sản phẩm "+productID+" thành công");
+			JOptionPane.showMessageDialog(null, "Đổi trạng thái sản phẩm " + productID + " thành công");
 		} else {
-			JOptionPane.showMessageDialog(null, "Đổi trạng thái sản phẩm "+productID+" thất bại");
+			JOptionPane.showMessageDialog(null, "Đổi trạng thái sản phẩm " + productID + " thất bại");
 		}
 		dsSanPham = SanPhamBUS.getDanhSachSanPham();
 		loadDanhSachSanPham();
+		BanHangGUI.banHangGUI.reLoadData();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSua) {
 			if (sp.getProduct_id() > 0) {
-				suaSanPham();				
+				suaSanPham();
 			} else {
-            	JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần sửa", "Thông báo lỗi sửa thông tin sản phẩm", JOptionPane.INFORMATION_MESSAGE);
-            }
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần sửa",
+						"Thông báo", JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
-		if (e.getSource() == btnLamMoi) {			
+		if (e.getSource() == btnLamMoi) {
 			xuLyLamMoi();
 		}
-		
+
 		if (e.getSource() == cbbHang || e.getSource() == cbbLoai || e.getSource() == cbbTrangthai) {
 			timKiemSanPham();
 		}
 		if (e.getSource() == btnThem) {
-			themSanPham();	
+			themSanPham();
 		}
-		if (e.getSource()==btnXoa) {
+		if (e.getSource() == btnXoa) {
 			int selectedIndex = tblSanPham.getSelectedRow();
-			int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
-			int op = JOptionPane.showConfirmDialog(null, "Bạn muốn thay đổi xoá sản phẩm "+productID+"?","Xác nhận xoá sản phẩm", JOptionPane.YES_NO_OPTION);
-			if (op == JOptionPane.YES_OPTION) {
-				changeStatusSanPham(productID);
+			if (selectedIndex > 0) {
+				int productID = (int) tblSanPham.getValueAt(selectedIndex, 0);
+				int op = JOptionPane.showConfirmDialog(null, "Bạn muốn thay đổi trạng thái sản phẩm " + productID + "?",
+						"Xác nhận", JOptionPane.YES_NO_OPTION);
+				if (op == JOptionPane.YES_OPTION) {
+					changeStatusSanPham(productID);
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần đổi trạng thái",
+						"Thông báo", JOptionPane.INFORMATION_MESSAGE);
 			}
+
 		}
 		if (e.getSource() == btnNhapExcel) {
 			importExcel();
@@ -494,15 +506,15 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
+
 	// Xử lý click vào row table
-		public void xuLyClickTable() {
-			int row = tblSanPham.getSelectedRow();
-			if (row > -1) {
-				sp.setProduct_id((int) tblSanPham.getValueAt(row, 0));
-			}
+	public void xuLyClickTable() {
+		int row = tblSanPham.getSelectedRow();
+		if (row > -1) {
+			sp.setProduct_id((int) tblSanPham.getValueAt(row, 0));
 		}
-	
+	}
+
 	public void xuLyLamMoi() {
 		txtTmKiem.setText("");
 		cbbHang.setSelectedItem("Hãng");
@@ -510,133 +522,142 @@ public class QuanLySanPhamGUI extends JPanel implements ActionListener {
 		cbbTrangthai.setSelectedItem("Trạng thái");
 		loadDanhSachSanPham();
 	}
-	
+
 	public void importExcel() {
 		try {
 			ArrayList<SanPhamDTO> dssp = new ArrayList<>();
-			
-    		JFileChooser fileChooser = new JFileChooser();
-    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
-    		fileChooser.setFileFilter(filter);
 
-    		int result = fileChooser.showOpenDialog(null);
-    		if (result == JFileChooser.APPROVE_OPTION) {
-    		    File selectedFile = fileChooser.getSelectedFile();
-    		    
-    		    FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
-    		    XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
-    		    XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
-    		    FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các cột
-    		    
-    		    // Duyệt qua từng hàng trong sheet
-                for (Row row : sheet) {
-                	if (row.getRowNum()==0) {
-                		if (!checkHeaderImportExcel(row)) {
-                			JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
-                			return;
-                		}
-                		continue;
-                	}
-                	
-                	// Duyệt qua từng ô trong 1 hàng
-                	SanPhamDTO sp = new SanPhamDTO();
-                    for (Cell cell : row) { 
-                    	int columnIndex = cell.getColumnIndex();
-                        try {
-                        	switch (columnIndex) {
-	                         case 0:
-	                        	 sp.setProduct_name(cell.getStringCellValue());
-	                            break;
-	                         case 1:
-	                        	 sp.setBrand_id((int) cell.getNumericCellValue());
-	                             break;
-	                         case 2:
-	                        	 sp.setCategory_id((int) cell.getNumericCellValue());
-	                             break;
-	                         case 3:
-	                        	 sp.setOutput_price((int) cell.getNumericCellValue());
-	                        	 break;
-	                         case 4:
-	                        	 sp.setCountry(cell.getStringCellValue());
-	                        	 break;
-	                         case 5:
-	                        	 sp.setYear_of_product((int) cell.getNumericCellValue());
-	                        	 break;
-                           }
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(null, "Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
-					        return;
-						}
-                    }
-                    dssp.add(sp);
-                }
-                
-                // Ghi dữ liệu vào db
-					if (SanPhamBUS.themDanhSachSanPham(dssp)) {
-						loadDanhSachSanPham();
-						JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
-						return;
-					} else {
-							JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!", "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel files", "xlsx", "xls");
+			fileChooser.setFileFilter(filter);
+
+			int result = fileChooser.showOpenDialog(null);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+
+				FileInputStream fileInputStream = new FileInputStream(selectedFile.getAbsoluteFile());
+				XSSFWorkbook wb = new XSSFWorkbook(fileInputStream);
+				XSSFSheet sheet = wb.getSheetAt(0); // Lất sheet 0 của excel
+				FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator(); // Lấy giá trị các
+																										// cột
+
+				// Duyệt qua từng hàng trong sheet
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0) {
+						if (!checkHeaderImportExcel(row)) {
+							JOptionPane.showMessageDialog(null, "Lỗi hàng đầu tiên không đúng định dạng!",
+									"Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
 							return;
+						}
+						continue;
 					}
-				
-    		}
-    	} catch (Exception e2) {
-    	    // Xử lý ngoại lệ ở đây nếu cần
-    	}
+
+					// Duyệt qua từng ô trong 1 hàng
+					SanPhamDTO sp = new SanPhamDTO();
+					for (Cell cell : row) {
+						int columnIndex = cell.getColumnIndex();
+						try {
+							switch (columnIndex) {
+								case 0:
+									sp.setProduct_name(cell.getStringCellValue());
+									break;
+								case 1:
+									sp.setBrand_id((int) cell.getNumericCellValue());
+									break;
+								case 2:
+									sp.setCategory_id((int) cell.getNumericCellValue());
+									break;
+								case 3:
+									sp.setOutput_price((int) cell.getNumericCellValue());
+									break;
+								case 4:
+									sp.setCountry(cell.getStringCellValue());
+									break;
+								case 5:
+									sp.setYear_of_product((int) cell.getNumericCellValue());
+									break;
+							}
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null,
+									"Xảy ra lỗi định dạng dữ liệu, vui lòng kiểm tra lại file excel!", "Thông báo lỗi",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					dssp.add(sp);
+				}
+
+				// Ghi dữ liệu vào db
+				if (SanPhamBUS.themDanhSachSanPham(dssp)) {
+					loadDanhSachSanPham();
+					JOptionPane.showMessageDialog(null, "Đã import dữ liệu từ file excel vào hệ thống thành công!",
+							"Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				} else {
+					JOptionPane.showMessageDialog(null, "Có lỗi khi import dữ liệu từ file excel vào hệ thống!",
+							"Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+			}
+		} catch (Exception e2) {
+			// Xử lý ngoại lệ ở đây nếu cần
+		}
 	}
-	
-	public boolean checkHeaderImportExcel (Row row) {
-        String[] expectedHeaders = {"product_name", "brand_id", "category_id", "output_price", "country", "year_of_product"};
-        boolean headerMatched = true;
-        
-        for (int i = 0; i < expectedHeaders.length; i++) {
-            Cell cell = row.getCell(i);
-            if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
-                headerMatched = false;
-                break;
-            }
-        }
-        
-        return headerMatched;
+
+	public boolean checkHeaderImportExcel(Row row) {
+		String[] expectedHeaders = { "product_name", "brand_id", "category_id", "output_price", "country",
+				"year_of_product" };
+		boolean headerMatched = true;
+
+		for (int i = 0; i < expectedHeaders.length; i++) {
+			Cell cell = row.getCell(i);
+			if (cell == null || !cell.getStringCellValue().trim().equals(expectedHeaders[i])) {
+				headerMatched = false;
+				break;
+			}
+		}
+
+		return headerMatched;
 	}
-	
+
 	public void exportExcel() throws IOException {
-		ArrayList<SanPhamDTO> dssp= SanPhamBUS.getDanhSachSanPham();
+		ArrayList<SanPhamDTO> dssp = SanPhamBUS.getDanhSachSanPham();
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream("excel/dssp.xlsx");
-		    XSSFWorkbook wb = new XSSFWorkbook();
-		    XSSFSheet sheet = wb.createSheet("Danh sách sản phẩm");
-		    
-		    // Ghi header
-		    XSSFRow headerRow = sheet.createRow(0);
-		    headerRow.createCell(0).setCellValue("product_id");
-		    headerRow.createCell(1).setCellValue("product_name");
-		    headerRow.createCell(2).setCellValue("brand_id");
-		    headerRow.createCell(3).setCellValue("category_id");
-		    headerRow.createCell(4).setCellValue("output_price");
-		    headerRow.createCell(5).setCellValue("country");
-		    headerRow.createCell(6).setCellValue("year_of_product");
-		    
-		    // Ghi thông tin nhân viên
-		    int rowNum = 1;
-		    for (SanPhamDTO sp: dssp) {
-		    	XSSFRow row = sheet.createRow(rowNum++);
-		    	row.createCell(0).setCellValue(sp.getProduct_id());
-		    	row.createCell(1).setCellValue(sp.getProduct_name());
-		    	row.createCell(2).setCellValue(sp.getBrand_id());
-		    	row.createCell(3).setCellValue(sp.getCategory_id());
-		    	row.createCell(4).setCellValue(sp.getOutput_price());
-		    	row.createCell(5).setCellValue(sp.getCountry());
-		    	row.createCell(6).setCellValue(sp.getYear_of_product());
-		    }
-		    
-		    wb.write(fileOutputStream);
-		    wb.close();
-		    JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công", JOptionPane.INFORMATION_MESSAGE);
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet("Danh sách sản phẩm");
+
+			// Ghi header
+			XSSFRow headerRow = sheet.createRow(0);
+			headerRow.createCell(0).setCellValue("product_id");
+			headerRow.createCell(1).setCellValue("product_name");
+			headerRow.createCell(2).setCellValue("brand_id");
+			headerRow.createCell(3).setCellValue("category_id");
+			headerRow.createCell(4).setCellValue("output_price");
+			headerRow.createCell(5).setCellValue("country");
+			headerRow.createCell(6).setCellValue("year_of_product");
+
+			// Ghi thông tin nhân viên
+			int rowNum = 1;
+			for (SanPhamDTO sp : dssp) {
+				XSSFRow row = sheet.createRow(rowNum++);
+				row.createCell(0).setCellValue(sp.getProduct_id());
+				row.createCell(1).setCellValue(sp.getProduct_name());
+				row.createCell(2).setCellValue(sp.getBrand_id());
+				row.createCell(3).setCellValue(sp.getCategory_id());
+				row.createCell(4).setCellValue(sp.getOutput_price());
+				row.createCell(5).setCellValue(sp.getCountry());
+				row.createCell(6).setCellValue(sp.getYear_of_product());
+			}
+
+			wb.write(fileOutputStream);
+			wb.close();
+			JOptionPane.showMessageDialog(null, "Đã export dữ liệu ra file excel thành công!", "Thông báo thành công",
+					JOptionPane.INFORMATION_MESSAGE);
 		} catch (Exception e) {
-		    JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Export dữ liệu ra file excel thất bại!", "Thông báo thất bại",
+					JOptionPane.ERROR_MESSAGE);
 		}
-	}	
+	}
 }

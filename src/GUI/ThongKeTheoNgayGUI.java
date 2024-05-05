@@ -288,7 +288,7 @@ public class ThongKeTheoNgayGUI extends JPanel {
 	public void exportExcel(String month, String year) throws IOException {
     	List<ThongKeDoanhThuDTO> doanhThuNgay = ThongKeDoanhThuBUS.getThongKeTheoNgay(month,year);
     	try {
-    		FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/dt_ngay_thang_"+month+".xlsx");
+    		FileOutputStream fileOutputStream = new FileOutputStream(absolutePath + "/excel/dt_ngay_thang_"+month+"_nam_"+year+".xlsx");
     	    XSSFWorkbook wb = new XSSFWorkbook();
     	    XSSFSheet sheet = wb.createSheet("Doanh thu từng ngày của tháng " +month+ " " + year);
     	    XSSFRow row = null;

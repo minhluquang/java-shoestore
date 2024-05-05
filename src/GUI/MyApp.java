@@ -105,10 +105,10 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-//    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng phần mềm không?", "Xác nhận đóng phần mềm", JOptionPane.YES_NO_OPTION);
-//    	        if (choice == JOptionPane.YES_OPTION) {
-//    	            System.exit(0);
-//    	        }
+    			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng phần mềm không?", "Xác nhận đóng phần mềm", JOptionPane.YES_NO_OPTION);
+    	        if (choice == JOptionPane.YES_OPTION) {
+    	            System.exit(0);
+    	        }
 				System.exit(0);
 			}
 		});
@@ -418,6 +418,8 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 		pnlTaiKhoan.setLayout(new BorderLayout(0, 0));
 		pnlTaiKhoan.add(new TaiKhoanGUI(), BorderLayout.CENTER);
 
+		cardLayout.show(pnlCards, "pnlTrangChu");
+		btnTrangChu.setBackground(new Color(100, 100, 100));
 		// ========== End: CardLayout section ==========
 		
 		
@@ -562,6 +564,9 @@ public class MyApp extends JFrame implements ActionListener, MouseListener {
 			}
 		} else {
 			for (JButton button : buttons) {
+				if (button == btnTrangChu) {
+					button.setEnabled(true);
+				}
 				for (Quyen qUser : dsqUser) {
 					if (button.getText().trim().equalsIgnoreCase(qUser.getRoleTabName())) {
 						button.setEnabled(true);

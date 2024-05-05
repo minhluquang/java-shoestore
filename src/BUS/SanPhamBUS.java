@@ -43,4 +43,8 @@ public class SanPhamBUS {
 	public static boolean kiemTraTonKhoByID(int id){
 		return	SanPhamDAO.kiemTraTonKhoByID(id);
 	}
+
+	public static boolean doiTrangThaiSanPham(SanPhamDTO sanPhamDTO){
+		return SanPhamDAO.doiTrangThaiSanPham(sanPhamDTO);
+	}
 }
