@@ -184,11 +184,13 @@ public class ReturnDAO {
               int i = connectDB.runUpdate(sql);
               if (i > 0) {
                   success = true;
-                  SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());                 
-                  sanPhamDTO.setQuantity(sanPhamDTO.getQuantity()-1);
-                  ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
-                  ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
-                  SanPhamBUS.suaSanPham(sanPhamDTO);
+                  if (!active.equals("NO")) {
+                      SanPhamDTO sanPhamDTO = SanPhamBUS.getSanPhamByID(chiTietSanPhamDTO.getProductId());
+                      sanPhamDTO.setQuantity(sanPhamDTO.getQuantity() - 1);
+                      ChiTietSanPhamDTO chiTietSanPhamDTO2 = ChiTietSanPhamBUS.getChiTietSanPhamByProductIDLimit1(sanPhamDTO.getProduct_id());
+                      ChiTietSanPhamBUS.danhDauDaBan(chiTietSanPhamDTO2.getProductSerialId());
+                      SanPhamBUS.suaSanPham(sanPhamDTO);
+                  }
                   if (!noJOption) {                	  
                 	  JOptionPane.showMessageDialog(null, "Thêm đổi trả thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                   }
