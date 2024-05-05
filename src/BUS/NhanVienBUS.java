@@ -84,4 +84,12 @@ public class NhanVienBUS {
 	public static boolean isExistPhoneNumber(String phoneNumber) {
 		return NhanVienDAO.isExistPhoneNumber(phoneNumber);
 	}
+	
+	public static boolean isExistPhoneNumber(String phoneNumber, int staffId) {
+		return NhanVienDAO.isExistPhoneNumber(phoneNumber, staffId);
+	}
+	
+	public static boolean isExistEmail(String email, int staffId) {
+		return NhanVienDAO.isExistEmail(email, staffId);
+	}
 }

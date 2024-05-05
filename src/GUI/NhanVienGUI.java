@@ -380,6 +380,13 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 			nv.setFull_name((String) tblNhanVien.getValueAt(row, 1));
 			nv.setPhone_number((String) tblNhanVien.getValueAt(row, 2));
 			nv.setEmail((String) tblNhanVien.getValueAt(row, 3));
+			
+			if (tblNhanVien.getValueAt(row, 4).equals("Hoạt động")) {
+				nv.setStaff_status(1);
+			} else {
+				nv.setStaff_status(0);
+			}
+			
 		}
 	}
 	
