@@ -465,7 +465,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 
 			if (KhachHangBUS.isExistPhoneNumber(phoneNumber, customerId)) {
 				JOptionPane.showMessageDialog(null, "Hệ thống đã có khách hàng sử dụng số điện thoại này",
-						"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+						"Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 			} else {
 				if (KhachHangBUS.isExistKhachHang(customerId)) {
 					if (KhachHangBUS.updateKhachHang(customerId, customerName, phoneNumber, status)) {
@@ -475,7 +475,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 						dispose();
 					} else {
 						JOptionPane.showMessageDialog(null, "Hệ thống cập nhật thất bại thông tin khách hàng",
-								"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+								"Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
 					status = 1;
@@ -486,7 +486,7 @@ public class ChiTietKhachHangGUI extends JFrame {
 						dispose();
 					} else {
 						JOptionPane.showMessageDialog(null, "Hệ thống thêm thất bại thông tin khách hàng",
-								"Thông báo thất bại", JOptionPane.INFORMATION_MESSAGE);
+								"Thông báo thất bại", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
