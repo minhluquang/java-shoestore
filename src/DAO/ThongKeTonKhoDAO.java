@@ -15,7 +15,7 @@ public class ThongKeTonKhoDAO {
 			connectDB.getConnection();
 			String sqlProduct = "select * from products";
 			ResultSet rsProduct = connectDB.runQuery(sqlProduct);
-			String sqlNhapHang = "select quantity from goodsreceipt_details where product_id = ?";
+			String sqlNhapHang = "select sum(quantity)as total_quantity from goodsreceipt_details where product_id = ?";
 			PreparedStatement psNHapHang = connectDB.prepareStatement(sqlNhapHang);
 			String sqlBanHang = "select count(sold)as SL_Ban from product_details where product_id = ? and sold =1 group by sold";
 			PreparedStatement psBanHang = connectDB.prepareStatement(sqlBanHang);
@@ -33,7 +33,7 @@ public class ThongKeTonKhoDAO {
 				ResultSet rsBanHang = psBanHang.executeQuery();
 				int SL_Nhap = 0;
 				if (rsNhapHang.next()) {
-					SL_Nhap = rsNhapHang.getInt("quantity");
+					SL_Nhap = rsNhapHang.getInt("total_quantity");
 				}
 				
 				int SL_Ban =0;
@@ -63,7 +63,7 @@ public class ThongKeTonKhoDAO {
 			psProduct.setString(1, "%" + search + "%");
 
 			ResultSet rsProduct = psProduct.executeQuery();
-			String sqlNhapHang = "select quantity from goodsreceipt_details where product_id = ?";
+			String sqlNhapHang = "select sum(quantity)as total_quantity from goodsreceipt_details where product_id = ?";
 			PreparedStatement psNHapHang = connectDB.prepareStatement(sqlNhapHang);
 			String sqlBanHang = "select count(sold)as SL_Ban from product_details where product_id = ? and sold =1 group by sold";
 			PreparedStatement psBanHang = connectDB.prepareStatement(sqlBanHang);
@@ -82,7 +82,7 @@ public class ThongKeTonKhoDAO {
 				ResultSet rsBanHang = psBanHang.executeQuery();
 				int SL_Nhap = 0;
 				if (rsNhapHang.next()) {
-					SL_Nhap = rsNhapHang.getInt("quantity");
+					SL_Nhap = rsNhapHang.getInt("total_quantity");
 				}
 				
 				int SL_Ban =0;
