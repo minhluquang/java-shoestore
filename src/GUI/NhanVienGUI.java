@@ -357,6 +357,10 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		dtmNhanVien.setRowCount(0);
 		ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(false, -1);
 		for (NhanVien nv : dsnv) {
+			if (nv.getStaffId() == 9999) {
+				continue;
+			}
+			
 			String status = "Hoạt động";
 			if (nv.getStaffStatus() == 0) {
 				status = "Ngưng hoạt động";
@@ -385,6 +389,10 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, searchStatus);
 		
 		for (NhanVien nv : dsnv) {
+			if (nv.getStaffId() == 9999) {
+				continue;
+			}
+			
 			String status = "Hoạt động";
 			if (nv.getStaff_status() == 0) {
 				status = "Ngưng hoạt động";
