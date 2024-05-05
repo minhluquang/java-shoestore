@@ -93,7 +93,6 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     private JTable tblSanPham;
     private DefaultTableModel sanPhamModel;
     private JPanel jPanelSanPham;
-    private JTextField txtDiaChi;
     private JLabel lblTongTien;
 
     private JPanel panel_5;
@@ -239,16 +238,6 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         txtDate.setColumns(10);
         txtDate.setEnabled(false);
         panel_5.add(txtDate);
-
-        JLabel lblNewLabel_6_3_1_1 = new JLabel("Địa chỉ");
-        lblNewLabel_6_3_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        panel_5.add(lblNewLabel_6_3_1_1);
-
-        txtDiaChi = new JTextField();
-        txtDiaChi.setPreferredSize(new Dimension(100, 19));
-        txtDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtDiaChi.setColumns(10);
-        panel_5.add(txtDiaChi);
 
         JLabel lblNewLabel_6_3_1_2 = new JLabel("Tổng tiền");
         lblNewLabel_6_3_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -461,10 +450,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
     public void luuHoaDon() throws FileNotFoundException {
         if (hoaDonDTO.getCustomerId() == 0) {
             themKhachHang();
-        } else if (txtDiaChi.getText() == "") {
-            JOptionPane.showMessageDialog(null, "Địa chỉ không được bỏ trống");
         } else {
-            hoaDonDTO.setAddress(txtDiaChi.getText());
             int op = JOptionPane.showConfirmDialog(null, "Lưu hóa đơn", "Xác nhận lưu", JOptionPane.YES_NO_OPTION);
             if (op == JOptionPane.YES_OPTION) {
                 if (HoaDonBUS.themHoaDon(hoaDonDTO)) {

@@ -7,16 +7,14 @@ public class HoaDonDTO {
     private int staffId;
     private Date date;
     private int totalPrice;
-    private String address;
     private int customerId;
     private String discountCode;
-    public HoaDonDTO(int billId, int staffId, Date date, int totalPrice, String address, int customerId,
-            String discountCode) {
+
+    public HoaDonDTO(int billId, int staffId, Date date, int totalPrice, int customerId, String discountCode) {
         this.billId = billId;
         this.staffId = staffId;
         this.date = date;
         this.totalPrice = totalPrice;
-        this.address = address;
         this.customerId = customerId;
         this.discountCode = discountCode;
     }
@@ -45,12 +43,6 @@ public class HoaDonDTO {
     }
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
     }
     public int getCustomerId() {
         return customerId;
