@@ -143,12 +143,12 @@ import java.awt.event.ActionEvent;
 			pnlNVContent.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 			
 			JLabel lblNV = new JLabel("");
-			lblNV.setText(ThongKeDoanhThuBUS.getTotalStaff()+"");
+			lblNV.setText(ThongKeDoanhThuBUS.getTotalAccount()+"");
 			pnlNVContent.add(lblNV);
 			lblNV.setForeground(new Color(70, 130, 180));
 			lblNV.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			
-			JLabel lblNewLabel_1_1_1 = new JLabel("Nhân viên đang hoạt động");
+			JLabel lblNewLabel_1_1_1 = new JLabel("Tài khoản đang hoạt động");
 			pnlNVContent.add(lblNewLabel_1_1_1);
 			lblNewLabel_1_1_1.setForeground(new Color(70, 130, 180));
 			lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
@@ -325,7 +325,7 @@ import java.awt.event.ActionEvent;
 					lbl_loiNhuan.setText(calculateColumnTotal()[5]+"");
 					lblSp.setText(ThongKeDoanhThuBUS.getTotalProduct()+"");
 					lblKH.setText(ThongKeDoanhThuBUS.getTotalCustomer()+"");
-					lblNV.setText(ThongKeDoanhThuBUS.getTotalStaff()+"");
+					lblNV.setText(ThongKeDoanhThuBUS.getTotalAccount()+"");
 				}
 			});		
 			

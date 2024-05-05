@@ -256,14 +256,14 @@ public class ThongKeDoanhThuDAO {
 	}
 
 	
-	public static int getTotalStaff() {
+	public static int getTotalAccount() {
 		int total = 0;
 		try {
 			connectDB.getConnection();
-			String sql = "select count(staff_id) AS total_satff from staffs where status = 1";
+			String sql = "select count(account_id) AS total_account from accounts where account_status = 1";
 			ResultSet rs = connectDB.runQuery(sql);
 				while(rs.next()) {
-					total = rs.getInt("total_satff");			
+					total = rs.getInt("total_account");			
 				}
 		} catch (Exception e) {
 		}
