@@ -12,7 +12,6 @@ public class connectDB {
 	static final String USER = "root";
 	static final String PASS = "";
 
-
 	static Connection con;
 	static Statement stm;
 	static PreparedStatement prest;
