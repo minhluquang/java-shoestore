@@ -3,6 +3,7 @@ package DAO;
 import java.security.AlgorithmParametersSpi;
 import java.sql.ResultSet;
 import java.util.ArrayList;import org.apache.poi.hwpf.model.CHPBinTable;
+import org.openxmlformats.schemas.presentationml.x2006.main.STPrintWhat;
 
 //import com.mysql.cj.xdevapi.Statement;
 
@@ -247,7 +248,7 @@ public class NhanVienDAO {
 		return success;
 	}
 	
-	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus) {
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus, boolean nonAccount) {
 		connectDB.getConnection();
 		ArrayList<NhanVien> dsnv = new ArrayList<>();
 		
@@ -260,6 +261,9 @@ public class NhanVienDAO {
 				sql += " AND status = " + searchStatus;
 			}
 			
+			if (nonAccount == true) {
+				sql += " AND account_id IS NULL";
+			}
 			ResultSet rs = connectDB.runQuery(sql);
 			while (rs.next()) {
 				NhanVien nv = new NhanVien();

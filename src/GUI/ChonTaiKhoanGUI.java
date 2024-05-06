@@ -279,7 +279,6 @@ public class ChonTaiKhoanGUI extends JFrame {
 
 	// Load danh sách nhân viên
 		public void loadDanhSachNhanVien() {
-			System.out.println();
 			dtm.setRowCount(0);
 			ArrayList<NhanVien> dsnv = NhanVienBUS.getDanhSachNhanVien(true, 1);
 			for (NhanVien nv : dsnv) {
@@ -292,7 +291,7 @@ public class ChonTaiKhoanGUI extends JFrame {
 		// Xử lý tìm kiếm
 		public void xuLyTimKiem(String keyword) {
 			dtm.setRowCount(0);
-			ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, 1);
+			ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, 1, true);
 			
 			for (NhanVien nv : dsnv) {
 				Object[] row = {nv.getStaffId(), nv.getFull_name(), nv.getPhone_number(), nv.getEmail()};

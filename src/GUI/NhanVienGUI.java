@@ -393,7 +393,7 @@ public class NhanVienGUI extends JPanel implements ActionListener {
 	// Xử lý tìm kiếm
 	public void xuLyTimKiem(String keyword, int searchStatus) {
 		dtmNhanVien.setRowCount(0);
-		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, searchStatus);
+		ArrayList<NhanVien> dsnv = NhanVienBUS.searchNhanVien(keyword, searchStatus, false);
 		
 		for (NhanVien nv : dsnv) {
 			if (nv.getStaffId() == 9999) {

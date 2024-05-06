@@ -73,6 +73,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
     		public void windowClosing(WindowEvent e) {
     			int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn đóng chi tiết khuyến mãi không?", "Xác nhận đóng chi tiết khuyến mãi", JOptionPane.YES_NO_OPTION);
     	        if (choice == JOptionPane.YES_OPTION) {
+    	        	txtTen.setEditable(true);
     	            dispose();
     	        }
     		}
@@ -284,7 +285,7 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	                return; // Dừng lại nếu có lỗi
 	            }
 	        } else {
-	            JOptionPane.showMessageDialog(null, "Loại khuyến mãi không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        	JOptionPane.showMessageDialog(null, "Loại khuyến mãi không hợp lệ! Phải là \"AR\" hoặc \"PR\"", "Lỗi", JOptionPane.ERROR_MESSAGE);
 	            return; // Dừng lại nếu có lỗi
 	        }
 	        
@@ -327,6 +328,11 @@ public class ChiTietKhuyenMaiGUI extends JFrame{
 	//
 	public void hienThiThongTinKhuyenMai() {
 	    txtTen.setText(km.getDiscount_code());
+	    if (km.getDiscount_code() == null) {
+	        txtTen.setEditable(true);
+	    } else {
+	        txtTen.setEditable(false);
+	    }
 	    txtDieuKien.setText(String.valueOf(km.getDiscount_value()));
 	    txtPhanTramGiamGia.setText(km.getType());
 	    txtStartDate.setText(km.getStart_date());

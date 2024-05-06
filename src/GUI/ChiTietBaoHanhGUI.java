@@ -240,8 +240,6 @@ public class ChiTietBaoHanhGUI extends JFrame {
        	txtDateReturn.setEditable(true);
        	txtReason.setText(rt.getReason());
        	txtReason.setEditable(true);
-//       	txtActive.setText(rt.getActive());
-//       	txtActive.setEditable(true);
        }
         // luu
         public void xuLyLuuThongTinBaoHanh() {
@@ -249,7 +247,6 @@ public class ChiTietBaoHanhGUI extends JFrame {
             int product_serial_id;
             String date_return = txtDateReturn.getText();
             String reason = txtReason.getText();  
-//            String active = txtActive.getText();
             int status = Integer.parseInt(cmbTrangThai.getSelectedItem().toString());
             
             // Kiểm tra định dạng ngày tháng

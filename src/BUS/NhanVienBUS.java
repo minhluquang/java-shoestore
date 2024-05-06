@@ -40,8 +40,8 @@ public class NhanVienBUS {
 		return success;
 	}
 	
-	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus) {
-		dsnv = NhanVienDAO.searchNhanVien(keyword, searchStatus);
+	public static ArrayList<NhanVien> searchNhanVien(String keyword, int searchStatus, boolean nonAccount) {
+		dsnv = NhanVienDAO.searchNhanVien(keyword, searchStatus, nonAccount);
 		return dsnv;
 	}
 	
