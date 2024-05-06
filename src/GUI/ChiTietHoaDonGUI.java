@@ -605,7 +605,7 @@ public class ChiTietHoaDonGUI extends JFrame implements ActionListener {
         tableBottom.addCell(new Cell().add(new Paragraph()).setBorder(Border.NO_BORDER));
         KhuyenMai km = KhuyenMaiBUS.getKhuyenMaiByDiscountCode(hoaDonDTO.getDiscountCode());
         int giamGia;
-        if (km.getType() == "AR") {
+        if (km.getType().equals("AR")) {
             giamGia = km.getDiscount_value();
         } else {
             giamGia = tamTinh * km.getDiscount_value() / 100;

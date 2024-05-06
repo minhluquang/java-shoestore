@@ -61,7 +61,7 @@ public class ChiTietSanPhamDAO {
             String sql = "SELECT * FROM product_details WHERE product_id = " + product_id;
             ResultSet rs = connectDB.runQuery(sql);
             while (rs.next()) {
-                int product_serial_id = rs.getInt("product_id");
+                int product_serial_id = rs.getInt("product_serial_id");
                 boolean sold = rs.getBoolean("sold");
 
                 ChiTietSanPhamDTO productDetails = new ChiTietSanPhamDTO(product_serial_id, product_id, sold);
