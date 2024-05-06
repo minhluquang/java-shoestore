@@ -185,6 +185,16 @@ public class NhapHangGUI extends JPanel {
 					JOptionPane.showMessageDialog(null, "Số lượng phải là số !", "Thông báo",
 							JOptionPane.ERROR_MESSAGE);
 					return;
+				} else if (findRowByValue(tableCT, 0, table.getValueAt(row, 0)) != -1) {
+					JOptionPane.showMessageDialog(null, "Sản phẩm đã có trong phiếu nhập !", "Thông báo",
+							JOptionPane.ERROR_MESSAGE);
+					table.clearSelection();
+					lblLoai.setText("");
+					lblMa.setText("");
+					lblTenSp.setText("");
+					txtGiaNhap.setText("");
+					txtSoLuong.setText("");
+					return;
 				}
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow == -1)
@@ -292,7 +302,7 @@ public class NhapHangGUI extends JPanel {
 		lblMaPN.setText(PhieuNhapBUS.generate_Id() + "");
 		panel_8.add(lblMaPN);
 
-		lblTongTien = new JLabel("0.0");
+		lblTongTien = new JLabel("0");
 		lblTongTien.setBorder(new TitledBorder(null, "T\u1ED5ng ti\u1EC1n(VN\u0110)", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -385,6 +395,7 @@ public class NhapHangGUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) tableCT.getModel();
 				model.setRowCount(0);
+				lblTongTien.setText("0");
 			}
 		});
 		btnHuy.setPreferredSize(new Dimension(100, 40));
@@ -592,15 +603,20 @@ public class NhapHangGUI extends JPanel {
 			return;
 		}
 		DefaultTableModel model = (DefaultTableModel) tableCT.getModel();
+		int price = Integer.parseInt((String) tableCT.getValueAt(rowSelected, 4));
 		model.removeRow(rowSelected);
 		if (tableCT.getRowCount() == 0) {
-			lblTongTien.setText("0.0");
+			lblTongTien.setText("0");
+			return;
 		}
+		int lblValue = Integer.parseInt(lblTongTien.getText());
+		int s = lblValue - price;
+		lblTongTien.setText(s + "");
 	}
 
 	public void reset() {
 		lblMaPN.setText(PhieuNhapBUS.generate_Id() + "");
-		lblTongTien.setText("0.0");
+		lblTongTien.setText("0");
 		defaultTableModelCT.setRowCount(0);
 	}
 
